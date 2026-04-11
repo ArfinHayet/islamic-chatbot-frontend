@@ -63,6 +63,30 @@ function App() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
+  // Fix for Facebook WebView: keyboard opens but viewport doesn't resize,
+  // hiding the input field. Use visualViewport API to track actual visible height.
+  useEffect(() => {
+    const setAppHeight = () => {
+      const h = window.visualViewport ? window.visualViewport.height : window.innerHeight
+      document.documentElement.style.setProperty('--app-height', `${h}px`)
+    }
+    setAppHeight()
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', setAppHeight)
+      window.visualViewport.addEventListener('scroll', setAppHeight)
+    } else {
+      window.addEventListener('resize', setAppHeight)
+    }
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', setAppHeight)
+        window.visualViewport.removeEventListener('scroll', setAppHeight)
+      } else {
+        window.removeEventListener('resize', setAppHeight)
+      }
+    }
+  }, [])
+
   const sendMessage = useCallback(async () => {
     const text = input.trim()
     if (!text || isLoading) return
@@ -164,6 +188,14 @@ function App() {
     abortRef.current?.abort()
   }
 
+  const handleFocus = () => {
+    // Facebook WebView doesn't always scroll focused elements into view
+    // when the keyboard opens. Delay to let the keyboard finish animating.
+    setTimeout(() => {
+      textareaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+    }, 350)
+  }
+
   return (
     <div className="app">
       <header className="header">
@@ -200,6 +232,7 @@ function App() {
             value={input}
             onChange={handleInput}
             onKeyDown={handleKeyDown}
+            onFocus={handleFocus}
             disabled={isLoading}
           />
           <button

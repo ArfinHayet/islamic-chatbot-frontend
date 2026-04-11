@@ -2,7 +2,8 @@
 .app {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100vh; /* fallback */
+  height: var(--app-height, 100vh);
   background: #212121;
 }
 
