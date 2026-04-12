@@ -907,8 +907,16 @@ export default function App() {
 
   useEffect(() => {
     const setH = () => {
-      const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-      document.documentElement.style.setProperty("--app-height", `${h}px`);
+      if (window.visualViewport) {
+        const vv = window.visualViewport;
+        document.documentElement.style.setProperty("--app-height", `${Math.round(vv.height)}px`);
+        // Facebook WebView shifts the visual viewport vertically when the keyboard opens
+        // (offsetTop > 0). Track it so the fixed root container follows the visual viewport.
+        document.documentElement.style.setProperty("--vv-offset-top", `${Math.round(vv.offsetTop)}px`);
+      } else {
+        document.documentElement.style.setProperty("--app-height", `${window.innerHeight}px`);
+        document.documentElement.style.setProperty("--vv-offset-top", "0px");
+      }
     };
     setH();
     const vv = window.visualViewport;
@@ -1111,8 +1119,19 @@ export default function App() {
 
   const handleStop = () => abortRef.current?.abort();
 
-  const handleFocus = () =>
-    setTimeout(() => textareaRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }), 350);
+  const handleFocus = () => {
+    // Re-sync viewport height on focus — in Facebook WebView the visualViewport resize
+    // event sometimes fires late (after the keyboard animation), so we manually sync here.
+    [150, 400].forEach((delay) =>
+      setTimeout(() => {
+        if (window.visualViewport) {
+          const vv = window.visualViewport;
+          document.documentElement.style.setProperty("--app-height", `${Math.round(vv.height)}px`);
+          document.documentElement.style.setProperty("--vv-offset-top", `${Math.round(vv.offsetTop)}px`);
+        }
+      }, delay)
+    );
+  };
 
   const clearChat = () => {
     setMessages([{ id: 0, role: "assistant", content: t("resetMsg"), streaming: false }]);
@@ -1993,6 +2012,13 @@ export default function App() {
       <style>{css}</style>
       <div
         style={{
+          // position:fixed + top:--vv-offset-top makes the container track the visual
+          // viewport in Facebook WebView, where the keyboard shifts the viewport position
+          // instead of (or in addition to) shrinking it.
+          position: "fixed",
+          top: "var(--vv-offset-top, 0px)",
+          left: 0,
+          right: 0,
           display: "flex",
           height: "var(--app-height, 100dvh)",
           overflow: "hidden",
