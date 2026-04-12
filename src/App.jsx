@@ -4,7 +4,8 @@
 // Features: Light/Dark mode, Bangla/English i18n, Responsive
 // ============================================================
 
-import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import axios from "axios";
+import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 
 // ── CONSTANTS ────────────────────────────────────────────────
 const API_URL = "https://islamic-chatbot-lac.vercel.app/api/v1/chat/stream";
@@ -676,7 +677,8 @@ function ChatSection({
             border: `1.5px solid ${theme.borderMed}`,
             borderRadius: 14,
             padding: "8px 8px 8px 14px",
-            boxShadow: theme.shadow && !theme.shadow.includes('rgba(0,0,0,0.08)') ? "none" : "0 2px 12px rgba(0,0,0,0.06)",
+            boxShadow:
+              theme.shadow && !theme.shadow.includes("rgba(0,0,0,0.08)") ? "none" : "0 2px 12px rgba(0,0,0,0.06)",
           }}
         >
           <textarea
@@ -911,7 +913,8 @@ export default function App() {
       };
 
   // ── Global CSS ────────────────────────────────────────────
-  const css = useMemo(() => `
+  const css = useMemo(
+    () => `
     @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600&family=Cinzel:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600&display=swap');
     *{box-sizing:border-box;margin:0;padding:0}
     ::-webkit-scrollbar{width:4px;height:4px}
@@ -942,7 +945,9 @@ export default function App() {
     .toggle-switch input:checked+.toggle-slider{background:${theme.accent};border-color:${theme.accent}}
     .toggle-switch input:checked+.toggle-slider:before{transform:translateX(18px);background:white}
     @media(min-width:768px){.desktop-only{display:flex !important}.mobile-only{display:none !important}}
-    `, [dark, lang, theme.scrollbar]);
+    `,
+    [dark, lang, theme.scrollbar],
+  );
 
   // ── Streaming send (original logic preserved) ─────────────
   const sendMessage = useCallback(async () => {
@@ -1061,14 +1066,37 @@ export default function App() {
             }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2L3 7l9 5 9-5-9-5zM3 17l9 5 9-5M3 12l9 5 9-5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M12 2L3 7l9 5 9-5-9-5zM3 17l9 5 9-5M3 12l9 5 9-5"
+                stroke="white"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </div>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: theme.text, fontFamily: "Cinzel, serif", letterSpacing: 0.3 }}>
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: theme.text,
+                fontFamily: "Cinzel, serif",
+                letterSpacing: 0.3,
+              }}
+            >
               {t("appName")}
             </div>
-            <div style={{ fontSize: 10, color: theme.accent, letterSpacing: 1, textTransform: "uppercase", fontWeight: 500, fontFamily: "DM Sans, sans-serif" }}>
+            <div
+              style={{
+                fontSize: 10,
+                color: theme.accent,
+                letterSpacing: 1,
+                textTransform: "uppercase",
+                fontWeight: 500,
+                fontFamily: "DM Sans, sans-serif",
+              }}
+            >
               {t("appTagline")}
             </div>
           </div>
@@ -1137,7 +1165,11 @@ export default function App() {
                 <Icon />
               </span>
               {t(key)}
-              {active && <span style={{ marginLeft: "auto", width: 6, height: 6, borderRadius: "50%", background: theme.accent }} />}
+              {active && (
+                <span
+                  style={{ marginLeft: "auto", width: 6, height: 6, borderRadius: "50%", background: theme.accent }}
+                />
+              )}
             </button>
           );
         })}
@@ -1163,16 +1195,55 @@ export default function App() {
               transition: "all .25s",
             }}
           >
-            <div style={{ width: 16, height: 16, borderRadius: "50%", background: dark ? "white" : theme.textSec, display: "flex", alignItems: "center", justifyContent: "center", transition: "all .25s" }}>
+            <div
+              style={{
+                width: 16,
+                height: 16,
+                borderRadius: "50%",
+                background: dark ? "white" : theme.textSec,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transition: "all .25s",
+              }}
+            >
               {dark ? <Icons.Moon /> : <Icons.Sun />}
             </div>
           </button>
         </div>
-        <div style={{ fontSize: 10.5, color: theme.textTer, textAlign: "center", marginBottom: 10, fontFamily: font }}>{t("langSelected")}</div>
-        <div onClick={() => { setSection("profile"); setSidebarOpen(false); }} style={{ display: "flex", alignItems: "center", gap: 9, padding: "8px 10px", borderRadius: 10, background: theme.bgTer, cursor: "pointer" }}>
+        <div style={{ fontSize: 10.5, color: theme.textTer, textAlign: "center", marginBottom: 10, fontFamily: font }}>
+          {t("langSelected")}
+        </div>
+        <div
+          onClick={() => {
+            setSection("profile");
+            setSidebarOpen(false);
+          }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 9,
+            padding: "8px 10px",
+            borderRadius: 10,
+            background: theme.bgTer,
+            cursor: "pointer",
+          }}
+        >
           <UserAvatar initials={userInitials} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 12.5, fontWeight: 600, color: theme.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: font }}>{t("userName")}</div>
+            <div
+              style={{
+                fontSize: 12.5,
+                fontWeight: 600,
+                color: theme.text,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                fontFamily: font,
+              }}
+            >
+              {t("userName")}
+            </div>
             <div style={{ fontSize: 11, color: theme.textSec, fontFamily: font }}>{t("member")}</div>
           </div>
         </div>
@@ -1273,20 +1344,107 @@ export default function App() {
   // PROFILE SECTION
   // ──────────────────────────────────────────────────────────
   const ProfileSection = () => {
-    const vals = t("statsValues");
-    const stats = [
-      { label: t("totalQuestions"), value: vals[0] },
-      { label: t("thisWeek"), value: vals[1] },
-      { label: t("sessions"), value: vals[2] },
-    ];
-    const badges = [
-      { label: t("badge1"), icon: <Icons.Star />, color: "#f39c12" },
-      { label: t("badge2"), icon: <Icons.Book />, color: theme.accent },
-      { label: t("badge3"), icon: <Icons.Shield />, color: "#2980b9" },
-    ];
+    const [name, setName] = useState(t("userName"));
+    const [email, setEmail] = React.useState(t("userEmail"));
+    const [language, setLanguage] = React.useState("en");
+    const [darkMode, setDarkMode] = React.useState(dark);
+    const [saving, setSaving] = React.useState(false);
+    const [toast, setToast] = React.useState(null);
+
+    const initials =
+      name
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((w) => w[0].toUpperCase())
+        .join("") || "?";
+
+    const showToast = (msg, type = "ok") => {
+      setToast({ msg, type });
+      setTimeout(() => setToast(null), 4000);
+    };
+
+    const handleSave = async () => {
+      if (!name.trim()) {
+        showToast(t("nameRequired"), "err");
+        return;
+      }
+      if (!email.trim() || !email.includes("@")) {
+        showToast(t("emailInvalid"), "err");
+        return;
+      }
+      setSaving(true);
+
+      try {
+        const res = await axios.post(
+          "https://islamic-chatbot-lac.vercel.app/api/v1/profile",
+          {
+            name,
+            email,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+
+        const data = res.data;
+
+        let msg = t("savedSuccess");
+
+        try {
+          const txt = (data.content || []).map((c) => c.text || "").join("");
+
+          const cleaned = txt.replace(/```json|```/g, "").trim();
+          const parsed = JSON.parse(cleaned);
+
+          if (parsed.message) msg = parsed.message;
+        } catch (_) {
+          // silent fail for parsing
+        }
+
+        showToast(msg, "ok");
+      } catch (error) {
+        showToast(t("savedError"), "err");
+      } finally {
+        s;
+      }
+    };
+
+    const inputStyle = {
+      width: "100%",
+      padding: "9px 12px",
+      borderRadius: 10,
+      border: `1px solid ${theme.border}`,
+      background: theme.bgSec,
+      color: theme.text,
+      fontSize: 13.5,
+      fontFamily: font,
+      outline: "none",
+    };
+
+    const labelStyle = {
+      fontSize: 12,
+      fontWeight: 600,
+      color: theme.textSec,
+      fontFamily: font,
+      marginBottom: 5,
+      display: "block",
+    };
+
+    const rowStyle = {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 12,
+      padding: "11px 0",
+      borderBottom: `1px solid ${theme.border}`,
+    };
+
     return (
       <div style={{ flex: 1, overflowY: "auto", padding: "24px 20px" }}>
-        {/* Hero */}
+        {/* Profile hero */}
         <div
           style={{
             textAlign: "center",
@@ -1315,15 +1473,16 @@ export default function App() {
                 color: "white",
                 fontWeight: 700,
                 border: `3px solid ${theme.accent}`,
-                boxShadow: "0 6px 20px rgba(45,90,142,0.3)",
               }}
             >
-              {userInitials}
+              {initials}
             </div>
             <h2 style={{ fontSize: 18, fontWeight: 700, color: theme.text, fontFamily: "Cinzel, serif" }}>
-              {t("userName")}
+              {name || t("userName")}
             </h2>
-            <p style={{ fontSize: 13, color: theme.textSec, marginTop: 4, fontFamily: font }}>{t("userEmail")}</p>
+            <p style={{ fontSize: 13, color: theme.textSec, marginTop: 4, fontFamily: font }}>
+              {email || t("userEmail")}
+            </p>
             <div
               style={{
                 display: "inline-block",
@@ -1342,25 +1501,8 @@ export default function App() {
             </div>
           </div>
         </div>
-        {/* Stats */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10, marginBottom: 16 }}>
-          {stats.map((s, i) => (
-            <div
-              key={i}
-              style={{
-                background: theme.bgSec,
-                borderRadius: 12,
-                border: `1px solid ${theme.border}`,
-                padding: "14px 10px",
-                textAlign: "center",
-              }}
-            >
-              <div style={{ fontSize: 20, fontWeight: 700, color: theme.accent }}>{s.value}</div>
-              <div style={{ fontSize: 11.5, color: theme.textSec, marginTop: 3, fontFamily: font }}>{s.label}</div>
-            </div>
-          ))}
-        </div>
-        {/* Badges */}
+
+        {/* Profile fields */}
         <div
           style={{
             background: theme.bgSec,
@@ -1370,59 +1512,164 @@ export default function App() {
             marginBottom: 16,
           }}
         >
-          <h3 style={{ fontSize: 13.5, fontWeight: 600, color: theme.text, marginBottom: 12, fontFamily: font }}>
-            {t("badgesTitle")}
+          <h3 style={{ fontSize: 13.5, fontWeight: 600, color: theme.text, marginBottom: 14, fontFamily: font }}>
+            {t("profileTitle")}
           </h3>
-          {badges.map((b, i) => (
+          <div style={{ marginBottom: 12 }}>
+            <label style={labelStyle}>{t("fullName")}</label>
+            <input
+              style={inputStyle}
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={t("fullNamePlaceholder")}
+            />
+          </div>
+          <div>
+            <label style={labelStyle}>{t("emailAddress")}</label>
+            <input
+              style={inputStyle}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={t("emailPlaceholder")}
+            />
+          </div>
+        </div>
+
+        {/* Settings */}
+        <div
+          style={{
+            background: theme.bgSec,
+            borderRadius: 14,
+            border: `1px solid ${theme.border}`,
+            padding: 16,
+            marginBottom: 16,
+          }}
+        >
+          <h3 style={{ fontSize: 13.5, fontWeight: 600, color: theme.text, marginBottom: 4, fontFamily: font }}>
+            {t("settingsTitle")}
+          </h3>
+
+          {/* Dark mode row */}
+          <div style={rowStyle}>
+            <div>
+              <div style={{ fontSize: 13.5, color: theme.text, fontFamily: font }}>{t("darkMode")}</div>
+              <div style={{ fontSize: 12, color: theme.textSec, fontFamily: font, marginTop: 2 }}>
+                {t("darkModeSub")}
+              </div>
+            </div>
             <div
-              key={i}
-              style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: i < badges.length - 1 ? 10 : 0 }}
+              onClick={() => setDarkMode((v) => !v)}
+              style={{
+                width: 40,
+                height: 22,
+                borderRadius: 99,
+                background: darkMode ? theme.accent : theme.border,
+                position: "relative",
+                cursor: "pointer",
+                flexShrink: 0,
+                transition: "background 0.2s",
+              }}
             >
               <div
                 style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 8,
-                  background: b.color + "20",
-                  color: b.color,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  border: `1px solid ${b.color}40`,
+                  position: "absolute",
+                  width: 16,
+                  height: 16,
+                  borderRadius: "50%",
+                  background: "white",
+                  top: 3,
+                  left: darkMode ? 21 : 3,
+                  transition: "left 0.2s",
                 }}
-              >
-                {b.icon}
-              </div>
-              <span style={{ fontSize: 13, color: theme.text, fontFamily: font }}>{b.label}</span>
+              />
             </div>
-          ))}
+          </div>
+
+          {/* Language row */}
+          <div style={{ ...rowStyle, borderBottom: "none", paddingBottom: 0 }}>
+            <div>
+              <div style={{ fontSize: 13.5, color: theme.text, fontFamily: font }}>{t("language")}</div>
+              <div style={{ fontSize: 12, color: theme.textSec, fontFamily: font, marginTop: 2 }}>
+                {t("languageSub")}
+              </div>
+            </div>
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              style={{
+                padding: "7px 28px 7px 10px",
+                borderRadius: 8,
+                border: `1px solid ${theme.border}`,
+                background: theme.bgSec,
+                color: theme.text,
+                fontSize: 13,
+                fontFamily: font,
+                cursor: "pointer",
+                outline: "none",
+                appearance: "none",
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "right 9px center",
+                minWidth: 120,
+              }}
+            >
+              <option value="en">English</option>
+              <option value="ar">العربية</option>
+              <option value="bn">বাংলা</option>
+              <option value="de">Deutsch</option>
+              <option value="es">Español</option>
+              <option value="fr">Français</option>
+              <option value="hi">हिन्दी</option>
+              <option value="id">Bahasa Indonesia</option>
+              <option value="ms">Bahasa Melayu</option>
+              <option value="tr">Türkçe</option>
+              <option value="ur">اردو</option>
+              <option value="zh">中文</option>
+            </select>
+          </div>
         </div>
-        {/* Actions */}
-        {[t("editProfile"), t("changePassword"), t("deleteAccount")].map((label, i) => (
-          <button
-            key={i}
+
+        {/* Toast */}
+        {toast && (
+          <div
             style={{
-              width: "100%",
-              padding: "11px 16px",
+              marginBottom: 12,
+              padding: "10px 14px",
               borderRadius: 10,
-              cursor: "pointer",
-              marginBottom: 8,
-              background: i === 2 ? "rgba(231,76,60,0.08)" : theme.bgSec,
-              border: `1px solid ${i === 2 ? "rgba(231,76,60,0.25)" : theme.border}`,
-              color: i === 2 ? "#e74c3c" : theme.text,
-              fontSize: 13.5,
-              fontWeight: 500,
+              fontSize: 13,
               fontFamily: font,
-              textAlign: "left",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
+              border: `1px solid ${toast.type === "ok" ? "#1D9E75" : "#E24B4A"}`,
+              background: toast.type === "ok" ? "#E1F5EE" : "#FCEBEB",
+              color: toast.type === "ok" ? "#085041" : "#791F1F",
             }}
           >
-            {label}
-            <Icons.Chevron />
-          </button>
-        ))}
+            {toast.msg}
+          </div>
+        )}
+
+        {/* Save button */}
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          style={{
+            width: "100%",
+            padding: "12px 16px",
+            borderRadius: 10,
+            cursor: saving ? "not-allowed" : "pointer",
+            background: saving ? theme.border : theme.accent,
+            border: "none",
+            color: "white",
+            fontSize: 14,
+            fontWeight: 600,
+            fontFamily: font,
+            opacity: saving ? 0.7 : 1,
+            transition: "opacity 0.15s",
+          }}
+        >
+          {saving ? t("saving") : t("saveChanges")}
+        </button>
       </div>
     );
   };
