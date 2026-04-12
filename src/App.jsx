@@ -674,27 +674,29 @@ function ChatSection({
               <div style={{ display: "block", width: "100%" }}>{msg.content || (msg.streaming ? "" : "…")}</div>
               {msg.streaming && <TypingDots />}
 
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  copyMessage && copyMessage(msg.id, msg.content);
-                }}
-                title="Copy message"
-                style={{
-                  position: "absolute",
-                  top: 8,
-                  right: 8,
-                  background: "transparent",
-                  border: "none",
-                  color: theme.textTer,
-                  cursor: "pointer",
-                  padding: 6,
-                  borderRadius: 8,
-                  fontSize: 12,
-                }}
-              >
-                {copiedId === msg.id ? "Copied" : "Copy"}
-              </button>
+              {msg.content && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    copyMessage && copyMessage(msg.id, msg.content);
+                  }}
+                  title="Copy message"
+                  style={{
+                    position: "absolute",
+                    top: 8,
+                    right: 8,
+                    background: "transparent",
+                    border: "none",
+                    color: theme.textTer,
+                    cursor: "pointer",
+                    padding: 6,
+                    borderRadius: 8,
+                    fontSize: 12,
+                  }}
+                >
+                  {copiedId === msg.id ? "Copied" : "Copy"}
+                </button>
+              )}
             </div>
           </div>
         ))}
