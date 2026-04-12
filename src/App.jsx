@@ -597,8 +597,7 @@ function ChatSection({
                 color: theme.textSec,
                 lineHeight: 1.7,
                 maxWidth: 360,
-                margin: "0 auto 20px",
-                fontFamily: font,
+                margin: "0 auto 20px"
               }}
             >
               {t("welcomeSubtitle")}
@@ -620,7 +619,6 @@ function ChatSection({
                     color: theme.textSec,
                     fontSize: 12.5,
                     cursor: "pointer",
-                    fontFamily: font,
                   }}
                 >
                   {q}
@@ -652,7 +650,6 @@ function ChatSection({
                 borderRadius: msg.role === "user" ? "16px 4px 16px 16px" : "4px 16px 16px 16px",
                 fontSize: 14,
                 lineHeight: 1.75,
-                fontFamily: font,
                 border: msg.role === "assistant" ? `1px solid ${theme.border}` : "none",
                 boxShadow: theme.shadow,
                 whiteSpace: "pre-wrap",
@@ -698,7 +695,6 @@ function ChatSection({
               color: theme.text,
               fontSize: 14,
               lineHeight: 1.6,
-              fontFamily: font,
               minHeight: 24,
               maxHeight: 180,
               overflowY: "auto",
@@ -732,7 +728,6 @@ function ChatSection({
             textAlign: "center",
             marginTop: 8,
             lineHeight: 1.5,
-            fontFamily: font,
           }}
         >
           {t("disclaimer")}
@@ -1147,7 +1142,6 @@ export default function App() {
             color: theme.accent,
             fontSize: 13,
             fontWeight: 600,
-            fontFamily: font,
             transition: "background .18s",
           }}
         >
@@ -1180,7 +1174,6 @@ export default function App() {
                 color: active ? theme.accent : theme.textSec,
                 fontSize: 13.5,
                 fontWeight: active ? 600 : 400,
-                fontFamily: font,
                 textAlign: "left",
               }}
             >
@@ -1234,7 +1227,7 @@ export default function App() {
             </div>
           </button>
         </div>
-        <div style={{ fontSize: 10.5, color: theme.textTer, textAlign: "center", marginBottom: 10, fontFamily: font }}>
+        <div style={{ fontSize: 10.5, color: theme.textTer, textAlign: "center", marginBottom: 10 }}>
           {t("langSelected")}
         </div>
         {/* <div
@@ -1261,13 +1254,12 @@ export default function App() {
                 color: theme.text,
                 whiteSpace: "nowrap",
                 overflow: "hidden",
-                textOverflow: "ellipsis",
-                fontFamily: font,
+                textOverflow: "ellipsis"
               }}
             >
               {t("userName")}
             </div>
-            <div style={{ fontSize: 11, color: theme.textSec, fontFamily: font }}>{t("member")}</div>
+            <div style={{ fontSize: 11, color: theme.textSec }}>{t("member")}</div>
           </div>
         </div> */}
       </div>
@@ -1288,13 +1280,13 @@ export default function App() {
         <h2 style={{ fontSize: 17, fontWeight: 600, color: theme.text, marginBottom: 4, fontFamily: "Cinzel, serif" }}>
           {t("historyTitle")}
         </h2>
-        <p style={{ fontSize: 12.5, color: theme.textSec, fontFamily: font }}>{t("historySubtitle")}</p>
+        <p style={{ fontSize: 12.5, color: theme.textSec }}>{t("historySubtitle")}</p>
       </div>
       <div style={{ flex: 1, overflowY: "auto", padding: "12px 14px" }}>
         {history.length === 0 ? (
           <div style={{ textAlign: "center", padding: "48px 20px", color: theme.textTer }}>
             <Icons.History />
-            <p style={{ marginTop: 12, fontSize: 13.5, fontFamily: font }}>{t("noHistory")}</p>
+            <p style={{ marginTop: 12, fontSize: 13.5 }}>{t("noHistory")}</p>
           </div>
         ) : (
           history.map((item) => (
@@ -1320,8 +1312,7 @@ export default function App() {
                       marginBottom: 3,
                       whiteSpace: "nowrap",
                       overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      fontFamily: font,
+                      textOverflow: "ellipsis"
                     }}
                   >
                     {item.title}
@@ -1333,7 +1324,6 @@ export default function App() {
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
-                      fontFamily: font,
                     }}
                   >
                     {item.preview}
@@ -1342,7 +1332,7 @@ export default function App() {
                 <div
                   style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8, flexShrink: 0 }}
                 >
-                  <span style={{ fontSize: 11, color: theme.textTer, fontFamily: font }}>{item.time}</span>
+                  <span style={{ fontSize: 11, color: theme.textTer }}>{item.time}</span>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -1441,7 +1431,6 @@ export default function App() {
       background: theme.bgSec,
       color: theme.text,
       fontSize: 13.5,
-      fontFamily: font,
       outline: "none",
     };
 
@@ -1449,7 +1438,6 @@ export default function App() {
       fontSize: 12,
       fontWeight: 600,
       color: theme.textSec,
-      fontFamily: font,
       marginBottom: 5,
       display: "block",
     };
@@ -1498,10 +1486,10 @@ export default function App() {
             >
               {initials}
             </div>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: theme.text, fontFamily: "Cinzel, serif" }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: theme.text }}>
               {name || t("userName")}
             </h2>
-            <p style={{ fontSize: 13, color: theme.textSec, marginTop: 4, fontFamily: font }}>
+            <p style={{ fontSize: 13, color: theme.textSec, marginTop: 4 }}>
               {email || t("userEmail")}
             </p>
             <div
@@ -1515,7 +1503,6 @@ export default function App() {
                 fontSize: 12,
                 color: theme.accent,
                 fontWeight: 600,
-                fontFamily: font,
               }}
             >
               {t("membershipBasic")}
@@ -1533,7 +1520,7 @@ export default function App() {
             marginBottom: 16,
           }}
         >
-          <h3 style={{ fontSize: 13.5, fontWeight: 600, color: theme.text, marginBottom: 14, fontFamily: font }}>
+          <h3 style={{ fontSize: 13.5, fontWeight: 600, color: theme.text, marginBottom: 14 }}>
             {t("profileTitle")}
           </h3>
           <div style={{ marginBottom: 12 }}>
@@ -1568,15 +1555,15 @@ export default function App() {
             marginBottom: 16,
           }}
         >
-          <h3 style={{ fontSize: 13.5, fontWeight: 600, color: theme.text, marginBottom: 4, fontFamily: font }}>
+          <h3 style={{ fontSize: 13.5, fontWeight: 600, color: theme.text, marginBottom: 4 }}>
             {t("settingsTitle")}
           </h3>
 
           {/* Dark mode row */}
           <div style={rowStyle}>
             <div>
-              <div style={{ fontSize: 13.5, color: theme.text, fontFamily: font }}>{t("darkMode")}</div>
-              <div style={{ fontSize: 12, color: theme.textSec, fontFamily: font, marginTop: 2 }}>
+              <div style={{ fontSize: 13.5, color: theme.text }}>{t("darkMode")}</div>
+              <div style={{ fontSize: 12, color: theme.textSec, marginTop: 2 }}>
                 {t("darkModeSub")}
               </div>
             </div>
@@ -1611,8 +1598,8 @@ export default function App() {
           {/* Language row */}
           <div style={{ ...rowStyle, borderBottom: "none", paddingBottom: 0 }}>
             <div>
-              <div style={{ fontSize: 13.5, color: theme.text, fontFamily: font }}>{t("language")}</div>
-              <div style={{ fontSize: 12, color: theme.textSec, fontFamily: font, marginTop: 2 }}>
+              <div style={{ fontSize: 13.5, color: theme.text }}>{t("language")}</div>
+              <div style={{ fontSize: 12, color: theme.textSec, marginTop: 2 }}>
                 {t("languageSub")}
               </div>
             </div>
@@ -1626,7 +1613,6 @@ export default function App() {
                 background: theme.bgSec,
                 color: theme.text,
                 fontSize: 13,
-                fontFamily: font,
                 cursor: "pointer",
                 outline: "none",
                 appearance: "none",
@@ -1650,7 +1636,6 @@ export default function App() {
               padding: "10px 14px",
               borderRadius: 10,
               fontSize: 13,
-              fontFamily: font,
               border: `1px solid ${toast.type === "ok" ? "#1D9E75" : "#E24B4A"}`,
               background: toast.type === "ok" ? "#E1F5EE" : "#FCEBEB",
               color: toast.type === "ok" ? "#085041" : "#791F1F",
@@ -1674,7 +1659,6 @@ export default function App() {
             color: "white",
             fontSize: 14,
             fontWeight: 600,
-            fontFamily: font,
             opacity: saving ? 0.7 : 1,
             transition: "opacity 0.15s",
           }}
@@ -1717,7 +1701,6 @@ export default function App() {
                       fontSize: 12,
                       fontWeight: 600,
                       transition: "all .18s",
-                      fontFamily: code === "bn" ? "Hind Siliguri, sans-serif" : "DM Sans, sans-serif",
                     }}
                   >
                     {label}
@@ -1762,7 +1745,6 @@ export default function App() {
                   fontSize: 12.5,
                   color: theme.text,
                   cursor: "pointer",
-                  fontFamily: font,
                 }}
               >
                 {["hanafi", "maliki", "shafii", "hanbali"].map((m) => (
@@ -1813,7 +1795,7 @@ export default function App() {
         <h2 style={{ fontSize: 17, fontWeight: 600, color: theme.text, marginBottom: 4, fontFamily: "Cinzel, serif" }}>
           {t("settingsTitle")}
         </h2>
-        <p style={{ fontSize: 12.5, color: theme.textSec, marginBottom: 20, fontFamily: font }}>
+        <p style={{ fontSize: 12.5, color: theme.textSec, marginBottom: 20 }}>
           {t("settingsSubtitle")}
         </p>
         {groups.map((group, gi) => (
@@ -1834,8 +1816,7 @@ export default function App() {
                   fontWeight: 600,
                   color: theme.textSec,
                   textTransform: "uppercase",
-                  letterSpacing: 0.8,
-                  fontFamily: font,
+                  letterSpacing: 0.8
                 }}
               >
                 {group.title}
@@ -1856,10 +1837,10 @@ export default function App() {
                 <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 0 }}>
                   <span style={{ color: theme.accent, flexShrink: 0 }}>{item.icon}</span>
                   <div>
-                    <div style={{ fontSize: 13.5, color: theme.text, fontWeight: 500, fontFamily: font }}>
+                    <div style={{ fontSize: 13.5, color: theme.text, fontWeight: 500 }}>
                       {item.label}
                     </div>
-                    <div style={{ fontSize: 11.5, color: theme.textTer, fontFamily: font }}>{item.desc}</div>
+                    <div style={{ fontSize: 11.5, color: theme.textTer }}>{item.desc}</div>
                   </div>
                 </div>
                 <div style={{ flexShrink: 0 }}>{item.control}</div>
@@ -1876,8 +1857,8 @@ export default function App() {
             border: `1px solid ${theme.border}`,
           }}
         >
-          <div style={{ fontSize: 12, color: theme.textTer, marginBottom: 4, fontFamily: font }}>{t("version")}</div>
-          <div style={{ fontSize: 11, color: theme.textTer, fontFamily: font }}>{t("bismillah")}</div>
+          <div style={{ fontSize: 12, color: theme.textTer, marginBottom: 4 }}>{t("version")}</div>
+          <div style={{ fontSize: 11, color: theme.textTer }}>{t("bismillah")}</div>
         </div>
       </div>
     );
@@ -1959,7 +1940,6 @@ export default function App() {
           overflow: "hidden",
           background: theme.bg,
           color: theme.text,
-          fontFamily: font,
           transition: "background .25s, color .25s",
         }}
       >
@@ -2053,7 +2033,7 @@ export default function App() {
                       : t("settingsTitle")}
               </h1>
               {section === "chat" && (
-                <p style={{ fontSize: 12, color: theme.textTer, marginTop: 1, fontFamily: font }}>{t("appSubtitle")}</p>
+                <p style={{ fontSize: 12, color: theme.textTer, marginTop: 1 }}>{t("appSubtitle")}</p>
               )}
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -2068,7 +2048,6 @@ export default function App() {
                     color: theme.textSec,
                     fontSize: 12.5,
                     cursor: "pointer",
-                    fontFamily: font,
                   }}
                 >
                   {t("newChat")}
@@ -2093,7 +2072,7 @@ export default function App() {
                     animation: "pulse 2s infinite",
                   }}
                 />
-                <span style={{ fontSize: 11.5, color: theme.accent, fontWeight: 500, fontFamily: font }}>
+                <span style={{ fontSize: 11.5, color: theme.accent, fontWeight: 500 }}>
                   {t("active")}
                 </span>
               </div>
