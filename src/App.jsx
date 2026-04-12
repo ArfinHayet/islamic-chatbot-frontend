@@ -39,7 +39,13 @@ const TRANSLATIONS = {
     errorMsg: "দুঃখিত, একটি সমস্যা হয়েছে। আবার চেষ্টা করুন।",
     resetMsg: "আবার শুরু করুন। আপনার যেকোনো ইসলামিক প্রশ্ন জিজ্ঞেস করুন।",
     active: "সক্রিয়",
-    quickPrompts: ["নামাজের নিয়ম কী?", "রমজানের ফজিলত", "যাকাতের হিসাব", "দোয়া শেখান"],
+    quickPrompts: [
+      "নামাজের সঠিক নিয়ম ও পদ্ধতি কী?",
+      "রমজান মাসের ফজিলত ও আমল",
+      "যাকাত কীভাবে হিসাব করবো?",
+      "কুরআন তেলাওয়াতের আদব ও ফজিলত",
+      "হালাল ও হারাম উপার্জনের পার্থক্য",
+    ],
     historyTitle: "চ্যাট ইতিহাস",
     historySubtitle: "আপনার আগের সকল কথোপকথন",
     noHistory: "কোনো ইতিহাস নেই",
@@ -102,7 +108,12 @@ const TRANSLATIONS = {
     errorMsg: "Sorry, something went wrong. Please try again.",
     resetMsg: "Starting fresh. Ask me any Islamic question.",
     active: "Active",
-    quickPrompts: ["Rules of Salah", "Virtues of Ramadan", "Zakat calculation", "Teach me a Dua"],
+    quickPrompts: [
+      "What are the rules and steps of Salah?",
+      "What are the virtues and acts of Ramadan?",
+      "How do I calculate my Zakat?",
+      "What are the etiquettes of reciting the Quran?",
+    ],
     historyTitle: "Chat History",
     historySubtitle: "All your previous conversations",
     noHistory: "No history yet",
@@ -547,6 +558,8 @@ function ChatSection({
   handleStop,
   sendMessage,
   userInitials,
+  copyMessage,
+  copiedId,
 }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -597,7 +610,7 @@ function ChatSection({
                 color: theme.textSec,
                 lineHeight: 1.7,
                 maxWidth: 360,
-                margin: "0 auto 20px"
+                margin: "0 auto 20px",
               }}
             >
               {t("welcomeSubtitle")}
@@ -654,10 +667,34 @@ function ChatSection({
                 boxShadow: theme.shadow,
                 whiteSpace: "pre-wrap",
                 wordBreak: "break-word",
+                position: "relative",
+                paddingRight: 56, // space for copy button
               }}
             >
-              {msg.content || (msg.streaming ? "" : "…")}
+              <div style={{ display: "block", width: "100%" }}>{msg.content || (msg.streaming ? "" : "…")}</div>
               {msg.streaming && <TypingDots />}
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  copyMessage && copyMessage(msg.id, msg.content);
+                }}
+                title="Copy message"
+                style={{
+                  position: "absolute",
+                  top: 8,
+                  right: 8,
+                  background: "transparent",
+                  border: "none",
+                  color: theme.textTer,
+                  cursor: "pointer",
+                  padding: 6,
+                  borderRadius: 8,
+                  fontSize: 12,
+                }}
+              >
+                {copiedId === msg.id ? "Copied" : "Copy"}
+              </button>
             </div>
           </div>
         ))}
@@ -793,7 +830,10 @@ export default function App() {
   const [input, setInput] = useState("");
   const [settings, setSettings] = useState({ notifications: true, madhab: "hanafi", saveHistory: true });
   // per-chat user id used for server-side context scoping
-  const genUserId = () => (typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `user_${Date.now()}_${Math.floor(Math.random()*9000+1000)}`);
+  const genUserId = () =>
+    typeof crypto !== "undefined" && crypto.randomUUID
+      ? crypto.randomUUID()
+      : `user_${Date.now()}_${Math.floor(Math.random() * 9000 + 1000)}`;
   const [userId, setUserId] = useState(() => genUserId());
 
   // Translation helper — t('key') returns string for current lang
@@ -809,6 +849,28 @@ export default function App() {
   const [messages, setMessages] = useState([
     { id: 0, role: "assistant", content: TRANSLATIONS.bn.greeting, streaming: false },
   ]);
+
+  // clipboard copy feedback
+  const [copiedId, setCopiedId] = useState(null);
+  const copyMessage = async (id, text) => {
+    try {
+      const str = String(text ?? "");
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(str);
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = str;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 1400);
+    } catch (e) {
+      console.error("copy failed", e);
+    }
+  };
 
   // History list driven by language
   const [history, setHistory] = useState(MOCK_HISTORY_DATA.bn);
@@ -989,7 +1051,12 @@ export default function App() {
               const p = JSON.parse(l);
               if (p && p.type === "done") return "";
               return (
-                p.content ?? p.text ?? (p.delta && (p.delta.content ?? p.delta)) ?? p.choices?.[0]?.delta?.content ?? p.choices?.[0]?.text ?? ""
+                p.content ??
+                p.text ??
+                (p.delta && (p.delta.content ?? p.delta)) ??
+                p.choices?.[0]?.delta?.content ??
+                p.choices?.[0]?.text ??
+                ""
               );
             } catch {
               return l;
@@ -1009,7 +1076,8 @@ export default function App() {
             .filter((l) => l && l !== "[DONE]")
             .join("\n")
             .trim();
-          if (raw && !isMeaningless(raw)) setMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, content: raw } : m)));
+          if (raw && !isMeaningless(raw))
+            setMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, content: raw } : m)));
         }
       }
     } catch (err) {
@@ -1017,7 +1085,11 @@ export default function App() {
         setMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, content: t("errorMsg"), streaming: false } : m)));
     } finally {
       // Mark streaming as finished and remove any assistant messages that are empty/whitespace
-      setMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, streaming: false } : m)).filter((m) => !(m.role === "assistant" && (!m.content || String(m.content).trim() === ""))));
+      setMessages((prev) =>
+        prev
+          .map((m) => (m.id === aId ? { ...m, streaming: false } : m))
+          .filter((m) => !(m.role === "assistant" && (!m.content || String(m.content).trim() === ""))),
+      );
       setIsLoading(false);
     }
   }, [input, isLoading, lang]);
@@ -1312,7 +1384,7 @@ export default function App() {
                       marginBottom: 3,
                       whiteSpace: "nowrap",
                       overflow: "hidden",
-                      textOverflow: "ellipsis"
+                      textOverflow: "ellipsis",
                     }}
                   >
                     {item.title}
@@ -1486,12 +1558,8 @@ export default function App() {
             >
               {initials}
             </div>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: theme.text }}>
-              {name || t("userName")}
-            </h2>
-            <p style={{ fontSize: 13, color: theme.textSec, marginTop: 4 }}>
-              {email || t("userEmail")}
-            </p>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: theme.text }}>{name || t("userName")}</h2>
+            <p style={{ fontSize: 13, color: theme.textSec, marginTop: 4 }}>{email || t("userEmail")}</p>
             <div
               style={{
                 display: "inline-block",
@@ -1520,9 +1588,7 @@ export default function App() {
             marginBottom: 16,
           }}
         >
-          <h3 style={{ fontSize: 13.5, fontWeight: 600, color: theme.text, marginBottom: 14 }}>
-            {t("profileTitle")}
-          </h3>
+          <h3 style={{ fontSize: 13.5, fontWeight: 600, color: theme.text, marginBottom: 14 }}>{t("profileTitle")}</h3>
           <div style={{ marginBottom: 12 }}>
             <label style={labelStyle}>{t("fullName")}</label>
             <input
@@ -1555,17 +1621,13 @@ export default function App() {
             marginBottom: 16,
           }}
         >
-          <h3 style={{ fontSize: 13.5, fontWeight: 600, color: theme.text, marginBottom: 4 }}>
-            {t("settingsTitle")}
-          </h3>
+          <h3 style={{ fontSize: 13.5, fontWeight: 600, color: theme.text, marginBottom: 4 }}>{t("settingsTitle")}</h3>
 
           {/* Dark mode row */}
           <div style={rowStyle}>
             <div>
               <div style={{ fontSize: 13.5, color: theme.text }}>{t("darkMode")}</div>
-              <div style={{ fontSize: 12, color: theme.textSec, marginTop: 2 }}>
-                {t("darkModeSub")}
-              </div>
+              <div style={{ fontSize: 12, color: theme.textSec, marginTop: 2 }}>{t("darkModeSub")}</div>
             </div>
             <div
               onClick={() => setDark((v) => !v)}
@@ -1599,9 +1661,7 @@ export default function App() {
           <div style={{ ...rowStyle, borderBottom: "none", paddingBottom: 0 }}>
             <div>
               <div style={{ fontSize: 13.5, color: theme.text }}>{t("language")}</div>
-              <div style={{ fontSize: 12, color: theme.textSec, marginTop: 2 }}>
-                {t("languageSub")}
-              </div>
+              <div style={{ fontSize: 12, color: theme.textSec, marginTop: 2 }}>{t("languageSub")}</div>
             </div>
             <select
               value={lang}
@@ -1795,9 +1855,7 @@ export default function App() {
         <h2 style={{ fontSize: 17, fontWeight: 600, color: theme.text, marginBottom: 4, fontFamily: "Cinzel, serif" }}>
           {t("settingsTitle")}
         </h2>
-        <p style={{ fontSize: 12.5, color: theme.textSec, marginBottom: 20 }}>
-          {t("settingsSubtitle")}
-        </p>
+        <p style={{ fontSize: 12.5, color: theme.textSec, marginBottom: 20 }}>{t("settingsSubtitle")}</p>
         {groups.map((group, gi) => (
           <div
             key={gi}
@@ -1816,7 +1874,7 @@ export default function App() {
                   fontWeight: 600,
                   color: theme.textSec,
                   textTransform: "uppercase",
-                  letterSpacing: 0.8
+                  letterSpacing: 0.8,
                 }}
               >
                 {group.title}
@@ -1837,9 +1895,7 @@ export default function App() {
                 <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 0 }}>
                   <span style={{ color: theme.accent, flexShrink: 0 }}>{item.icon}</span>
                   <div>
-                    <div style={{ fontSize: 13.5, color: theme.text, fontWeight: 500 }}>
-                      {item.label}
-                    </div>
+                    <div style={{ fontSize: 13.5, color: theme.text, fontWeight: 500 }}>{item.label}</div>
                     <div style={{ fontSize: 11.5, color: theme.textTer }}>{item.desc}</div>
                   </div>
                 </div>
@@ -2072,9 +2128,7 @@ export default function App() {
                     animation: "pulse 2s infinite",
                   }}
                 />
-                <span style={{ fontSize: 11.5, color: theme.accent, fontWeight: 500 }}>
-                  {t("active")}
-                </span>
+                <span style={{ fontSize: 11.5, color: theme.accent, fontWeight: 500 }}>{t("active")}</span>
               </div>
             </div>
           </div>
@@ -2098,6 +2152,8 @@ export default function App() {
                 handleStop={handleStop}
                 sendMessage={sendMessage}
                 userInitials={userInitials}
+                copyMessage={copyMessage}
+                copiedId={copiedId}
               />
             )}
             {section === "history" && <HistorySection />}
