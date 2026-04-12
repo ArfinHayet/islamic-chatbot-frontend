@@ -901,38 +901,51 @@ export default function App() {
     }
   }, [messages]);
 
-  // ── Facebook WebView viewport fix (from original code) ────
+  // ── Facebook WebView viewport fix ───────────────────────
   const textareaRef = useRef(null);
   const abortRef = useRef(null);
+  // Direct ref to the root div so we can set its styles immediately
+  // (CSS variable updates have a render-frame delay; direct style is synchronous).
+  const appRootRef = useRef(null);
 
   useEffect(() => {
-    const setH = () => {
+    const syncVP = () => {
       if (window.visualViewport) {
         const vv = window.visualViewport;
-        document.documentElement.style.setProperty("--app-height", `${Math.round(vv.height)}px`);
-        // Facebook WebView shifts the visual viewport vertically when the keyboard opens
-        // (offsetTop > 0). Track it so the fixed root container follows the visual viewport.
-        document.documentElement.style.setProperty("--vv-offset-top", `${Math.round(vv.offsetTop)}px`);
+        const h = Math.round(vv.height);
+        const top = Math.round(vv.offsetTop);
+        // Direct DOM update — takes effect this frame, no React reconcile needed.
+        if (appRootRef.current) {
+          appRootRef.current.style.height = `${h}px`;
+          appRootRef.current.style.top = `${top}px`;
+        }
+        document.documentElement.style.setProperty("--app-height", `${h}px`);
+        document.documentElement.style.setProperty("--vv-offset-top", `${top}px`);
       } else {
-        document.documentElement.style.setProperty("--app-height", `${window.innerHeight}px`);
+        const h = window.innerHeight;
+        if (appRootRef.current) {
+          appRootRef.current.style.height = `${h}px`;
+          appRootRef.current.style.top = "0px";
+        }
+        document.documentElement.style.setProperty("--app-height", `${h}px`);
         document.documentElement.style.setProperty("--vv-offset-top", "0px");
       }
     };
-    setH();
+    syncVP();
     const vv = window.visualViewport;
     if (vv) {
-      vv.addEventListener("resize", setH);
-      vv.addEventListener("scroll", setH);
-    } else {
-      window.addEventListener("resize", setH);
+      vv.addEventListener("resize", syncVP);
+      vv.addEventListener("scroll", syncVP);
     }
+    // Always add window.resize as a fallback — some Facebook WebView builds
+    // don't fire visualViewport events but do fire window resize.
+    window.addEventListener("resize", syncVP);
     return () => {
       if (vv) {
-        vv.removeEventListener("resize", setH);
-        vv.removeEventListener("scroll", setH);
-      } else {
-        window.removeEventListener("resize", setH);
+        vv.removeEventListener("resize", syncVP);
+        vv.removeEventListener("scroll", syncVP);
       }
+      window.removeEventListener("resize", syncVP);
     };
   }, []);
 
@@ -1120,17 +1133,30 @@ export default function App() {
   const handleStop = () => abortRef.current?.abort();
 
   const handleFocus = () => {
-    // Re-sync viewport height on focus — in Facebook WebView the visualViewport resize
-    // event sometimes fires late (after the keyboard animation), so we manually sync here.
-    [150, 400].forEach((delay) =>
-      setTimeout(() => {
-        if (window.visualViewport) {
-          const vv = window.visualViewport;
-          document.documentElement.style.setProperty("--app-height", `${Math.round(vv.height)}px`);
-          document.documentElement.style.setProperty("--vv-offset-top", `${Math.round(vv.offsetTop)}px`);
+    // Facebook WebView: keyboard appearance often doesn't fire visualViewport/resize
+    // events reliably, or fires them mid-animation with partial height.
+    // Poll the viewport at several intervals until it stabilises.
+    const poll = () => {
+      if (window.visualViewport) {
+        const vv = window.visualViewport;
+        const h = Math.round(vv.height);
+        const top = Math.round(vv.offsetTop);
+        if (appRootRef.current) {
+          appRootRef.current.style.height = `${h}px`;
+          appRootRef.current.style.top = `${top}px`;
         }
-      }, delay)
-    );
+        document.documentElement.style.setProperty("--app-height", `${h}px`);
+        document.documentElement.style.setProperty("--vv-offset-top", `${top}px`);
+      } else {
+        const h = window.innerHeight;
+        if (appRootRef.current) {
+          appRootRef.current.style.height = `${h}px`;
+        }
+      }
+    };
+    // Run immediately, then at 100 / 300 / 600 ms to catch slow keyboard animations.
+    poll();
+    [100, 300, 600].forEach((ms) => setTimeout(poll, ms));
   };
 
   const clearChat = () => {
@@ -2011,10 +2037,8 @@ export default function App() {
     <>
       <style>{css}</style>
       <div
+        ref={appRootRef}
         style={{
-          // position:fixed + top:--vv-offset-top makes the container track the visual
-          // viewport in Facebook WebView, where the keyboard shifts the viewport position
-          // instead of (or in addition to) shrinking it.
           position: "fixed",
           top: "var(--vv-offset-top, 0px)",
           left: 0,
