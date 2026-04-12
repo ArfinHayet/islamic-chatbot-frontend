@@ -4,7 +4,7 @@
 // Features: Light/Dark mode, Bangla/English i18n, Responsive
 // ============================================================
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 
 // ── CONSTANTS ────────────────────────────────────────────────
 const API_URL = "https://islamic-chatbot-lac.vercel.app/api/v1/chat/stream";
@@ -528,6 +528,217 @@ function TypingDots() {
   );
 }
 
+// Extracted ChatSection to top-level to avoid remounting on App re-renders
+function ChatSection({
+  messages,
+  theme,
+  t,
+  font,
+  bottomRef,
+  clearChat,
+  textareaRef,
+  handleInput,
+  handleKeyDown,
+  handleFocus,
+  isLoading,
+  input,
+  handleStop,
+  sendMessage,
+  userInitials,
+}) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <div
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          padding: "24px 20px 16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 16,
+        }}
+      >
+        {/* Welcome */}
+        {messages.length === 1 && (
+          <div style={{ textAlign: "center", padding: "32px 20px 24px", animation: "fadeSlideUp .5s ease" }}>
+            <div
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: "50%",
+                margin: "0 auto 16px",
+                background: "linear-gradient(135deg, #1a6b5a, #0d4a3e)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 8px 24px rgba(26,107,90,0.3)",
+              }}
+            >
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 2L3 7l9 5 9-5-9-5zM3 17l9 5 9-5M3 12l9 5 9-5"
+                  stroke="white"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <div
+              style={{ fontSize: 20, fontWeight: 600, color: theme.text, marginBottom: 6, fontFamily: "Cinzel, serif" }}
+            >
+              {t("welcomeTitle")}
+            </div>
+            <div
+              style={{
+                fontSize: 13.5,
+                color: theme.textSec,
+                lineHeight: 1.7,
+                maxWidth: 360,
+                margin: "0 auto 20px",
+                fontFamily: font,
+              }}
+            >
+              {t("welcomeSubtitle")}
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center" }}>
+              {t("quickPrompts").map((q, i) => (
+                <button
+                  key={i}
+                  className="quick-chip"
+                  onClick={() => {
+                    // focus handled by caller
+                    textareaRef.current && (textareaRef.current.value = q);
+                  }}
+                  style={{
+                    padding: "7px 14px",
+                    borderRadius: 99,
+                    background: theme.bgSec,
+                    border: `1px solid ${theme.borderMed}`,
+                    color: theme.textSec,
+                    fontSize: 12.5,
+                    cursor: "pointer",
+                    fontFamily: font,
+                  }}
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Messages */}
+        {messages.map((msg) => (
+          <div
+            key={msg.id}
+            className="msg-row"
+            style={{
+              display: "flex",
+              gap: 10,
+              alignItems: "flex-start",
+              flexDirection: msg.role === "user" ? "row-reverse" : "row",
+            }}
+          >
+            {msg.role === "assistant" ? <BotAvatar /> : <UserAvatar initials={userInitials} />}
+            <div
+              style={{
+                maxWidth: "min(76%,520px)",
+                background: msg.role === "user" ? theme.userBubble : theme.botBubble,
+                color: msg.role === "user" ? theme.userText : theme.text,
+                padding: "11px 15px",
+                borderRadius: msg.role === "user" ? "16px 4px 16px 16px" : "4px 16px 16px 16px",
+                fontSize: 14,
+                lineHeight: 1.75,
+                fontFamily: font,
+                border: msg.role === "assistant" ? `1px solid ${theme.border}` : "none",
+                boxShadow: theme.shadow,
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+              }}
+            >
+              {msg.content || (msg.streaming ? "" : "…")}
+              {msg.streaming && <TypingDots />}
+            </div>
+          </div>
+        ))}
+        <div ref={bottomRef} />
+      </div>
+
+      {/* Input bar */}
+      <div style={{ padding: "12px 16px 14px", borderTop: `1px solid ${theme.border}`, background: theme.bgSec }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 10,
+            alignItems: "flex-end",
+            background: theme.inputBg,
+            border: `1.5px solid ${theme.borderMed}`,
+            borderRadius: 14,
+            padding: "8px 8px 8px 14px",
+            boxShadow: theme.shadow && !theme.shadow.includes('rgba(0,0,0,0.08)') ? "none" : "0 2px 12px rgba(0,0,0,0.06)",
+          }}
+        >
+          <textarea
+            ref={textareaRef}
+            rows={1}
+            placeholder={t("placeholder")}
+            value={input}
+            onChange={handleInput}
+            onKeyDown={handleKeyDown}
+            onFocus={handleFocus}
+            disabled={isLoading}
+            style={{
+              flex: 1,
+              background: "transparent",
+              border: "none",
+              color: theme.text,
+              fontSize: 14,
+              lineHeight: 1.6,
+              fontFamily: font,
+              minHeight: 24,
+              maxHeight: 180,
+              overflowY: "auto",
+            }}
+          />
+          <button
+            className="send-btn"
+            onClick={isLoading ? handleStop : sendMessage}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              border: "none",
+              cursor: "pointer",
+              flexShrink: 0,
+              background: isLoading ? "#c0392b" : input.trim() ? theme.accent : theme.bgTer,
+              color: isLoading || input.trim() ? "white" : theme.textTer,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            aria-label={isLoading ? "Stop" : "Send"}
+          >
+            {isLoading ? <Icons.Stop /> : <Icons.Send />}
+          </button>
+        </div>
+        <p
+          style={{
+            fontSize: 11,
+            color: theme.textTer,
+            textAlign: "center",
+            marginTop: 8,
+            lineHeight: 1.5,
+            fontFamily: font,
+          }}
+        >
+          {t("disclaimer")}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ── LANGUAGE PILL TOGGLE ──────────────────────────────────────
 // Compact BN / EN switcher used in sidebar and mobile header
 function LangPill({ lang, setLang, theme }) {
@@ -608,8 +819,21 @@ export default function App() {
 
   // ── Auto-scroll on new messages ───────────────────────────
   const bottomRef = useRef(null);
+  const scrollThrottleRef = useRef(0);
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const now = Date.now();
+    const isStreaming = messages.some((m) => m.streaming);
+    // When streaming, throttle scrolls to avoid frequent layout jumps.
+    if (isStreaming) {
+      if (now - scrollThrottleRef.current > 120) {
+        bottomRef.current?.scrollIntoView({ behavior: "auto" });
+        scrollThrottleRef.current = now;
+      }
+    } else {
+      // final message: smooth scroll to show completion
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      scrollThrottleRef.current = now;
+    }
   }, [messages]);
 
   // ── Facebook WebView viewport fix (from original code) ────
@@ -687,7 +911,7 @@ export default function App() {
       };
 
   // ── Global CSS ────────────────────────────────────────────
-  const css = `
+  const css = useMemo(() => `
     @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600&family=Cinzel:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600&display=swap');
     *{box-sizing:border-box;margin:0;padding:0}
     ::-webkit-scrollbar{width:4px;height:4px}
@@ -697,7 +921,8 @@ export default function App() {
     @keyframes fadeSlideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-    .msg-row{animation:fadeSlideUp .3s ease forwards}
+    /* Use a simple fade for message updates to avoid vertical "shaking" when content streams */
+    .msg-row{animation:fadeIn .18s ease forwards}
     .sidebar-item{transition:background .18s,color .18s}
     .sidebar-item:hover{background:${theme.accentBgHov}}
     .send-btn{transition:background .18s,transform .12s}
@@ -717,7 +942,7 @@ export default function App() {
     .toggle-switch input:checked+.toggle-slider{background:${theme.accent};border-color:${theme.accent}}
     .toggle-switch input:checked+.toggle-slider:before{transform:translateX(18px);background:white}
     @media(min-width:768px){.desktop-only{display:flex !important}.mobile-only{display:none !important}}
-  `;
+    `, [dark, lang, theme.scrollbar]);
 
   // ── Streaming send (original logic preserved) ─────────────
   const sendMessage = useCallback(async () => {
@@ -783,14 +1008,18 @@ export default function App() {
       sendMessage();
     }
   };
-  const handleInput = (e) => {
-    setInput(e.target.value);
-    e.target.style.height = "auto";
-    e.target.style.height = Math.min(e.target.scrollHeight, 180) + "px";
-  };
+
+  // const handleInput = (e) => {
+  //   setInput(e.target.value);
+  //   e.target.style.height = "auto";
+  //   e.target.style.height = Math.min(e.target.scrollHeight, 180) + "px";
+  // };
+
   const handleStop = () => abortRef.current?.abort();
+
   const handleFocus = () =>
     setTimeout(() => textareaRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }), 350);
+
   const clearChat = () => setMessages([{ id: 0, role: "assistant", content: t("resetMsg"), streaming: false }]);
 
   const navItems = [
@@ -800,9 +1029,6 @@ export default function App() {
     { id: "settings", key: "settings", Icon: Icons.Settings },
   ];
 
-  // ──────────────────────────────────────────────────────────
-  // SIDEBAR
-  // ──────────────────────────────────────────────────────────
   const Sidebar = () => (
     <aside
       style={{
@@ -819,8 +1045,6 @@ export default function App() {
       }}
     >
       <IslamicPattern dark={dark} />
-
-      {/* Logo */}
       <div style={{ padding: "20px 20px 16px", borderBottom: `1px solid ${theme.border}`, position: "relative" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div
@@ -837,44 +1061,20 @@ export default function App() {
             }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M12 2L3 7l9 5 9-5-9-5zM3 17l9 5 9-5M3 12l9 5 9-5"
-                stroke="white"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+              <path d="M12 2L3 7l9 5 9-5-9-5zM3 17l9 5 9-5M3 12l9 5 9-5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
           <div>
-            <div
-              style={{
-                fontSize: 13,
-                fontWeight: 600,
-                color: theme.text,
-                fontFamily: "Cinzel, serif",
-                letterSpacing: 0.3,
-              }}
-            >
+            <div style={{ fontSize: 13, fontWeight: 600, color: theme.text, fontFamily: "Cinzel, serif", letterSpacing: 0.3 }}>
               {t("appName")}
             </div>
-            <div
-              style={{
-                fontSize: 10,
-                color: theme.accent,
-                letterSpacing: 1,
-                textTransform: "uppercase",
-                fontWeight: 500,
-                fontFamily: "DM Sans, sans-serif",
-              }}
-            >
+            <div style={{ fontSize: 10, color: theme.accent, letterSpacing: 1, textTransform: "uppercase", fontWeight: 500, fontFamily: "DM Sans, sans-serif" }}>
               {t("appTagline")}
             </div>
           </div>
         </div>
       </div>
 
-      {/* New chat */}
       <div style={{ padding: "14px 14px 8px" }}>
         <button
           onClick={() => {
@@ -899,14 +1099,11 @@ export default function App() {
             fontFamily: font,
             transition: "background .18s",
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = theme.accentBgHov)}
-          onMouseLeave={(e) => (e.currentTarget.style.background = theme.accentBg)}
         >
           <Icons.Plus /> {t("newChat")}
         </button>
       </div>
 
-      {/* Nav */}
       <nav style={{ padding: "4px 10px", flex: 1 }}>
         {navItems.map(({ id, key, Icon }) => {
           const active = section === id;
@@ -940,22 +1137,15 @@ export default function App() {
                 <Icon />
               </span>
               {t(key)}
-              {active && (
-                <span
-                  style={{ marginLeft: "auto", width: 6, height: 6, borderRadius: "50%", background: theme.accent }}
-                />
-              )}
+              {active && <span style={{ marginLeft: "auto", width: 6, height: 6, borderRadius: "50%", background: theme.accent }} />}
             </button>
           );
         })}
       </nav>
 
-      {/* Bottom controls */}
       <div style={{ padding: "12px 14px 14px", borderTop: `1px solid ${theme.border}` }}>
-        {/* Language + dark mode row */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
           <LangPill lang={lang} setLang={setLang} theme={theme} />
-          {/* Dark mode toggle */}
           <button
             onClick={() => setDark((d) => !d)}
             title={dark ? t("lightMode") : t("darkMode")}
@@ -973,258 +1163,27 @@ export default function App() {
               transition: "all .25s",
             }}
           >
-            <div
-              style={{
-                width: 16,
-                height: 16,
-                borderRadius: "50%",
-                background: dark ? "white" : theme.textSec,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transition: "all .25s",
-              }}
-            >
+            <div style={{ width: 16, height: 16, borderRadius: "50%", background: dark ? "white" : theme.textSec, display: "flex", alignItems: "center", justifyContent: "center", transition: "all .25s" }}>
               {dark ? <Icons.Moon /> : <Icons.Sun />}
             </div>
           </button>
         </div>
-        {/* Lang hint */}
-        <div style={{ fontSize: 10.5, color: theme.textTer, textAlign: "center", marginBottom: 10, fontFamily: font }}>
-          {t("langSelected")}
-        </div>
-        {/* Mini profile */}
-        <div
-          onClick={() => {
-            setSection("profile");
-            setSidebarOpen(false);
-          }}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 9,
-            padding: "8px 10px",
-            borderRadius: 10,
-            background: theme.bgTer,
-            cursor: "pointer",
-          }}
-        >
+        <div style={{ fontSize: 10.5, color: theme.textTer, textAlign: "center", marginBottom: 10, fontFamily: font }}>{t("langSelected")}</div>
+        <div onClick={() => { setSection("profile"); setSidebarOpen(false); }} style={{ display: "flex", alignItems: "center", gap: 9, padding: "8px 10px", borderRadius: 10, background: theme.bgTer, cursor: "pointer" }}>
           <UserAvatar initials={userInitials} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                fontSize: 12.5,
-                fontWeight: 600,
-                color: theme.text,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                fontFamily: font,
-              }}
-            >
-              {t("userName")}
-            </div>
+            <div style={{ fontSize: 12.5, fontWeight: 600, color: theme.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: font }}>{t("userName")}</div>
             <div style={{ fontSize: 11, color: theme.textSec, fontFamily: font }}>{t("member")}</div>
           </div>
         </div>
       </div>
     </aside>
   );
-
-  // ──────────────────────────────────────────────────────────
-  // CHAT SECTION
-  // ──────────────────────────────────────────────────────────
-  const ChatSection = () => (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <div
-        style={{
-          flex: 1,
-          overflowY: "auto",
-          padding: "24px 20px 16px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 16,
-        }}
-      >
-        {/* Welcome */}
-        {messages.length === 1 && (
-          <div style={{ textAlign: "center", padding: "32px 20px 24px", animation: "fadeSlideUp .5s ease" }}>
-            <div
-              style={{
-                width: 60,
-                height: 60,
-                borderRadius: "50%",
-                margin: "0 auto 16px",
-                background: "linear-gradient(135deg, #1a6b5a, #0d4a3e)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: "0 8px 24px rgba(26,107,90,0.3)",
-              }}
-            >
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M12 2L3 7l9 5 9-5-9-5zM3 17l9 5 9-5M3 12l9 5 9-5"
-                  stroke="white"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-            <div
-              style={{ fontSize: 20, fontWeight: 600, color: theme.text, marginBottom: 6, fontFamily: "Cinzel, serif" }}
-            >
-              {t("welcomeTitle")}
-            </div>
-            <div
-              style={{
-                fontSize: 13.5,
-                color: theme.textSec,
-                lineHeight: 1.7,
-                maxWidth: 360,
-                margin: "0 auto 20px",
-                fontFamily: font,
-              }}
-            >
-              {t("welcomeSubtitle")}
-            </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center" }}>
-              {t("quickPrompts").map((q, i) => (
-                <button
-                  key={i}
-                  className="quick-chip"
-                  onClick={() => {
-                    setInput(q);
-                    textareaRef.current?.focus();
-                  }}
-                  style={{
-                    padding: "7px 14px",
-                    borderRadius: 99,
-                    background: theme.bgSec,
-                    border: `1px solid ${theme.borderMed}`,
-                    color: theme.textSec,
-                    fontSize: 12.5,
-                    cursor: "pointer",
-                    fontFamily: font,
-                  }}
-                >
-                  {q}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Messages */}
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className="msg-row"
-            style={{
-              display: "flex",
-              gap: 10,
-              alignItems: "flex-start",
-              flexDirection: msg.role === "user" ? "row-reverse" : "row",
-            }}
-          >
-            {msg.role === "assistant" ? <BotAvatar /> : <UserAvatar initials={userInitials} />}
-            <div
-              style={{
-                maxWidth: "min(76%,520px)",
-                background: msg.role === "user" ? theme.userBubble : theme.botBubble,
-                color: msg.role === "user" ? theme.userText : theme.text,
-                padding: "11px 15px",
-                borderRadius: msg.role === "user" ? "16px 4px 16px 16px" : "4px 16px 16px 16px",
-                fontSize: 14,
-                lineHeight: 1.75,
-                fontFamily: font,
-                border: msg.role === "assistant" ? `1px solid ${theme.border}` : "none",
-                boxShadow: theme.shadow,
-                whiteSpace: "pre-wrap",
-                wordBreak: "break-word",
-              }}
-            >
-              {msg.content || (msg.streaming ? "" : "…")}
-              {msg.streaming && <TypingDots />}
-            </div>
-          </div>
-        ))}
-        <div ref={bottomRef} />
-      </div>
-
-      {/* Input bar */}
-      <div style={{ padding: "12px 16px 14px", borderTop: `1px solid ${theme.border}`, background: theme.bgSec }}>
-        <div
-          style={{
-            display: "flex",
-            gap: 10,
-            alignItems: "flex-end",
-            background: theme.inputBg,
-            border: `1.5px solid ${theme.borderMed}`,
-            borderRadius: 14,
-            padding: "8px 8px 8px 14px",
-            boxShadow: dark ? "none" : "0 2px 12px rgba(0,0,0,0.06)",
-          }}
-        >
-          <textarea
-            ref={textareaRef}
-            rows={1}
-            placeholder={t("placeholder")}
-            value={input}
-            onChange={handleInput}
-            onKeyDown={handleKeyDown}
-            onFocus={handleFocus}
-            disabled={isLoading}
-            style={{
-              flex: 1,
-              background: "transparent",
-              border: "none",
-              color: theme.text,
-              fontSize: 14,
-              lineHeight: 1.6,
-              fontFamily: font,
-              minHeight: 24,
-              maxHeight: 180,
-              overflowY: "auto",
-            }}
-          />
-          <button
-            className="send-btn"
-            onClick={isLoading ? handleStop : sendMessage}
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 10,
-              border: "none",
-              cursor: "pointer",
-              flexShrink: 0,
-              background: isLoading ? "#c0392b" : input.trim() ? theme.accent : theme.bgTer,
-              color: isLoading || input.trim() ? "white" : theme.textTer,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            aria-label={isLoading ? "Stop" : "Send"}
-          >
-            {isLoading ? <Icons.Stop /> : <Icons.Send />}
-          </button>
-        </div>
-        <p
-          style={{
-            fontSize: 11,
-            color: theme.textTer,
-            textAlign: "center",
-            marginTop: 8,
-            lineHeight: 1.5,
-            fontFamily: font,
-          }}
-        >
-          {t("disclaimer")}
-        </p>
-      </div>
-    </div>
-  );
+  const handleInput = (e) => {
+    setInput(e.target.value);
+    e.target.style.height = "auto";
+    e.target.style.height = Math.min(e.target.scrollHeight, 180) + "px";
+  };
 
   // ──────────────────────────────────────────────────────────
   // HISTORY SECTION
@@ -1885,7 +1844,25 @@ export default function App() {
 
           {/* Section content */}
           <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
-            {section === "chat" && <ChatSection />}
+            {section === "chat" && (
+              <ChatSection
+                messages={messages}
+                theme={theme}
+                t={t}
+                font={font}
+                bottomRef={bottomRef}
+                clearChat={clearChat}
+                textareaRef={textareaRef}
+                handleInput={handleInput}
+                handleKeyDown={handleKeyDown}
+                handleFocus={handleFocus}
+                isLoading={isLoading}
+                input={input}
+                handleStop={handleStop}
+                sendMessage={sendMessage}
+                userInitials={userInitials}
+              />
+            )}
             {section === "history" && <HistorySection />}
             {section === "profile" && <ProfileSection />}
             {section === "settings" && <SettingsSection />}
