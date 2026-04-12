@@ -9,7 +9,8 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from "react"
 
 // ── CONSTANTS ────────────────────────────────────────────────
 const API_URL = "https://islamic-chatbot-lac.vercel.app/api/v1/chat/stream";
-const USER_ID = "user123";
+// USER_ID is generated per chat session to keep chat contexts isolated
+const USER_ID = null;
 
 // ── TRANSLATIONS (i18n) ──────────────────────────────────────
 // All UI strings live here. To add a new language, duplicate
@@ -790,12 +791,15 @@ function LangPill({ lang, setLang, theme }) {
 export default function App() {
   // ── Core state ────────────────────────────────────────────
   const [lang, setLang] = useState("bn"); // 'bn' | 'en'
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(true);
   const [section, setSection] = useState("chat"); // chat | history | profile | settings
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState("");
   const [settings, setSettings] = useState({ notifications: true, madhab: "hanafi", saveHistory: true });
+  // per-chat user id used for server-side context scoping
+  const genUserId = () => (typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `user_${Date.now()}_${Math.floor(Math.random()*9000+1000)}`);
+  const [userId, setUserId] = useState(() => genUserId());
 
   // Translation helper — t('key') returns string for current lang
   const t = useCallback((key) => TRANSLATIONS[lang][key] ?? key, [lang]);
@@ -965,7 +969,7 @@ export default function App() {
       const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: USER_ID, message: text }),
+        body: JSON.stringify({ userId: userId, message: text }),
         signal: abortRef.current.signal,
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -1025,12 +1029,15 @@ export default function App() {
   const handleFocus = () =>
     setTimeout(() => textareaRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }), 350);
 
-  const clearChat = () => setMessages([{ id: 0, role: "assistant", content: t("resetMsg"), streaming: false }]);
+  const clearChat = () => {
+    setMessages([{ id: 0, role: "assistant", content: t("resetMsg"), streaming: false }]);
+    setUserId(genUserId());
+  };
 
   const navItems = [
     { id: "chat", key: "chat", Icon: Icons.Chat },
-    { id: "history", key: "history", Icon: Icons.History },
-    { id: "profile", key: "profile", Icon: Icons.Profile },
+    // { id: "history", key: "history", Icon: Icons.History },
+    // { id: "profile", key: "profile", Icon: Icons.Profile },
     { id: "settings", key: "settings", Icon: Icons.Settings },
   ];
 
@@ -1214,7 +1221,7 @@ export default function App() {
         <div style={{ fontSize: 10.5, color: theme.textTer, textAlign: "center", marginBottom: 10, fontFamily: font }}>
           {t("langSelected")}
         </div>
-        <div
+        {/* <div
           onClick={() => {
             setSection("profile");
             setSidebarOpen(false);
@@ -1246,7 +1253,7 @@ export default function App() {
             </div>
             <div style={{ fontSize: 11, color: theme.textSec, fontFamily: font }}>{t("member")}</div>
           </div>
-        </div>
+        </div> */}
       </div>
     </aside>
   );
@@ -1345,11 +1352,9 @@ export default function App() {
   // ──────────────────────────────────────────────────────────
   const ProfileSection = () => {
     const [name, setName] = useState(t("userName"));
-    const [email, setEmail] = React.useState(t("userEmail"));
-    const [language, setLanguage] = React.useState("en");
-    const [darkMode, setDarkMode] = React.useState(dark);
-    const [saving, setSaving] = React.useState(false);
-    const [toast, setToast] = React.useState(null);
+    const [email, setEmail] = useState(t("userEmail"));
+    const [saving, setSaving] = useState(false);
+    const [toast, setToast] = useState(null);
 
     const initials =
       name
@@ -1560,12 +1565,12 @@ export default function App() {
               </div>
             </div>
             <div
-              onClick={() => setDarkMode((v) => !v)}
+              onClick={() => setDark((v) => !v)}
               style={{
                 width: 40,
                 height: 22,
                 borderRadius: 99,
-                background: darkMode ? theme.accent : theme.border,
+                background: dark ? theme.accent : theme.border,
                 position: "relative",
                 cursor: "pointer",
                 flexShrink: 0,
@@ -1580,7 +1585,7 @@ export default function App() {
                   borderRadius: "50%",
                   background: "white",
                   top: 3,
-                  left: darkMode ? 21 : 3,
+                  left: dark ? 21 : 3,
                   transition: "left 0.2s",
                 }}
               />
@@ -1596,8 +1601,8 @@ export default function App() {
               </div>
             </div>
             <select
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
+              value={lang}
+              onChange={(e) => setLang(e.target.value)}
               style={{
                 padding: "7px 28px 7px 10px",
                 borderRadius: 8,
@@ -1616,17 +1621,7 @@ export default function App() {
               }}
             >
               <option value="en">English</option>
-              <option value="ar">العربية</option>
               <option value="bn">বাংলা</option>
-              <option value="de">Deutsch</option>
-              <option value="es">Español</option>
-              <option value="fr">Français</option>
-              <option value="hi">हिन्दी</option>
-              <option value="id">Bahasa Indonesia</option>
-              <option value="ms">Bahasa Melayu</option>
-              <option value="tr">Türkçe</option>
-              <option value="ur">اردو</option>
-              <option value="zh">中文</option>
             </select>
           </div>
         </div>
@@ -2111,7 +2106,7 @@ export default function App() {
               />
             )}
             {section === "history" && <HistorySection />}
-            {section === "profile" && <ProfileSection />}
+            {/* {section === "profile" && <ProfileSection />} */}
             {section === "settings" && <SettingsSection />}
           </div>
         </main>
