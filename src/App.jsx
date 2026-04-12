@@ -976,6 +976,11 @@ export default function App() {
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let acc = "";
+      const isMeaningless = (s) => {
+        if (!s || typeof s !== "string") return true;
+        const trimmed = s.trim();
+        return trimmed === "" || trimmed === "[DONE]";
+      };
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -984,29 +989,40 @@ export default function App() {
           .split("\n")
           .filter((l) => l.startsWith("data:"))
           .map((l) => l.replace(/^data:\s*/, ""))
-          .filter((l) => l && l !== "[DONE]")
           .map((l) => {
             try {
               const p = JSON.parse(l);
-              return p.content ?? p.text ?? p.delta ?? p.choices?.[0]?.delta?.content ?? p.choices?.[0]?.text ?? l;
+              if (p && p.type === "done") return "";
+              return (
+                p.content ?? p.text ?? (p.delta && (p.delta.content ?? p.delta)) ?? p.choices?.[0]?.delta?.content ?? p.choices?.[0]?.text ?? ""
+              );
             } catch {
               return l;
             }
           })
+          .filter(Boolean)
           .join("");
-        if (clean) {
+
+        if (clean && !isMeaningless(clean)) {
           setMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, content: clean } : m)));
         } else if (!clean && acc.replace(/\n/g, "").length > 0) {
-          const raw = acc.replace(/data:\s*/g, "").trim();
-          if (raw && raw !== "[DONE]")
-            setMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, content: raw } : m)));
+          const raw = acc
+            .split("\n")
+            .filter((l) => l.startsWith("data:"))
+            .map((l) => l.replace(/^data:\s*/, ""))
+            .map((l) => l.trim())
+            .filter((l) => l && l !== "[DONE]")
+            .join("\n")
+            .trim();
+          if (raw && !isMeaningless(raw)) setMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, content: raw } : m)));
         }
       }
     } catch (err) {
       if (err.name !== "AbortError")
         setMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, content: t("errorMsg"), streaming: false } : m)));
     } finally {
-      setMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, streaming: false } : m)));
+      // Mark streaming as finished and remove any assistant messages that are empty/whitespace
+      setMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, streaming: false } : m)).filter((m) => !(m.role === "assistant" && (!m.content || String(m.content).trim() === ""))));
       setIsLoading(false);
     }
   }, [input, isLoading, lang]);
