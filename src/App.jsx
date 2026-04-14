@@ -17,7 +17,7 @@ const USER_ID = null;
 // one of these objects and translate every value.
 const TRANSLATIONS = {
   bn: {
-    appName: "Islamic AI",
+    appName: "Noor AI",
     appTagline: "Chatbot",
     appSubtitle: "ইসলামিক জ্ঞানের আলোকে পথ দেখাই",
     version: "ইসলামিক AI চ্যাটবট v2.0",
@@ -30,7 +30,7 @@ const TRANSLATIONS = {
     darkMode: "ডার্ক মোড",
     lightMode: "লাইট মোড",
     member: "সদস্য",
-    welcomeTitle: "Islamic AI",
+    welcomeTitle: "Noor AI",
     welcomeSubtitle: "ইসলামিক বিষয়ে জ্ঞান অর্জনে আপনাকে সহায়তা করতে সদা প্রস্তুত",
     placeholder: "একটি বার্তা লিখুন...",
     disclaimer: "এই চ্যাটবট ইসলামিক তথ্য প্রদান করে। সর্বদা বিশেষজ্ঞ আলেমের পরামর্শ নিন।",
@@ -40,6 +40,7 @@ const TRANSLATIONS = {
     resetMsg: "আবার শুরু করুন। আপনার যেকোনো ইসলামিক প্রশ্ন জিজ্ঞেস করুন।",
     active: "সক্রিয়",
     quickPrompts: [
+      "আজকের নামাজের সময় কত ?",
       "নামাজের সঠিক নিয়ম ও পদ্ধতি কী?",
       "রমজান মাসের ফজিলত ও আমল",
       "যাকাত কীভাবে হিসাব করবো?",
@@ -86,10 +87,10 @@ const TRANSLATIONS = {
     statsValues: ["১২৭", "১৮", "৪২"],
   },
   en: {
-    appName: "Islamic AI",
+    appName: "Noor AI",
     appTagline: "Chatbot",
     appSubtitle: "Guiding you through Islamic knowledge",
-    version: "Islamic AI Chatbot v2.0",
+    version: "Noor AI Chatbot v2.0",
     bismillah: "Bismillahir Rahmanir Rahim",
     chat: "Chat",
     history: "History",
@@ -99,7 +100,7 @@ const TRANSLATIONS = {
     darkMode: "Dark Mode",
     lightMode: "Light Mode",
     member: "Member",
-    welcomeTitle: "Islamic AI",
+    welcomeTitle: "Noor AI",
     welcomeSubtitle: "Always ready to help you gain knowledge in Islamic matters",
     placeholder: "Type a message...",
     disclaimer: "This chatbot provides Islamic information. Always consult a qualified scholar.",
@@ -109,6 +110,7 @@ const TRANSLATIONS = {
     resetMsg: "Starting fresh. Ask me any Islamic question.",
     active: "Active",
     quickPrompts: [
+      "What is the Salah time today?",
       "What are the rules and steps of Salah?",
       "What are the virtues and acts of Ramadan?",
       "How do I calculate my Zakat?",
@@ -582,22 +584,11 @@ function ChatSection({
                 height: 60,
                 borderRadius: "50%",
                 margin: "0 auto 16px",
-                background: "linear-gradient(135deg, #1a6b5a, #0d4a3e)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                overflow: "hidden",
                 boxShadow: "0 8px 24px rgba(26,107,90,0.3)",
               }}
             >
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M12 2L3 7l9 5 9-5-9-5zM3 17l9 5 9-5M3 12l9 5 9-5"
-                  stroke="white"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <img src="/favicon.png" alt="Noor AI" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
             <div
               style={{ fontSize: 20, fontWeight: 600, color: theme.text, marginBottom: 6, fontFamily: "Cinzel, serif" }}
@@ -620,10 +611,7 @@ function ChatSection({
                 <button
                   key={i}
                   className="quick-chip"
-                  onClick={() => {
-                    // focus handled by caller
-                    textareaRef.current && (textareaRef.current.value = q);
-                  }}
+                  onClick={() => sendMessage(q)}
                   style={{
                     padding: "7px 14px",
                     borderRadius: 99,
@@ -1034,8 +1022,8 @@ export default function App() {
   );
 
   // ── Streaming send (original logic preserved) ─────────────
-  const sendMessage = useCallback(async () => {
-    const text = input.trim();
+  const sendMessage = useCallback(async (promptText) => {
+    const text = (typeof promptText === "string" ? promptText : input).trim();
     if (!text || isLoading) return;
     const userMsg = { id: Date.now(), role: "user", content: text, streaming: false };
     const aId = Date.now() + 1;
@@ -1195,22 +1183,11 @@ export default function App() {
               height: 34,
               borderRadius: 10,
               flexShrink: 0,
-              background: "linear-gradient(135deg, #1a6b5a, #0d4a3e)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              overflow: "hidden",
               boxShadow: "0 3px 10px rgba(26,107,90,0.3)",
             }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M12 2L3 7l9 5 9-5-9-5zM3 17l9 5 9-5M3 12l9 5 9-5"
-                stroke="white"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <img src="/favicon.png" alt="Noor AI" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
           <div>
             <div
