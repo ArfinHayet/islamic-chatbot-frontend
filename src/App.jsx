@@ -813,7 +813,7 @@ function LangPill({ lang, setLang, theme }) {
 export default function App() {
   // ── Core state ────────────────────────────────────────────
   const [lang, setLang] = useState("bn"); // 'bn' | 'en'
-  const [dark, setDark] = useState(true);
+  const [dark, setDark] = useState(false);
   const [section, setSection] = useState("chat"); // chat | history | profile | settings
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
