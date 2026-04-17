@@ -897,6 +897,25 @@ export default function App() {
     localStorage.setItem("dark", dark);
   }, [dark]);
 
+  const [installPrompt, setInstallPrompt] = useState(null);
+  const [showInstall, setShowInstall] = useState(false);
+
+  useEffect(() => {
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+      setShowInstall(true);
+    });
+  }, []);
+
+  const handleInstall = async () => {
+    if (!installPrompt) return;
+    await installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === "accepted") setShowInstall(false);
+    setInstallPrompt(null);
+  };
+
   const genUserId = () =>
     typeof crypto !== "undefined" && crypto.randomUUID
       ? crypto.randomUUID()
@@ -2311,63 +2330,139 @@ export default function App() {
   // MOBILE HEADER
   // ──────────────────────────────────────────────────────────
   const MobileHeader = () => (
-    <header
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "12px 16px",
-        borderBottom: `1px solid ${theme.border}`,
-        background: theme.headerBg,
-        backdropFilter: "blur(10px)",
-        position: "sticky",
-        top: 0,
-        zIndex: 10,
-        transition: "background .25s",
-      }}
-    >
-      <button
-        onClick={() => setSidebarOpen(true)}
-        style={{ background: "none", border: "none", color: theme.text, cursor: "pointer", padding: 4 }}
-      >
-        <Icons.Menu />
-      </button>
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+    <>
+      {showInstall && (
         <div
           style={{
-            width: 26,
-            height: 26,
-            borderRadius: 8,
-            background: "linear-gradient(135deg, #1a6b5a, #0d4a3e)",
+            position: "fixed",
+            bottom: 20,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 999,
+            background: "linear-gradient(135deg, #6d28d9, #8b5cf6)",
+            borderRadius: 14,
+            padding: "12px 18px",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
+            gap: 12,
+            boxShadow: "0 8px 32px rgba(109,40,217,0.45)",
+            border: "1px solid rgba(240,180,41,0.3)",
+            maxWidth: "90vw",
+            animation: "fadeSlideUp .3s ease",
           }}
         >
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M12 2L3 7l9 5 9-5-9-5zM3 17l9 5 9-5M3 12l9 5 9-5"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <div
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              background: "rgba(255,255,255,0.15)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <img src="/favicon.png" style={{ width: 24, height: 24, borderRadius: 6 }} />
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "white" }}>Install Noor AI</div>
+            <div style={{ fontSize: 11.5, color: "rgba(255,255,255,0.75)" }}>
+              Add to home screen for best experience
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+            <button
+              onClick={() => setShowInstall(false)}
+              style={{
+                background: "rgba(255,255,255,0.15)",
+                border: "none",
+                borderRadius: 8,
+                padding: "6px 12px",
+                color: "white",
+                fontSize: 12,
+                cursor: "pointer",
+              }}
+            >
+              Later
+            </button>
+            <button
+              onClick={handleInstall}
+              style={{
+                background: theme.accent,
+                border: "none",
+                borderRadius: 8,
+                padding: "6px 12px",
+                color: "white",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              Install
+            </button>
+          </div>
         </div>
-        <span style={{ fontSize: 14, fontWeight: 600, color: theme.text, fontFamily: "Cinzel, serif" }}>
-          {t(section)}
-        </span>
-      </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <LangPill lang={lang} setLang={setLang} theme={theme} />
+      )}
+
+      <header
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "12px 16px",
+          borderBottom: `1px solid ${theme.border}`,
+          background: theme.headerBg,
+          backdropFilter: "blur(10px)",
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
+          transition: "background .25s",
+        }}
+      >
         <button
-          onClick={() => setDark((d) => !d)}
-          style={{ background: "none", border: "none", color: theme.textSec, cursor: "pointer", padding: 4 }}
+          onClick={() => setSidebarOpen(true)}
+          style={{ background: "none", border: "none", color: theme.text, cursor: "pointer", padding: 4 }}
         >
-          {dark ? <Icons.Sun /> : <Icons.Moon />}
+          <Icons.Menu />
         </button>
-      </div>
-    </header>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div
+            style={{
+              width: 26,
+              height: 26,
+              borderRadius: 8,
+              background: "linear-gradient(135deg, #1a6b5a, #0d4a3e)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 2L3 7l9 5 9-5-9-5zM3 17l9 5 9-5M3 12l9 5 9-5"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+          <span style={{ fontSize: 14, fontWeight: 600, color: theme.text, fontFamily: "Cinzel, serif" }}>
+            {t(section)}
+          </span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <LangPill lang={lang} setLang={setLang} theme={theme} />
+          <button
+            onClick={() => setDark((d) => !d)}
+            style={{ background: "none", border: "none", color: theme.textSec, cursor: "pointer", padding: 4 }}
+          >
+            {dark ? <Icons.Sun /> : <Icons.Moon />}
+          </button>
+        </div>
+      </header>
+    </>
   );
 
   // ──────────────────────────────────────────────────────────
