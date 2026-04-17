@@ -7,6 +7,8 @@
 import axios from "axios";
 import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 
+import "primeicons/primeicons.css";
+
 // ── CONSTANTS ────────────────────────────────────────────────
 const API_URL = "https://islamic-chatbot-lac.vercel.app/api/v1/chat/stream";
 // USER_ID is generated per chat session to keep chat contexts isolated
@@ -85,6 +87,16 @@ const TRANSLATIONS = {
     madhabHanbali: "হাম্বলি",
     langSelected: "বাংলা ভাষা নির্বাচিত",
     statsValues: ["১২৭", "১৮", "৪২"],
+
+    prayerTitle: "নামাজের সময়",
+    prayerSubtitle: "আজকের নামাজের সময়সূচি",
+    prayerNames: { Fajr: "ফজর", Sunrise: "সূর্যোদয়", Dhuhr: "যোহর", Asr: "আসর", Maghrib: "মাগরিব", Isha: "এশা" },
+    prayerLoading: "লোড হচ্ছে...",
+    prayerError: "সময় লোড করতে সমস্যা হয়েছে",
+    prayerRetry: "আবার চেষ্টা করুন",
+    nextPrayer: "পরবর্তী নামাজ",
+    currentPrayer: "এখন",
+    hijriDate: "হিজরি তারিখ",
   },
   en: {
     appName: "Noor AI",
@@ -154,6 +166,16 @@ const TRANSLATIONS = {
     madhabHanbali: "Hanbali",
     langSelected: "English selected",
     statsValues: ["127", "18", "42"],
+
+    prayerTitle: "Prayer Times",
+    prayerSubtitle: "Today's prayer schedule",
+    prayerNames: { Fajr: "Fajr", Sunrise: "Sunrise", Dhuhr: "Dhuhr", Asr: "Asr", Maghrib: "Maghrib", Isha: "Isha" },
+    prayerLoading: "Loading...",
+    prayerError: "Failed to load prayer times",
+    prayerRetry: "Try Again",
+    nextPrayer: "Next Prayer",
+    currentPrayer: "Now",
+    hijriDate: "Hijri Date",
   },
 };
 
@@ -440,6 +462,22 @@ const Icons = {
       <polyline points="9 18 15 12 9 6" />
     </svg>
   ),
+
+  Prayer: () => (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z" />
+      <circle cx="12" cy="9" r="2.5" />
+    </svg>
+  ),
 };
 
 // ── ISLAMIC GEOMETRIC PATTERN ────────────────────────────────
@@ -659,31 +697,62 @@ function ChatSection({
                 paddingRight: 56, // space for copy button
               }}
             >
-              <div style={{ display: "block", width: "100%" }}>{msg.content || (msg.streaming ? "" : "…")}</div>
+              <div style={{ display: "block", width: "100%", marginRight: msg.role == "assistent" ? "" : "12px" }}>
+                {msg.content || (msg.streaming ? "" : "…")}
+              </div>
               {msg.streaming && <TypingDots />}
 
               {msg.content && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    copyMessage && copyMessage(msg.id, msg.content);
-                  }}
-                  title="Copy message"
+                <div
                   style={{
                     position: "absolute",
                     top: 8,
                     right: 8,
-                    background: "transparent",
-                    border: "none",
-                    color: theme.textTer,
-                    cursor: "pointer",
-                    padding: 6,
-                    borderRadius: 8,
-                    fontSize: 12,
+                    display: "flex",
+                    gap: 4,
                   }}
                 >
-                  {copiedId === msg.id ? "Copied" : "Copy"}
-                </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      copyMessage && copyMessage(msg.id, msg.content);
+                    }}
+                    title="Copy message"
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: copiedId === msg.id ? theme.accent : theme.textTer,
+                      cursor: "pointer",
+                      padding: 6,
+                      borderRadius: 8,
+                      fontSize: 15,
+                    }}
+                  >
+                    <i className={copiedId === msg.id ? "pi pi-check" : "pi pi-copy"} />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (navigator.share) {
+                        navigator.share({ text: msg.content });
+                      } else {
+                        copyMessage && copyMessage(msg.id, msg.content);
+                      }
+                    }}
+                    title="Share message"
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: theme.textTer,
+                      cursor: "pointer",
+                      padding: 6,
+                      borderRadius: 8,
+                      fontSize: 15,
+                    }}
+                  >
+                    <i className="pi pi-share-alt" />
+                  </button>
+                </div>
               )}
             </div>
           </div>
@@ -811,31 +880,35 @@ function LangPill({ lang, setLang, theme }) {
 // MAIN APP
 // ════════════════════════════════════════════════════════════
 export default function App() {
-  // ── Core state ────────────────────────────────────────────
-  const [lang, setLang] = useState("bn"); // 'bn' | 'en'
-  const [dark, setDark] = useState(false);
-  const [section, setSection] = useState("chat"); // chat | history | profile | settings
+  const [lang, setLang] = useState(() => localStorage.getItem("lang") || "bn");
+  const [dark, setDark] = useState(() => localStorage.getItem("dark") === "true");
+
+  const [section, setSection] = useState("chat");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState("");
   const [settings, setSettings] = useState({ notifications: true, madhab: "hanafi", saveHistory: true });
-  // per-chat user id used for server-side context scoping
+
+  useEffect(() => {
+    localStorage.setItem("lang", lang);
+  }, [lang]);
+
+  useEffect(() => {
+    localStorage.setItem("dark", dark);
+  }, [dark]);
+
   const genUserId = () =>
     typeof crypto !== "undefined" && crypto.randomUUID
       ? crypto.randomUUID()
       : `user_${Date.now()}_${Math.floor(Math.random() * 9000 + 1000)}`;
   const [userId, setUserId] = useState(() => genUserId());
 
-  // Translation helper — t('key') returns string for current lang
   const t = useCallback((key) => TRANSLATIONS[lang][key] ?? key, [lang]);
 
-  // Font helper — Hind Siliguri for Bengali, DM Sans for English
   const font = lang === "bn" ? "Hind Siliguri, sans-serif" : "DM Sans, sans-serif";
 
-  // User initial changes with language
   const userInitials = lang === "bn" ? "আ" : "A";
 
-  // Messages — start with language-appropriate greeting
   const [messages, setMessages] = useState([
     { id: 0, role: "assistant", content: TRANSLATIONS.bn.greeting, streaming: false },
   ]);
@@ -1022,88 +1095,93 @@ export default function App() {
   );
 
   // ── Streaming send (original logic preserved) ─────────────
-  const sendMessage = useCallback(async (promptText) => {
-    const text = (typeof promptText === "string" ? promptText : input).trim();
-    if (!text || isLoading) return;
-    const userMsg = { id: Date.now(), role: "user", content: text, streaming: false };
-    const aId = Date.now() + 1;
-    const assistantMsg = { id: aId, role: "assistant", content: "", streaming: true };
-    setMessages((prev) => [...prev, userMsg, assistantMsg]);
-    setInput("");
-    setIsLoading(true);
-    if (textareaRef.current) textareaRef.current.style.height = "auto";
-    abortRef.current = new AbortController();
-    try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: userId, message: text }),
-        signal: abortRef.current.signal,
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let acc = "";
-      const isMeaningless = (s) => {
-        if (!s || typeof s !== "string") return true;
-        const trimmed = s.trim();
-        return trimmed === "" || trimmed === "[DONE]";
-      };
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        acc += decoder.decode(value, { stream: true });
-        const clean = acc
-          .split("\n")
-          .filter((l) => l.startsWith("data:"))
-          .map((l) => l.replace(/^data:\s*/, ""))
-          .map((l) => {
-            try {
-              const p = JSON.parse(l);
-              if (p && p.type === "done") return "";
-              return (
-                p.content ??
-                p.text ??
-                (p.delta && (p.delta.content ?? p.delta)) ??
-                p.choices?.[0]?.delta?.content ??
-                p.choices?.[0]?.text ??
-                ""
-              );
-            } catch {
-              return l;
-            }
-          })
-          .filter(Boolean)
-          .join("");
-
-        if (clean && !isMeaningless(clean)) {
-          setMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, content: clean } : m)));
-        } else if (!clean && acc.replace(/\n/g, "").length > 0) {
-          const raw = acc
+  const sendMessage = useCallback(
+    async (promptText) => {
+      const text = (typeof promptText === "string" ? promptText : input).trim();
+      if (!text || isLoading) return;
+      const userMsg = { id: Date.now(), role: "user", content: text, streaming: false };
+      const aId = Date.now() + 1;
+      const assistantMsg = { id: aId, role: "assistant", content: "", streaming: true };
+      setMessages((prev) => [...prev, userMsg, assistantMsg]);
+      setInput("");
+      setIsLoading(true);
+      if (textareaRef.current) textareaRef.current.style.height = "auto";
+      abortRef.current = new AbortController();
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: userId, message: text }),
+          signal: abortRef.current.signal,
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let acc = "";
+        const isMeaningless = (s) => {
+          if (!s || typeof s !== "string") return true;
+          const trimmed = s.trim();
+          return trimmed === "" || trimmed === "[DONE]";
+        };
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          acc += decoder.decode(value, { stream: true });
+          const clean = acc
             .split("\n")
             .filter((l) => l.startsWith("data:"))
             .map((l) => l.replace(/^data:\s*/, ""))
-            .map((l) => l.trim())
-            .filter((l) => l && l !== "[DONE]")
-            .join("\n")
-            .trim();
-          if (raw && !isMeaningless(raw))
-            setMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, content: raw } : m)));
+            .map((l) => {
+              try {
+                const p = JSON.parse(l);
+                if (p && p.type === "done") return "";
+                return (
+                  p.content ??
+                  p.text ??
+                  (p.delta && (p.delta.content ?? p.delta)) ??
+                  p.choices?.[0]?.delta?.content ??
+                  p.choices?.[0]?.text ??
+                  ""
+                );
+              } catch {
+                return l;
+              }
+            })
+            .filter(Boolean)
+            .join("");
+
+          if (clean && !isMeaningless(clean)) {
+            setMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, content: clean } : m)));
+          } else if (!clean && acc.replace(/\n/g, "").length > 0) {
+            const raw = acc
+              .split("\n")
+              .filter((l) => l.startsWith("data:"))
+              .map((l) => l.replace(/^data:\s*/, ""))
+              .map((l) => l.trim())
+              .filter((l) => l && l !== "[DONE]")
+              .join("\n")
+              .trim();
+            if (raw && !isMeaningless(raw))
+              setMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, content: raw } : m)));
+          }
         }
+      } catch (err) {
+        if (err.name !== "AbortError")
+          setMessages((prev) =>
+            prev.map((m) => (m.id === aId ? { ...m, content: t("errorMsg"), streaming: false } : m)),
+          );
+      } finally {
+        // Mark streaming as finished and remove any assistant messages that are empty/whitespace
+        setMessages((prev) =>
+          prev
+            .map((m) => (m.id === aId ? { ...m, streaming: false } : m))
+            .filter((m) => !(m.role === "assistant" && (!m.content || String(m.content).trim() === ""))),
+        );
+        setIsLoading(false);
       }
-    } catch (err) {
-      if (err.name !== "AbortError")
-        setMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, content: t("errorMsg"), streaming: false } : m)));
-    } finally {
-      // Mark streaming as finished and remove any assistant messages that are empty/whitespace
-      setMessages((prev) =>
-        prev
-          .map((m) => (m.id === aId ? { ...m, streaming: false } : m))
-          .filter((m) => !(m.role === "assistant" && (!m.content || String(m.content).trim() === ""))),
-      );
-      setIsLoading(false);
-    }
-  }, [input, isLoading, lang]);
+    },
+    [input, isLoading, lang],
+  );
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -1154,10 +1232,295 @@ export default function App() {
 
   const navItems = [
     { id: "chat", key: "chat", Icon: Icons.Chat },
-    // { id: "history", key: "history", Icon: Icons.History },
-    // { id: "profile", key: "profile", Icon: Icons.Profile },
+    { id: "prayer", key: "prayerTitle", Icon: Icons.Prayer },
+    { id: "history", key: "history", Icon: Icons.History },
     { id: "settings", key: "settings", Icon: Icons.Settings },
   ];
+
+  const PrayerSection = () => {
+    const [prayerData, setPrayerData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+    const [now, setNow] = useState(new Date());
+    const [countdown, setCountdown] = useState("");
+
+    const PRAYER_KEYS = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
+
+    const PRAYER_ICONS = {
+      Fajr: "pi pi-star",
+      Sunrise: "pi pi-sun",
+      Dhuhr: "pi pi-circle-fill",
+      Asr: "pi pi-clock",
+      Maghrib: "pi pi-palette",
+      Isha: "pi pi-moon",
+    };
+
+    useEffect(() => {
+      const timer = setInterval(() => setNow(new Date()), 60000);
+      return () => clearInterval(timer);
+    }, []);
+
+    const fetchPrayers = async () => {
+      setLoading(true);
+      setError(false);
+      try {
+        const res = await fetch("https://islamic-chatbot-lac.vercel.app/api/v1/chat/prayer-times");
+        const json = await res.json();
+        const entry = json.data[0];
+        const idx = settings.madhab === "hanafi" ? "1" : "0";
+        setPrayerData(entry[idx].data);
+      } catch {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    useEffect(() => {
+      fetchPrayers();
+    }, [settings.madhab]);
+
+    useEffect(() => {
+      const tick = () => {
+        const toDate = (str) => {
+          const [h, m] = str.split(":").map(Number);
+          const d = new Date();
+          d.setHours(h, m, 0, 0);
+          return d;
+        };
+
+        if (!prayerData) return;
+        const times = PRAYER_KEYS.map((k) => ({ key: k, date: toDate(prayerData.timings[k]) }));
+        const future = times.filter((t) => t.date > new Date());
+        const next = future.length ? future[0] : times[0];
+        const diff = next.date - new Date();
+        const totalSec = Math.floor(diff / 1000);
+        const h = Math.floor(totalSec / 3600);
+        const m = Math.floor((totalSec % 3600) / 60);
+        const s = totalSec % 60;
+        setCountdown(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`);
+      };
+
+      tick();
+      const timer = setInterval(tick, 1000);
+      return () => clearInterval(timer);
+    }, [prayerData]);
+
+    const getStatus = (key, timings) => {
+      const toDate = (str) => {
+        const [h, m] = str.split(":").map(Number);
+        const d = new Date(now);
+        d.setHours(h, m, 0, 0);
+        return d;
+      };
+
+      const times = PRAYER_KEYS.map((k) => ({ key: k, date: toDate(timings[k]) }));
+      const future = times.filter((t) => t.date > now);
+      const next = future.length ? future[0] : times[0];
+      const prev = times.filter((t) => t.date <= now);
+      const current = prev.length ? prev[prev.length - 1] : null;
+
+      if (current && current.key === key) return "current";
+      if (next.key === key) return "next";
+      return "done";
+    };
+
+    const prayerNames = t("prayerNames");
+
+    if (loading)
+      return (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            color: theme.textSec,
+            fontSize: 14,
+          }}
+        >
+          <i className="pi pi-spin pi-spinner" style={{ fontSize: 22, marginRight: 10, color: theme.accent }} />
+          {t("prayerLoading")}
+        </div>
+      );
+
+    if (error)
+      return (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            gap: 14,
+          }}
+        >
+          <i className="pi pi-exclamation-circle" style={{ fontSize: 32, color: "#e74c3c" }} />
+          <p style={{ color: theme.textSec, fontSize: 14 }}>{t("prayerError")}</p>
+          <button
+            onClick={fetchPrayers}
+            style={{
+              padding: "8px 20px",
+              borderRadius: 99,
+              background: theme.accent,
+              border: "none",
+              color: "white",
+              fontSize: 13,
+              cursor: "pointer",
+            }}
+          >
+            {t("prayerRetry")}
+          </button>
+        </div>
+      );
+
+    const { timings, date } = prayerData;
+
+    return (
+      <div style={{ flex: 1, overflowY: "auto", padding: "24px 20px" }}>
+        {/* Date card */}
+        <div
+          style={{
+            background: `linear-gradient(135deg, #1a6b5a, #0d4a3e)`,
+            borderRadius: 16,
+            padding: "24px 20px",
+            marginBottom: 16,
+            position: "relative",
+            overflow: "hidden",
+            textAlign: "center",
+          }}
+        >
+          <IslamicPattern dark={true} />
+          <div style={{ position: "relative" }}>
+            <div style={{ fontSize: 12.5, color: "rgba(255,255,255,0.65)", marginBottom: 6, letterSpacing: 0.5 }}>
+              {date.gregorian.weekday.en} · {date.readable}
+            </div>
+            <div
+              style={{
+                fontSize: 20,
+                fontWeight: 800,
+                color: "white",
+                fontFamily: "Cinzel, serif",
+                letterSpacing: 0.5,
+                marginBottom: 4,
+              }}
+            >
+              {date.hijri.day} {date.hijri.month.en} {date.hijri.year} AH
+            </div>
+            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", marginBottom: 16 }}>
+              {date.hijri.month.ar} · {date.hijri.weekday.ar}
+            </div>
+
+            {/* Countdown */}
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                background: "rgba(255,255,255,0.12)",
+                borderRadius: 99,
+                padding: "8px 20px",
+                backdropFilter: "blur(6px)",
+              }}
+            >
+              <i className="pi pi-hourglass" style={{ fontSize: 13, color: "rgba(255,255,255,0.8)" }} />
+              <span style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", marginRight: 4 }}>{t("nextPrayer")}</span>
+              <span
+                style={{
+                  fontSize: 18,
+                  fontWeight: 800,
+                  color: "white",
+                  fontFamily: "DM Sans, sans-serif",
+                  letterSpacing: 2,
+                }}
+              >
+                {countdown}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Prayer time cards */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {PRAYER_KEYS.map((key) => {
+            const status = getStatus(key, timings);
+            const isCurrent = status === "current";
+            const isNext = status === "next";
+
+            return (
+              <div
+                key={key}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "14px 16px",
+                  borderRadius: 14,
+                  border: `1px solid ${isCurrent ? theme.accent : isNext ? theme.borderMed : theme.border}`,
+                  background: isCurrent ? theme.accentBg : theme.bgSec,
+                  transition: "all .2s",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div
+                    style={{
+                      width: 38,
+                      height: 38,
+                      borderRadius: "50%",
+                      background: isCurrent ? theme.accent : isNext ? theme.accentBg : theme.bgTer,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <i
+                      className={PRAYER_ICONS[key]}
+                      style={{ fontSize: 16, color: isCurrent ? "white" : isNext ? theme.accent : theme.textTer }}
+                    />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: isCurrent ? theme.accent : theme.text }}>
+                      {prayerNames[key]}
+                    </div>
+                    <div style={{ fontSize: 11.5, color: theme.textTer }}>{key}</div>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  {(isCurrent || isNext) && (
+                    <span
+                      style={{
+                        fontSize: 10.5,
+                        fontWeight: 600,
+                        padding: "3px 9px",
+                        borderRadius: 99,
+                        background: isCurrent ? theme.accent : theme.accentBg,
+                        color: isCurrent ? "white" : theme.accent,
+                      }}
+                    >
+                      {isCurrent ? t("currentPrayer") : t("nextPrayer")}
+                    </span>
+                  )}
+                  <div
+                    style={{
+                      fontSize: 18,
+                      fontWeight: 800,
+                      color: isCurrent ? theme.accent : theme.text,
+                      fontFamily: "DM Sans, sans-serif",
+                      letterSpacing: 0.5,
+                    }}
+                  >
+                    {timings[key]}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
 
   const Sidebar = () => (
     <aside
@@ -2186,6 +2549,7 @@ export default function App() {
               />
             )}
             {section === "history" && <HistorySection />}
+            {section === "prayer" && <PrayerSection />}
             {/* {section === "profile" && <ProfileSection />} */}
             {section === "settings" && <SettingsSection />}
           </div>
