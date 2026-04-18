@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+>
+
+  <!-- ═══════════════════════════════════════════════════════
+       Noor AI — Islamic AI Chatbot
+       Domain : https://noorai.online
+       Last updated : 2026-04-18
+       ═══════════════════════════════════════════════════════ -->
+
+  <!-- ── Home / Chat (primary entry point) ── -->
+  <url>
+    <loc>https://noorai.online/</loc>
+    <lastmod>2026-04-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+
+    <!-- Alternate language versions -->
+    <xhtml:link
+      rel="alternate"
+      hreflang="en"
+      href="https://noorai.online/" />
+    <xhtml:link
+      rel="alternate"
+      hreflang="bn"
+      href="https://noorai.online/" />
+
+    <!-- App icon / social preview image -->
+    <image:image>
+      <image:loc>https://noorai.online/favicon-social.png</image:loc>
+      <image:title>Noor AI — Islamic AI Chatbot</image:title>
+      <image:caption>
+        Noor AI is a free Islamic AI chatbot delivering instant, scholar-informed answers
+        grounded in the Quran and authentic Hadith. Get guidance on Salah, Zakat, Fasting,
+        Fiqh rulings, Ramadan, daily duas, Islamic ethics, and more — available in English
+        and Bangla, 24 hours a day.
+      </image:caption>
+    </image:image>
+  </url>
+
+  <!-- ── Chat Section (main interactive view) ── -->
+  <!-- SPA hash route: /#chat -->
+  <url>
+    <loc>https://noorai.online/#chat</loc>
+    <lastmod>2026-04-18</lastmod>
+    <changefreq>always</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- ── Chat History Section ── -->
+  <!-- SPA hash route: /#history -->
+  <url>
+    <loc>https://noorai.online/#history</loc>
+    <lastmod>2026-04-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- ── User Profile Section ── -->
+  <!-- SPA hash route: /#profile -->
+  <url>
+    <loc>https://noorai.online/#profile</loc>
+    <lastmod>2026-04-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- ── Settings Section ── -->
+  <!-- SPA hash route: /#settings -->
+  <url>
+    <loc>https://noorai.online/#settings</loc>
+    <lastmod>2026-04-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <!-- ── PWA Manifest (referenced by crawlers / app stores) ── -->
+  <url>
+    <loc>https://noorai.online/manifest.json</loc>
+    <lastmod>2026-04-18</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+
+</urlset>
