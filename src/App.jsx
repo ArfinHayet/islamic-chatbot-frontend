@@ -897,7 +897,7 @@ function ChatSection({
 
 // ── LANGUAGE PILL TOGGLE ──────────────────────────────────────
 // Compact BN / EN switcher used in sidebar and mobile header
-function LangPill({ lang, setLang, theme }) {
+function LangPill({ lang, setLang, theme, setMessages }) {
   return (
     <div
       style={{
@@ -916,7 +916,13 @@ function LangPill({ lang, setLang, theme }) {
       ].map(({ code, label }) => (
         <button
           key={code}
-          onClick={() => setLang(code)}
+          onClick={() => {
+            setLang(code)
+            setMessages((prev) => {
+              prev[0] = { id: 0, role: "assistant", content: TRANSLATIONS[code].greeting, streaming: false }
+              return [...prev]
+            })
+          }}
           style={{
             padding: "4px 11px",
             borderRadius: 99,
@@ -991,7 +997,7 @@ export default function App() {
   const userInitials = lang === "bn" ? "আ" : "A";
 
   const [messages, setMessages] = useState([
-    { id: 0, role: "assistant", content: TRANSLATIONS.bn.greeting, streaming: false },
+    { id: 0, role: "assistant", content: TRANSLATIONS[lang].greeting, streaming: false },
   ]);
 
   // clipboard copy feedback
@@ -1604,7 +1610,7 @@ export default function App() {
     );
   };
 
-  const Sidebar = () => (
+  const Sidebar = ({setMessages}) => (
     <aside
       style={{
         width: 224,
@@ -1734,7 +1740,7 @@ export default function App() {
 
       <div style={{ padding: "12px 14px 14px", borderTop: `1px solid ${theme.border}` }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-          <LangPill lang={lang} setLang={setLang} theme={theme} />
+          <LangPill lang={lang} setLang={setLang} theme={theme} setMessages={setMessages} />
           <button
             onClick={() => setDark((d) => !d)}
             title={dark ? t("lightMode") : t("darkMode")}
@@ -2295,7 +2301,13 @@ const AboutSection = ({ theme, t }) => {
             </div>
             <select
               value={lang}
-              onChange={(e) => setLang(e.target.value)}
+              onChange={(e) => {
+                setLang(e.target.value)
+                setMessages((prev) => {
+                  prev[0] = { id: 0, role: "assistant", content: TRANSLATIONS[e.target.value].greeting, streaming: false }
+                  return [...prev]
+                })
+              }}
               style={{
                 padding: "7px 28px 7px 10px",
                 borderRadius: 8,
@@ -2380,7 +2392,13 @@ const AboutSection = ({ theme, t }) => {
                 ].map(({ code, label }) => (
                   <button
                     key={code}
-                    onClick={() => setLang(code)}
+                    onClick={() => {
+                setLang(code)
+                setMessages((prev) => {
+                  prev[0] = { id: 0, role: "assistant", content: TRANSLATIONS[code].greeting, streaming: false }
+                  return [...prev]
+                })
+                    }}
                     style={{
                       padding: "5px 12px",
                       borderRadius: 99,
@@ -2553,7 +2571,7 @@ const AboutSection = ({ theme, t }) => {
   // ──────────────────────────────────────────────────────────
   // MOBILE HEADER
   // ──────────────────────────────────────────────────────────
-  const MobileHeader = () => (
+  const MobileHeader = ({setMessages}) => (
     <>
       {showInstall && (
         <div
@@ -2677,7 +2695,7 @@ const AboutSection = ({ theme, t }) => {
           </span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <LangPill lang={lang} setLang={setLang} theme={theme} />
+          <LangPill lang={lang} setLang={setLang} theme={theme} setMessages={setMessages} />
           <button
             onClick={() => setDark((d) => !d)}
             style={{ background: "none", border: "none", color: theme.textSec, cursor: "pointer", padding: 4 }}
@@ -2712,7 +2730,7 @@ const AboutSection = ({ theme, t }) => {
       >
         {/* ── Desktop sidebar ── */}
         <div className="desktop-only" style={{ display: "none", flexShrink: 0, height: "100%" }}>
-          <Sidebar />
+          <Sidebar setMessages={setMessages} />
         </div>
 
         {/* ── Mobile drawer overlay ── */}
@@ -2772,7 +2790,7 @@ const AboutSection = ({ theme, t }) => {
         >
           {/* Mobile header */}
           <div className="mobile-only">
-            <MobileHeader />
+            <MobileHeader setMessages={setMessages} />
           </div>
 
           {/* Desktop top bar */}
@@ -2871,7 +2889,7 @@ const AboutSection = ({ theme, t }) => {
             {section === "prayer" && <PrayerSection />}
             {section === "about" && <AboutSection theme={theme} t={t} />}
             {/* {section === "profile" && <ProfileSection />} */}
-            {section === "settings" && <SettingsSection />}
+            {section === "settings" && <SettingsSection setMessages={setMessages} />}
           </div>
 
 
