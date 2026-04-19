@@ -97,6 +97,35 @@ const TRANSLATIONS = {
     nextPrayer: "পরবর্তী নামাজ",
     currentPrayer: "এখন",
     hijriDate: "হিজরি তারিখ",
+about: "আমাদের সম্পর্কে",
+aboutLabel: "আমাদের সম্পর্কে",
+aboutAppTitle: "Noor AI — ইসলামিক জ্ঞান সহায়তাকারী",
+aboutAppDesc: "Noor AI একটি দ্বিভাষিক ইসলামিক চ্যাটবট যা মুসলিমদের কুরআন, হাদিস ও ইসলামিক ফিকহ সহজে অন্বেষণে সহায়তা করে। আধুনিক AI দ্বারা চালিত এই বট বাংলা ও ইংরেজিতে নির্ভুলভাবে প্রশ্নের উত্তর দেয়।",
+aboutTags: ["কুরআন ও হাদিস", "দ্বিভাষিক (EN / BN)", "নামাজের সময়", "ফিকহ পছন্দ", "AI চালিত", "v2.0"],
+aboutDevsLabel: "ডেভেলপারদের সাথে পরিচিত হন",
+aboutDevsSubtitle: "আমরা বুদ্ধিমান সিস্টেম তৈরি করি — AI চ্যাটবট থেকে সম্পূর্ণ অটোমেশন পাইপলাইন পর্যন্ত।",
+aboutDev1Name: "আরফিন হায়েত",
+aboutDev1Role: "AI ইঞ্জিনিয়ার",
+aboutDev1Bio: "AI ইন্টিগ্রেশন, LLM-চালিত অ্যাপ্লিকেশন এবং অত্যাধুনিক মডেল ব্যবহার করে জটিল ব্যবসায়িক ওয়ার্কফ্লো অটোমেট করায় বিশেষজ্ঞ।",
+aboutDev2Name: "রুম্মান",
+aboutDev2Role: "ফুল-স্ট্যাক ডেভেলপার",
+aboutDev2Bio: "রেসপন্সিভ আধুনিক UI এবং স্কেলেবল ব্যাকএন্ড সিস্টেম ডিজাইনে দক্ষ। ধারণাকে পরিশীলিত পণ্যে রূপান্তর করেন।",
+aboutWeDoTitle: "আমরা আপনার জন্য কী করতে পারি",
+aboutWeDoDesc: "আমরা যেকোনো বিদ্যমান সিস্টেমকে AI-চালিত করতে পারি, অটোমেশন পাইপলাইন তৈরি করতে পারি এবং ঐতিহ্যবাহী ডেটাবেজকে ভেক্টর স্টোরে রূপান্তর করতে পারি — আপনার ডেটাকে AI-এর জন্য অর্থবহভাবে ব্যবহারযোগ্য করে তোলে। অটোমেট বা স্মার্ট করা যায় এমন যেকোনো কিছু আমরা তৈরি করি।",
+aboutContactLabel: "যোগাযোগ করুন",
+aboutContactSubtitle: "কোনো প্রজেক্ট মাথায় আছে? আমরা শুনতে আগ্রহী।",
+contactName: "আপনার নাম",
+contactEmail: "আপনার ইমেইল",
+contactMessage: "আপনার প্রজেক্ট সম্পর্কে বলুন...",
+contactSend: "বার্তা পাঠান",
+contactSending: "পাঠানো হচ্ছে...",
+contactSuccess: "বার্তা পাঠানো হয়েছে! আমরা শীঘ্রই যোগাযোগ করব।",
+contactError: "সব ঘর পূরণ করুন বা আবার চেষ্টা করুন।",
+aboutSkills1: ["LLM / RAG", "অটোমেশন", "ভেক্টর DB", "Python"],
+aboutSkills2: ["React", "Node.js", "UI/UX", "APIs"],
+
+// en
+
   },
   en: {
     appName: "Noor AI",
@@ -176,6 +205,32 @@ const TRANSLATIONS = {
     nextPrayer: "Next Prayer",
     currentPrayer: "Now",
     hijriDate: "Hijri Date",
+    about: "About Us",
+    aboutLabel: "About Us",
+aboutAppTitle: "Noor AI — Islamic Knowledge Assistant",
+aboutAppDesc: "Noor AI is a bilingual Islamic chatbot designed to help Muslims explore the Quran, Hadith, and Islamic jurisprudence with ease. Built with modern AI, it answers questions in both Bangla and English with accuracy and care.",
+aboutTags: ["Quran & Hadith", "Bilingual (EN / BN)", "Prayer Times", "Fiqh Preferences", "AI Powered", "v2.0"],
+aboutDevsLabel: "Meet the Developers",
+aboutDevsSubtitle: "We build intelligent systems — from AI chatbots to full automation pipelines.",
+aboutDev1Name: "Arfin Hayet",
+aboutDev1Role: "AI Engineer",
+aboutDev1Bio: "Specializes in AI integration, LLM-powered applications, and automating complex business workflows using cutting-edge models.",
+aboutDev2Name: "Rumman",
+aboutDev2Role: "Full-Stack Dev",
+aboutDev2Bio: "Expert in designing responsive, modern UIs and scalable backend systems. Transforms ideas into polished user-facing products.",
+aboutWeDoTitle: "What we can do for you",
+aboutWeDoDesc: "We convert any existing system into an AI-powered one, build automation pipelines, and transform traditional databases into vector stores — making your data queryable by AI in a semantically rich way. If it can be automated or made smarter, we build it.",
+aboutContactLabel: "Contact Us",
+aboutContactSubtitle: "Have a project in mind? We'd love to hear from you.",
+contactName: "Your name",
+contactEmail: "Your email",
+contactMessage: "Tell us about your project...",
+contactSend: "Send Message",
+contactSending: "Sending...",
+contactSuccess: "Message sent! We'll get back to you soon.",
+contactError: "Please fill all fields or try again.",
+aboutSkills1: ["LLM / RAG", "Automation", "Vector DB", "Python"],
+aboutSkills2: ["React", "Node.js", "UI/UX", "APIs"],
   },
 };
 
@@ -199,6 +254,13 @@ const MOCK_HISTORY_DATA = {
 
 // ── SVG ICONS ────────────────────────────────────────────────
 const Icons = {
+  Info: () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="8" x2="12" y2="8" />
+    <line x1="12" y1="12" x2="12" y2="16" />
+  </svg>
+),
   Chat: () => (
     <svg
       width="18"
@@ -1252,7 +1314,8 @@ export default function App() {
   const navItems = [
     { id: "chat", key: "chat", Icon: Icons.Chat },
     { id: "prayer", key: "prayerTitle", Icon: Icons.Prayer },
-    { id: "history", key: "history", Icon: Icons.History },
+    // { id: "history", key: "history", Icon: Icons.History },
+    { id: "about", Icon: Icons.Info, key: "about" },
     { id: "settings", key: "settings", Icon: Icons.Settings },
   ];
 
@@ -1749,6 +1812,9 @@ export default function App() {
     e.target.style.height = Math.min(e.target.scrollHeight, 180) + "px";
   };
 
+
+
+
   // ──────────────────────────────────────────────────────────
   // HISTORY SECTION
   // ──────────────────────────────────────────────────────────
@@ -1830,6 +1896,164 @@ export default function App() {
       </div>
     </div>
   );
+
+
+  {/* ── Footer ── */}
+
+
+
+const AboutSection = ({ theme, t }) => {
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!form.name || !form.email || !form.message) { setStatus("error"); return; }
+    setLoading(true); setStatus("");
+    try {
+      const res = await fetch("/contacts/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) { setStatus("success"); setForm({ name: "", email: "", message: "" }); }
+      else throw new Error();
+    } catch { setStatus("error"); }
+    setLoading(false);
+  };
+
+  const inputStyle = {
+    width: "100%", boxSizing: "border-box",
+    padding: "10px 14px", borderRadius: 8,
+    border: `1px solid ${theme.border}`,
+    background: theme.bgSec, color: theme.text,
+    fontSize: 14, fontFamily: "inherit", outline: "none",
+  };
+
+  const tagStyle = {
+    display: "inline-block", fontSize: 12,
+    padding: "4px 10px", borderRadius: 99, margin: "3px 3px 3px 0",
+    background: theme.bgTer, color: theme.textSec,
+    border: `1px solid ${theme.border}`,
+  };
+
+  const sectionLabel = {
+    fontSize: 11, color: theme.accent, fontWeight: 600,
+    letterSpacing: "0.06em", textTransform: "uppercase",
+  };
+
+  const iconCircle = {
+    width: 34, height: 34, borderRadius: "50%",
+    background: theme.accentBg,
+    display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+  };
+
+  const divider = {
+    borderBottom: `1px solid ${theme.border}`,
+    paddingBottom: 24, marginBottom: 24,
+  };
+
+  const devSkillTags = (skills) => skills.map(s => <span key={s} style={tagStyle}>{s}</span>);
+
+  return (
+    <div style={{ flex: 1, overflowY: "auto", padding: "28px 20px 48px" }}>
+
+      {/* ── About the App ── */}
+      <div style={divider}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+          <div style={iconCircle}><Icons.Chat /></div>
+          <span style={sectionLabel}>{t("aboutLabel")}</span>
+        </div>
+        <h2 style={{ fontSize: 20, fontWeight: 700, color: theme.text, margin: "0 0 10px", fontFamily: "Cinzel, serif" }}>
+          {t("aboutAppTitle")}
+        </h2>
+        <p style={{ fontSize: 14, color: theme.textSec, lineHeight: 1.75, margin: "0 0 14px" }}>
+          {t("aboutAppDesc")}
+        </p>
+        <div>{t("aboutTags").map(tag => <span key={tag} style={tagStyle}>{tag}</span>)}</div>
+      </div>
+
+      {/* ── Developers ── */}
+      <div style={divider}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+          <div style={iconCircle}><Icons.Profile /></div>
+          <span style={sectionLabel}>{t("aboutDevsLabel")}</span>
+        </div>
+        <p style={{ fontSize: 13, color: theme.textTer, margin: "0 0 16px" }}>{t("aboutDevsSubtitle")}</p>
+
+        <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+          {[
+            { initials: "AH", nameKey: "aboutDev1Name", roleKey: "aboutDev1Role", bioKey: "aboutDev1Bio", skillsKey: "aboutSkills1", avatarBg: theme.accentBg, avatarColor: theme.accent, avatarUrl: "https://lh3.googleusercontent.com/a-/ALV-UjWw93hvXrYt1WhNueHLG0lQXyxpnExavnle9-AF7jh9kKOcN4o=s300-p-k-rw-no" },
+            { initials: "RU", nameKey: "aboutDev2Name", roleKey: "aboutDev2Role", bioKey: "aboutDev2Bio", skillsKey: "aboutSkills2", avatarBg: "#5340b720", avatarColor: "#7f77dd", avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocLJk_vtv_dHuJFyJPejdFG4YKuMsXUlz4iMaFSSjqy3aVWCsS8=s360-c-no" },
+          ].map(dev => (
+            <div key={dev.initials} style={{
+              flex: 1, minWidth: 200,
+              background: theme.bgSec, border: `1px solid ${theme.border}`,
+              borderRadius: 12, padding: "1.25rem",
+            }}>
+<div style={{
+  width: 52, height: 52, borderRadius: "50%",
+  background: dev.avatarBg, overflow: "hidden",
+  display: "flex", alignItems: "center", justifyContent: "center",
+  fontSize: 18, fontWeight: 700, marginBottom: 12,
+}}>
+  {dev.avatarUrl
+    ? <img src={dev.avatarUrl} alt={t(dev.nameKey)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+    : <span style={{ color: dev.avatarColor }}>{dev.initials}</span>
+  }
+</div>
+              <p style={{ fontSize: 16, fontWeight: 600, color: theme.text, margin: 0 }}>{t(dev.nameKey)}</p>
+              <span style={{
+                display: "inline-block", fontSize: 11, padding: "3px 10px",
+                borderRadius: 99, marginTop: 5,
+                background: dev.avatarBg, color: dev.avatarColor,
+              }}>{t(dev.roleKey)}</span>
+              <p style={{ fontSize: 13, color: theme.textSec, margin: "10px 0", lineHeight: 1.65 }}>{t(dev.bioKey)}</p>
+              <div>{devSkillTags(t(dev.skillsKey))}</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{
+          marginTop: 16, background: theme.bgTer,
+          border: `1px solid ${theme.border}`, borderRadius: 12, padding: "16px 18px",
+        }}>
+          <p style={{ fontSize: 13, fontWeight: 600, color: theme.text, margin: "0 0 6px" }}>{t("aboutWeDoTitle")}</p>
+          <p style={{ fontSize: 13, color: theme.textSec, lineHeight: 1.75, margin: 0 }}>{t("aboutWeDoDesc")}</p>
+        </div>
+      </div>
+
+{/* ── Contact ── */}
+<div>
+  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+    <div style={iconCircle}>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={theme.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
+    </div>
+    <span style={sectionLabel}>{t("aboutContactLabel")}</span>
+  </div>
+  <p style={{ fontSize: 13, color: theme.textTer, margin: "0 0 16px" }}>{t("aboutContactSubtitle")}</p>
+
+  <a href="mailto:arfinhayet786@gmail.com" style={{
+    display: "inline-flex", alignItems: "center", gap: 8,
+    background: theme.accentBg, color: theme.accent,
+    border: `1px solid ${theme.accent}40`,
+    borderRadius: 10, padding: "11px 22px",
+    fontSize: 14, fontWeight: 600, textDecoration: "none",
+  }}>
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={theme.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+      <polyline points="22,6 12,13 2,6"/>
+    </svg>
+    {t("aboutContactLabel")}
+  </a>
+</div>
+
+    </div>
+  );
+};
 
   // ──────────────────────────────────────────────────────────
   // PROFILE SECTION
@@ -2645,9 +2869,50 @@ export default function App() {
             )}
             {section === "history" && <HistorySection />}
             {section === "prayer" && <PrayerSection />}
+            {section === "about" && <AboutSection theme={theme} t={t} />}
             {/* {section === "profile" && <ProfileSection />} */}
             {section === "settings" && <SettingsSection />}
           </div>
+
+
+
+         <footer style={{
+  flexShrink: 0,
+  borderTop: `1px solid ${theme.border}`,
+  background: theme.headerBg,
+  backdropFilter: "blur(10px)",
+  padding: "10px 20px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  flexWrap: "wrap",
+  gap: 8,
+}}>
+  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+    <div style={{
+      width: 22, height: 22, borderRadius: "50%",
+      background: "linear-gradient(135deg, #1d9e75, #0f6e56)",
+      display: "flex", alignItems: "center", justifyContent: "center",
+    }}>
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L3 7l9 5 9-5-9-5zM3 17l9 5 9-5M3 12l9 5 9-5"
+          stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </div>
+    <span style={{ fontSize: 12, fontWeight: 600, color: theme.text, fontFamily: "Cinzel, serif" }}>
+      Noor AI
+    </span>
+    <span style={{ fontSize: 11, color: theme.textTer }}>v2.0</span>
+  </div>
+
+  <span style={{ fontSize: 11, color: theme.textTer, textAlign: "center" }}>
+    {lang === "bn" ? "বিসমিল্লাহির রাহমানির রাহিম" : "Bismillahir Rahmanir Rahim"}
+  </span>
+
+  <span style={{ fontSize: 11, color: theme.textTer }}>
+    {lang === "bn" ? "আরফিন হায়েত ও রুম্মান কর্তৃক নির্মিত" : "Built by Arfin Hayet & Rumman"}
+  </span>
+</footer>
         </main>
       </div>
     </>
