@@ -2614,69 +2614,69 @@ const AboutSection = ({ theme, t }) => {
               </div>
             ),
           },
-          {
-            icon: <Icons.Bell />,
-            label: t("notifications"),
-            desc: t("notificationsDesc"),
-            control: (
-              <label className="toggle-switch">
-                <input
-                  type="checkbox"
-                  checked={settings.notifications}
-                  onChange={(e) => setSettings((s) => ({ ...s, notifications: e.target.checked }))}
-                />
-                <span className="toggle-slider" />
-              </label>
-            ),
-          },
+          // {
+          //   icon: <Icons.Bell />,
+          //   label: t("notifications"),
+          //   desc: t("notificationsDesc"),
+          //   control: (
+          //     <label className="toggle-switch">
+          //       <input
+          //         type="checkbox"
+          //         checked={settings.notifications}
+          //         onChange={(e) => setSettings((s) => ({ ...s, notifications: e.target.checked }))}
+          //       />
+          //       <span className="toggle-slider" />
+          //     </label>
+          //   ),
+          // },
         ],
       },
-      {
-        title: t("groupIslamic"),
-        items: [
-          {
-            icon: <Icons.Book />,
-            label: t("madhab"),
-            desc: t("madhabDesc"),
-            control: (
-              <select
-                value={settings.madhab}
-                onChange={(e) => setSettings((s) => ({ ...s, madhab: e.target.value }))}
-                style={{
-                  background: theme.bgTer,
-                  border: `1px solid ${theme.borderMed}`,
-                  borderRadius: 8,
-                  padding: "5px 10px",
-                  fontSize: 12.5,
-                  color: theme.text,
-                  cursor: "pointer",
-                }}
-              >
-                {["hanafi", "maliki", "shafii", "hanbali"].map((m) => (
-                  <option key={m} value={m}>
-                    {t("madhab" + m.charAt(0).toUpperCase() + m.slice(1))}
-                  </option>
-                ))}
-              </select>
-            ),
-          },
-          {
-            icon: <Icons.History />,
-            label: t("saveHistory"),
-            desc: t("saveHistoryDesc"),
-            control: (
-              <label className="toggle-switch">
-                <input
-                  type="checkbox"
-                  checked={settings.saveHistory}
-                  onChange={(e) => setSettings((s) => ({ ...s, saveHistory: e.target.checked }))}
-                />
-                <span className="toggle-slider" />
-              </label>
-            ),
-          },
-        ],
-      },
+      // {
+      //   title: t("groupIslamic"),
+      //   items: [
+      //     {
+      //       icon: <Icons.Book />,
+      //       label: t("madhab"),
+      //       desc: t("madhabDesc"),
+      //       control: (
+      //         <select
+      //           value={settings.madhab}
+      //           onChange={(e) => setSettings((s) => ({ ...s, madhab: e.target.value }))}
+      //           style={{
+      //             background: theme.bgTer,
+      //             border: `1px solid ${theme.borderMed}`,
+      //             borderRadius: 8,
+      //             padding: "5px 10px",
+      //             fontSize: 12.5,
+      //             color: theme.text,
+      //             cursor: "pointer",
+      //           }}
+      //         >
+      //           {["hanafi", "maliki", "shafii", "hanbali"].map((m) => (
+      //             <option key={m} value={m}>
+      //               {t("madhab" + m.charAt(0).toUpperCase() + m.slice(1))}
+      //             </option>
+      //           ))}
+      //         </select>
+      //       ),
+      //     },
+      //     {
+      //       icon: <Icons.History />,
+      //       label: t("saveHistory"),
+      //       desc: t("saveHistoryDesc"),
+      //       control: (
+      //         <label className="toggle-switch">
+      //           <input
+      //             type="checkbox"
+      //             checked={settings.saveHistory}
+      //             onChange={(e) => setSettings((s) => ({ ...s, saveHistory: e.target.checked }))}
+      //           />
+      //           <span className="toggle-slider" />
+      //         </label>
+      //       ),
+      //     },
+      //   ],
+      // },
       {
         title: t("groupDisplay"),
         items: [
