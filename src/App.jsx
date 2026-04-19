@@ -1465,6 +1465,20 @@ export default function App() {
 
     const { timings, date } = prayerData;
 
+
+    const formatTime = (time24) => {
+  if (!time24) return "";
+
+  const [hourStr, minuteStr] = time24.split(":");
+  let hour = parseInt(hourStr, 10);
+  const minute = minuteStr ?? "00";
+
+  const period = hour >= 12 ? "PM" : "AM";
+  hour = hour % 12 || 12; // converts 0 → 12, 13 → 1, etc.
+
+  return `${hour}:${minute} ${period}`;
+};
+
     return (
       <div style={{ flex: 1, overflowY: "auto", padding: "24px 20px" }}>
         {/* Date card */}
@@ -1599,7 +1613,7 @@ export default function App() {
                       letterSpacing: 0.5,
                     }}
                   >
-                    {timings[key]}
+                   {formatTime(timings[key])}
                   </div>
                 </div>
               </div>
