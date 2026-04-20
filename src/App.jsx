@@ -130,10 +130,42 @@ const TRANSLATIONS = {
     contactError: "সব ঘর পূরণ করুন বা আবার চেষ্টা করুন।",
     aboutSkills1: ["LLM / RAG", "অটোমেশন", "ভেক্টর DB", "Python"],
     aboutSkills2: ["React", "Node.js", "UI/UX", "APIs"],
+    dua: "দোয়া সমুহ",
+    duaComing: "দ্রুত আসছে...",
+      duaTitle:        "দৈনন্দিন দোয়া",
+  duaSearch:       "দোয়া খুঁজুন...",
+  duaMeaning:      "অর্থ",
+  duaSource:       "সূত্র",
+  duaEmpty:        "কোনো দোয়া পাওয়া যায়নি",
+  duaCatAll:       "সব",
+  duaCatMorning:   "সকাল",
+  duaCatEvening:   "সন্ধ্যা",
+  duaCatPrayer:    "নামাজ",
+  duaCatFood:      "খাবার",
+  duaCatTravel:    "সফর",
+  duaCatDistress:  "বিপদ",
+  duaCatSleep:     "ঘুম",
+  duaCatForgive:   "ক্ষমা",
 
     // en
   },
+
+
   en: {
+      duaTitle:        "Daily Duas",
+  duaSearch:       "Search duas...",
+  duaMeaning:      "Meaning",
+  duaSource:       "Source",
+  duaEmpty:        "No duas found",
+  duaCatAll:       "All",
+  duaCatMorning:   "Morning",
+  duaCatEvening:   "Evening",
+  duaCatPrayer:    "Prayer",
+  duaCatFood:      "Food",
+  duaCatTravel:    "Travel",
+  duaCatDistress:  "Distress",
+  duaCatSleep:     "Sleep",
+  duaCatForgive:   "Forgiveness",
     appName: "Noor AI",
     appTagline: "Chatbot",
     appSubtitle: "Guiding you through Islamic knowledge",
@@ -241,6 +273,31 @@ const TRANSLATIONS = {
     contactError: "Please fill all fields or try again.",
     aboutSkills1: ["LLM / RAG", "Automation", "Vector DB", "Python"],
     aboutSkills2: ["React", "Node.js", "UI/UX", "APIs"],
+    dua: "Dua",
+    duaComing: "Coming soon...",
+
+     // ── Section heading ──────────────────────────────────────────────
+    duaTitle:          "Daily Duas",
+    duaSubtitle:       "Essential supplications for every Muslim",
+ 
+    // ── Search ───────────────────────────────────────────────────────
+    duaSearch:         "Search duas...",
+    duaEmpty:          "No duas found",
+ 
+    // ── Expanded card labels ─────────────────────────────────────────
+    duaMeaning:        "Meaning",
+    duaSource:         "Source",
+ 
+    // ── Category tabs ────────────────────────────────────────────────
+    duaCatAll:         "All",
+    duaCatMorning:     "Morning",
+    duaCatEvening:     "Evening",
+    duaCatPrayer:      "Prayer",
+    duaCatFood:        "Food",
+    duaCatTravel:      "Travel",
+    duaCatDistress:    "Distress",
+    duaCatSleep:       "Sleep",
+    duaCatForgive:     "Forgiveness",
   },
 };
 
@@ -264,6 +321,13 @@ const MOCK_HISTORY_DATA = {
 
 // ── SVG ICONS ────────────────────────────────────────────────
 const Icons = {
+  Search: () => (
+  <svg width="15" height="15" viewBox="0 0 16 16" fill="none"
+    stroke="currentColor" strokeWidth="1.5">
+    <circle cx="7" cy="7" r="4.5"/>
+    <path d="M10.5 10.5l2.5 2.5"/>
+  </svg>
+),
   Info: () => (
     <svg
       width="18"
@@ -1355,6 +1419,7 @@ export default function App() {
   const navItems = [
     { id: "chat", key: "chat", Icon: Icons.Chat },
     { id: "prayer", key: "prayerTitle", Icon: Icons.Prayer },
+    { id: "dua", key: "dua", Icon: Icons.Book },
     // { id: "history", key: "history", Icon: Icons.History },
     { id: "about", Icon: Icons.Info, key: "about" },
     { id: "settings", key: "settings", Icon: Icons.Settings },
@@ -1926,6 +1991,649 @@ export default function App() {
       </div>
     );
   };
+
+
+
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const DUAS = [
+  {
+    id: 1, cat: "morning", icon: "🌅", color: "teal",
+    arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
+    transliteration: "Alhamdulillahi alladhi ahyaanaa ba'da maa amaatanaa wa ilayhin-nushoor",
+    en: { name: "Upon Waking", sub: "Start of the day", meaning: "All praise is for Allah who gave us life after causing us to die, and to Him is the resurrection." },
+    bn: { name: "ঘুম থেকে জাগার দোয়া", sub: "দিনের শুরু", meaning: "সমস্ত প্রশংসা আল্লাহর, যিনি আমাদের মৃত্যুর পর জীবিত করলেন এবং তাঁর কাছেই পুনরুত্থান।" },
+    source: "Bukhari",
+  },
+  {
+    id: 2, cat: "morning", icon: "🛡️", color: "purple",
+    arabic: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
+    transliteration: "Bismillahil-ladhi la yadurru ma'asmihi shay'un fil-ardi wa la fis-sama'i wa huwas-sami'ul-'alim",
+    en: { name: "Morning Protection", sub: "Seeking Allah's protection", meaning: "In the name of Allah, with whose name nothing is harmed on earth or in the heavens, and He is the All-Hearing, All-Knowing." },
+    bn: { name: "সকালের সুরক্ষার দোয়া", sub: "আল্লাহর সুরক্ষা চাওয়া", meaning: "আল্লাহর নামে, যার নামের সাথে পৃথিবী বা আকাশে কিছুই ক্ষতি করতে পারে না। তিনি সর্বশ্রোতা, সর্বজ্ঞ।" },
+    source: "Abu Dawud",
+  },
+  {
+    id: 3, cat: "evening", icon: "🌇", color: "amber",
+    arabic: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
+    transliteration: "Amsayna wa amsal-mulku lillah, walhamdu lillah, la ilaha illallahu wahdahu la sharika lah",
+    en: { name: "At Sunset", sub: "Evening remembrance", meaning: "We have reached the evening and sovereignty belongs to Allah. Praise is for Allah. None is worthy of worship except Allah alone with no partner." },
+    bn: { name: "সন্ধ্যার দোয়া", sub: "সন্ধ্যার জিকির", meaning: "আমরা সন্ধ্যায় পৌঁছেছি এবং রাজত্ব আল্লাহর। সমস্ত প্রশংসা আল্লাহর। আল্লাহ ছাড়া কোনো মাবুদ নেই, তিনি একা, তার কোনো শরিক নেই।" },
+    source: "Muslim",
+  },
+  {
+    id: 4, cat: "evening", icon: "🌃", color: "blue",
+    arabic: "اللَّهُمَّ بِكَ أَمْسَيْنَا وَبِكَ أَصْبَحْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ",
+    transliteration: "Allahumma bika amsayna wa bika asbahna wa bika nahya wa bika namutu wa ilaykal-masir",
+    en: { name: "Evening Remembrance", sub: "Nightly dua", meaning: "O Allah, by You we enter the evening and by You we enter the morning, by You we live and by You we die, and to You is the final return." },
+    bn: { name: "রাতের স্মরণ", sub: "রাতের দোয়া", meaning: "হে আল্লাহ, তোমার মাধ্যমে আমরা সন্ধ্যায় পৌঁছাই এবং সকালে উপনীত হই, তোমার মাধ্যমে আমরা বাঁচি ও মরি, এবং তোমার কাছেই প্রত্যাবর্তন।" },
+    source: "Tirmidhi",
+  },
+  {
+    id: 5, cat: "prayer", icon: "🕌", color: "teal",
+    arabic: "اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ",
+    transliteration: "Allahummaf-tah li abwaba rahmatik",
+    en: { name: "Entering the Masjid", sub: "Before prayer", meaning: "O Allah, open for me the gates of Your mercy." },
+    bn: { name: "মসজিদে প্রবেশের দোয়া", sub: "নামাজের আগে", meaning: "হে আল্লাহ, আমার জন্য তোমার রহমতের দরজা খুলে দাও।" },
+    source: "Muslim",
+  },
+  {
+    id: 6, cat: "prayer", icon: "🚶", color: "blue",
+    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ",
+    transliteration: "Allahumma inni as'aluka min fadlik",
+    en: { name: "Leaving the Masjid", sub: "After prayer", meaning: "O Allah, I ask You of Your bounty." },
+    bn: { name: "মসজিদ থেকে বের হওয়ার দোয়া", sub: "নামাজের পরে", meaning: "হে আল্লাহ, আমি তোমার অনুগ্রহ চাই।" },
+    source: "Ibn Majah",
+  },
+  {
+    id: 7, cat: "food", icon: "🍽️", color: "coral",
+    arabic: "بِسْمِ اللَّهِ وَعَلَى بَرَكَةِ اللَّهِ",
+    transliteration: "Bismillahi wa 'ala barakatillah",
+    en: { name: "Before Eating", sub: "Bismillah dua", meaning: "In the name of Allah and with the blessings of Allah." },
+    bn: { name: "খাওয়ার আগের দোয়া", sub: "বিসমিল্লাহ", meaning: "আল্লাহর নামে এবং আল্লাহর বরকতে।" },
+    source: "Abu Dawud",
+  },
+  {
+    id: 8, cat: "food", icon: "✅", color: "teal",
+    arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ",
+    transliteration: "Alhamdulillahil-ladhi at'amana wa saqana wa ja'alna muslimin",
+    en: { name: "After Eating", sub: "Gratitude for food", meaning: "Praise be to Allah who fed us, gave us drink, and made us Muslims." },
+    bn: { name: "খাওয়ার পরের দোয়া", sub: "খাবারের কৃতজ্ঞতা", meaning: "সেই আল্লাহর প্রশংসা যিনি আমাদের খাইয়েছেন, পান করিয়েছেন এবং মুসলিম বানিয়েছেন।" },
+    source: "Abu Dawud",
+  },
+  {
+    id: 9, cat: "travel", icon: "✈️", color: "blue",
+    arabic: "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
+    transliteration: "Bismillahi tawakkaltu 'alallahi wa la hawla wa la quwwata illa billah",
+    en: { name: "Leaving Home", sub: "Start of journey", meaning: "In the name of Allah, I place my trust in Allah, and there is no power or strength except through Allah." },
+    bn: { name: "বাড়ি থেকে বের হওয়ার দোয়া", sub: "সফরের শুরুতে", meaning: "আল্লাহর নামে, আল্লাহর উপর ভরসা করলাম। আল্লাহ ছাড়া কোনো শক্তি ও ক্ষমতা নেই।" },
+    source: "Abu Dawud",
+  },
+  {
+    id: 10, cat: "travel", icon: "🚗", color: "purple",
+    arabic: "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ",
+    transliteration: "Subhanal-ladhi sakhkhara lana hadha wa ma kunna lahu muqrinin, wa inna ila rabbina lamunqalibun",
+    en: { name: "Boarding a Vehicle", sub: "Transport dua", meaning: "Glory to Him who has subjected this to us, and we were not capable of it, and indeed we will return to our Lord." },
+    bn: { name: "যানবাহনে ওঠার দোয়া", sub: "গাড়িতে ওঠার সময়", meaning: "পবিত্র তিনি যিনি এটি আমাদের বশীভূত করে দিয়েছেন, আমরা এর যোগ্য ছিলাম না। নিশ্চয়ই আমরা আমাদের রবের কাছে ফিরে যাব।" },
+    source: "Quran 43:13-14",
+  },
+  {
+    id: 11, cat: "distress", icon: "🤲", color: "pink",
+    arabic: "لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
+    transliteration: "La ilaha illa anta subhanaka inni kuntu minaz-zalimin",
+    en: { name: "Dua of Yunus (AS)", sub: "Relief from anxiety", meaning: "There is no deity except You; exalted are You. Indeed, I have been of the wrongdoers." },
+    bn: { name: "ইউনুস (আ)-এর দোয়া", sub: "উদ্বেগ থেকে মুক্তির দোয়া", meaning: "তুমি ছাড়া কোনো মাবুদ নেই, তুমি পবিত্র। নিশ্চয়ই আমি জালেমদের অন্তর্ভুক্ত ছিলাম।" },
+    source: "Quran 21:87",
+  },
+  {
+    id: 12, cat: "distress", icon: "⚖️", color: "amber",
+    arabic: "رَبَّنَا أَفْرِغْ عَلَيْنَا صَبْرًا وَثَبِّتْ أَقْدَامَنَا وَانصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ",
+    transliteration: "Rabbana afrigh 'alayna sabran wa thabbit aqdamana wansurna 'alal-qawmil-kafirin",
+    en: { name: "Dua for Patience", sub: "In times of difficulty", meaning: "Our Lord! Shower us with perseverance, make our steps firm, and give us victory over the disbelieving people." },
+    bn: { name: "ধৈর্যের দোয়া", sub: "কঠিন সময়ে", meaning: "হে আমাদের রব! আমাদের উপর ধৈর্য ঢেলে দাও, আমাদের পা স্থির রাখো এবং কাফের সম্প্রদায়ের বিরুদ্ধে আমাদের সাহায্য করো।" },
+    source: "Quran 2:250",
+  },
+  {
+    id: 13, cat: "sleep", icon: "🌙", color: "purple",
+    arabic: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+    transliteration: "Bismikal-lahumma amutu wa ahya",
+    en: { name: "Before Sleeping", sub: "Night protection", meaning: "In Your name, O Allah, I die and I live." },
+    bn: { name: "ঘুমানোর আগের দোয়া", sub: "রাতের সুরক্ষা", meaning: "হে আল্লাহ, তোমার নামেই আমি মরি এবং বাঁচি।" },
+    source: "Bukhari",
+  },
+  {
+    id: 14, cat: "sleep", icon: "🌌", color: "blue",
+    arabic: "اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ",
+    transliteration: "Allahumma qini 'adhabaka yawma tab'athu 'ibadak",
+    en: { name: "Before Sleeping (2)", sub: "Protection on Judgment Day", meaning: "O Allah, protect me from Your punishment on the day You resurrect Your servants." },
+    bn: { name: "ঘুমানোর আগের দোয়া (২)", sub: "কিয়ামতের আজাব থেকে সুরক্ষা", meaning: "হে আল্লাহ, যেদিন তুমি তোমার বান্দাদের পুনরুত্থিত করবে, সেদিন আমাকে তোমার আজাব থেকে রক্ষা করো।" },
+    source: "Abu Dawud",
+  },
+  {
+    id: 15, cat: "forgiveness", icon: "💚", color: "teal",
+    arabic: "أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ الَّذِي لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ وَأَتُوبُ إِلَيْهِ",
+    transliteration: "Astaghfirullaha al-'adhim al-ladhi la ilaha illa huwal-hayyul-qayyum wa atubu ilayh",
+    en: { name: "Seeking Forgiveness", sub: "Istighfar", meaning: "I seek forgiveness from Allah the Magnificent, besides whom there is no deity, the Ever-Living, the Sustainer of all, and I turn to Him in repentance." },
+    bn: { name: "ক্ষমা প্রার্থনার দোয়া", sub: "ইস্তেগফার", meaning: "আমি মহান আল্লাহর কাছে ক্ষমা চাই, যিনি ছাড়া কোনো মাবুদ নেই, যিনি চিরঞ্জীব, সর্বস্থায়ী। আমি তাঁর কাছে তওবা করছি।" },
+    source: "Tirmidhi",
+  },
+  {
+    id: 16, cat: "forgiveness", icon: "🌿", color: "coral",
+    arabic: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ خَلَقْتَنِي وَأَنَا عَبْدُكَ وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ",
+    transliteration: "Allahumma anta rabbi la ilaha illa anta, khalaqtani wa ana 'abduk, wa ana 'ala 'ahdika wa wa'dika mastata't",
+    en: { name: "Sayyidul Istighfar", sub: "Master of forgiveness duas", meaning: "O Allah, You are my Lord, there is no deity except You. You created me and I am Your servant, and I am on Your covenant and promise as much as I am able." },
+    bn: { name: "সাইয়্যেদুল ইস্তেগফার", sub: "ক্ষমার সেরা দোয়া", meaning: "হে আল্লাহ, তুমি আমার রব। তুমি ছাড়া কোনো মাবুদ নেই। তুমি আমাকে সৃষ্টি করেছো এবং আমি তোমার বান্দা। আমি সাধ্যমতো তোমার অঙ্গীকার ও প্রতিশ্রুতিতে অবিচল।" },
+    source: "Bukhari",
+  },
+];
+
+const CATEGORIES = [
+  { key: "all",        en: "All",        bn: "সব" },
+  { key: "morning",   en: "Morning",    bn: "সকাল" },
+  { key: "evening",   en: "Evening",    bn: "সন্ধ্যা" },
+  { key: "prayer",    en: "Prayer",     bn: "নামাজ" },
+  { key: "food",      en: "Food",       bn: "খাবার" },
+  { key: "travel",    en: "Travel",     bn: "সফর" },
+  { key: "distress",  en: "Distress",   bn: "বিপদ" },
+  { key: "sleep",     en: "Sleep",      bn: "ঘুম" },
+  { key: "forgiveness", en: "Forgiveness", bn: "ক্ষমা" },
+];
+
+const COLOR_MAP = {
+  teal:   { bg: "#E1F5EE", text: "#085041", dot: "#0F6E56" },
+  purple: { bg: "#EEEDFE", text: "#3C3489", dot: "#534AB7" },
+  amber:  { bg: "#FAEEDA", text: "#633806", dot: "#BA7517" },
+  blue:   { bg: "#E6F1FB", text: "#0C447C", dot: "#185FA5" },
+  coral:  { bg: "#FAECE7", text: "#712B13", dot: "#993C1D" },
+  pink:   { bg: "#FBEAF0", text: "#72243E", dot: "#993556" },
+};
+// ─────────────────────────────────────────────────────────────────────────────
+//  DuaSection.jsx  —  drop-in replacement
+//  Reads:  theme, lang, t()  from outer scope (same as SettingsSection)
+//  Needs:  Icons.Search  added to your Icons object (see bottom of file)
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── 1. Add these keys to your TRANSLATIONS object ────────────────────────────
+//
+// en: {
+
+// },
+// bn: {
+
+// },
+
+// ── 2. Add Icons.Search to your Icons object ─────────────────────────────────
+//
+// Search: () => (
+//   <svg width="15" height="15" viewBox="0 0 16 16" fill="none"
+//     stroke="currentColor" strokeWidth="1.5">
+//     <circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5l2.5 2.5"/>
+//   </svg>
+// ),
+
+// ── 3. Dua data (declare outside component) ───────────────────────────────────
+const DUA_DATA = [
+  {
+    id: 1, cat: "morning", icon: "🌅", color: "accent",
+    arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
+    transliteration: "Alhamdulillahi alladhi ahyaanaa ba'da maa amaatanaa wa ilayhin-nushoor",
+    source: "Bukhari",
+    en: { name: "Upon Waking", sub: "Start of the day", meaning: "All praise is for Allah who gave us life after causing us to die, and to Him is the resurrection." },
+    bn: { name: "ঘুম থেকে জাগার দোয়া", sub: "দিনের শুরু", meaning: "সমস্ত প্রশংসা আল্লাহর, যিনি আমাদের মৃত্যুর পর জীবিত করলেন এবং তাঁর কাছেই পুনরুত্থান।" },
+  },
+  {
+    id: 2, cat: "morning", icon: "🛡️", color: "purple",
+    arabic: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
+    transliteration: "Bismillahil-ladhi la yadurru ma'asmihi shay'un fil-ardi wa la fis-sama'i wa huwas-sami'ul-'alim",
+    source: "Abu Dawud",
+    en: { name: "Morning Protection", sub: "Seeking Allah's protection", meaning: "In the name of Allah, with whose name nothing is harmed on earth or in the heavens, and He is the All-Hearing, All-Knowing." },
+    bn: { name: "সকালের সুরক্ষার দোয়া", sub: "আল্লাহর সুরক্ষা চাওয়া", meaning: "আল্লাহর নামে, যার নামের সাথে পৃথিবী বা আকাশে কিছুই ক্ষতি করতে পারে না। তিনি সর্বশ্রোতা, সর্বজ্ঞ।" },
+  },
+  {
+    id: 3, cat: "evening", icon: "🌇", color: "amber",
+    arabic: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ وَالْحَمْدُ لِلَّهِ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
+    transliteration: "Amsayna wa amsal-mulku lillah, walhamdu lillah, la ilaha illallahu wahdahu la sharika lah",
+    source: "Muslim",
+    en: { name: "At Sunset", sub: "Evening remembrance", meaning: "We have reached the evening and sovereignty belongs to Allah. Praise is for Allah. None is worthy of worship except Allah alone with no partner." },
+    bn: { name: "সন্ধ্যার দোয়া", sub: "সন্ধ্যার জিকির", meaning: "আমরা সন্ধ্যায় পৌঁছেছি এবং রাজত্ব আল্লাহর। সমস্ত প্রশংসা আল্লাহর। আল্লাহ ছাড়া কোনো মাবুদ নেই, তিনি একা।" },
+  },
+  {
+    id: 4, cat: "evening", icon: "🌃", color: "blue",
+    arabic: "اللَّهُمَّ بِكَ أَمْسَيْنَا وَبِكَ أَصْبَحْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ",
+    transliteration: "Allahumma bika amsayna wa bika asbahna wa bika nahya wa bika namutu wa ilaykal-masir",
+    source: "Tirmidhi",
+    en: { name: "Evening Remembrance", sub: "Nightly dua", meaning: "O Allah, by You we enter the evening and morning, by You we live and die, and to You is the final return." },
+    bn: { name: "রাতের স্মরণ", sub: "রাতের দোয়া", meaning: "হে আল্লাহ, তোমার মাধ্যমে আমরা সন্ধ্যায় ও সকালে পৌঁছাই, তোমার মাধ্যমে বাঁচি ও মরি, এবং তোমার কাছেই প্রত্যাবর্তন।" },
+  },
+  {
+    id: 5, cat: "prayer", icon: "🕌", color: "accent",
+    arabic: "اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ",
+    transliteration: "Allahummaf-tah li abwaba rahmatik",
+    source: "Muslim",
+    en: { name: "Entering the Masjid", sub: "Before prayer", meaning: "O Allah, open for me the gates of Your mercy." },
+    bn: { name: "মসজিদে প্রবেশের দোয়া", sub: "নামাজের আগে", meaning: "হে আল্লাহ, আমার জন্য তোমার রহমতের দরজা খুলে দাও।" },
+  },
+  {
+    id: 6, cat: "prayer", icon: "🚶", color: "blue",
+    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ",
+    transliteration: "Allahumma inni as'aluka min fadlik",
+    source: "Ibn Majah",
+    en: { name: "Leaving the Masjid", sub: "After prayer", meaning: "O Allah, I ask You of Your bounty." },
+    bn: { name: "মসজিদ থেকে বের হওয়ার দোয়া", sub: "নামাজের পরে", meaning: "হে আল্লাহ, আমি তোমার অনুগ্রহ চাই।" },
+  },
+  {
+    id: 7, cat: "food", icon: "🍽️", color: "coral",
+    arabic: "بِسْمِ اللَّهِ وَعَلَى بَرَكَةِ اللَّهِ",
+    transliteration: "Bismillahi wa 'ala barakatillah",
+    source: "Abu Dawud",
+    en: { name: "Before Eating", sub: "Bismillah dua", meaning: "In the name of Allah and with the blessings of Allah." },
+    bn: { name: "খাওয়ার আগের দোয়া", sub: "বিসমিল্লাহ", meaning: "আল্লাহর নামে এবং আল্লাহর বরকতে।" },
+  },
+  {
+    id: 8, cat: "food", icon: "✅", color: "accent",
+    arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ",
+    transliteration: "Alhamdulillahil-ladhi at'amana wa saqana wa ja'alna muslimin",
+    source: "Abu Dawud",
+    en: { name: "After Eating", sub: "Gratitude for food", meaning: "Praise be to Allah who fed us, gave us drink, and made us Muslims." },
+    bn: { name: "খাওয়ার পরের দোয়া", sub: "খাবারের কৃতজ্ঞতা", meaning: "সেই আল্লাহর প্রশংসা যিনি আমাদের খাইয়েছেন, পান করিয়েছেন এবং মুসলিম বানিয়েছেন।" },
+  },
+  {
+    id: 9, cat: "travel", icon: "✈️", color: "blue",
+    arabic: "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
+    transliteration: "Bismillahi tawakkaltu 'alallahi wa la hawla wa la quwwata illa billah",
+    source: "Abu Dawud",
+    en: { name: "Leaving Home", sub: "Start of journey", meaning: "In the name of Allah, I place my trust in Allah, and there is no power or strength except through Allah." },
+    bn: { name: "বাড়ি থেকে বের হওয়ার দোয়া", sub: "সফরের শুরুতে", meaning: "আল্লাহর নামে, আল্লাহর উপর ভরসা করলাম। আল্লাহ ছাড়া কোনো শক্তি ও ক্ষমতা নেই।" },
+  },
+  {
+    id: 10, cat: "travel", icon: "🚗", color: "purple",
+    arabic: "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ",
+    transliteration: "Subhanal-ladhi sakhkhara lana hadha wa ma kunna lahu muqrinin, wa inna ila rabbina lamunqalibun",
+    source: "Quran 43:13-14",
+    en: { name: "Boarding a Vehicle", sub: "Transport dua", meaning: "Glory to Him who subjected this to us; we were not capable of it, and indeed we will return to our Lord." },
+    bn: { name: "যানবাহনে ওঠার দোয়া", sub: "গাড়িতে ওঠার সময়", meaning: "পবিত্র তিনি যিনি এটি আমাদের অধীন করেছেন, আমরা এর যোগ্য ছিলাম না। নিশ্চয়ই আমরা রবের কাছে ফিরে যাব।" },
+  },
+  {
+    id: 11, cat: "distress", icon: "🤲", color: "pink",
+    arabic: "لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
+    transliteration: "La ilaha illa anta subhanaka inni kuntu minaz-zalimin",
+    source: "Quran 21:87",
+    en: { name: "Dua of Yunus (AS)", sub: "Relief from anxiety", meaning: "There is no deity except You; exalted are You. Indeed, I have been of the wrongdoers." },
+    bn: { name: "ইউনুস (আ)-এর দোয়া", sub: "উদ্বেগ থেকে মুক্তির দোয়া", meaning: "তুমি ছাড়া কোনো মাবুদ নেই, তুমি পবিত্র। নিশ্চয়ই আমি জালেমদের অন্তর্ভুক্ত ছিলাম।" },
+  },
+  {
+    id: 12, cat: "distress", icon: "⚖️", color: "amber",
+    arabic: "رَبَّنَا أَفْرِغْ عَلَيْنَا صَبْرًا وَثَبِّتْ أَقْدَامَنَا وَانصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ",
+    transliteration: "Rabbana afrigh 'alayna sabran wa thabbit aqdamana wansurna 'alal-qawmil-kafirin",
+    source: "Quran 2:250",
+    en: { name: "Dua for Patience", sub: "In times of difficulty", meaning: "Our Lord! Shower us with perseverance, make our steps firm, and give us victory over the disbelieving people." },
+    bn: { name: "ধৈর্যের দোয়া", sub: "কঠিন সময়ে", meaning: "হে আমাদের রব! আমাদের উপর ধৈর্য ঢেলে দাও, আমাদের পা স্থির রাখো এবং কাফেরদের বিরুদ্ধে আমাদের সাহায্য করো।" },
+  },
+  {
+    id: 13, cat: "sleep", icon: "🌙", color: "purple",
+    arabic: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+    transliteration: "Bismikal-lahumma amutu wa ahya",
+    source: "Bukhari",
+    en: { name: "Before Sleeping", sub: "Night protection", meaning: "In Your name, O Allah, I die and I live." },
+    bn: { name: "ঘুমানোর আগের দোয়া", sub: "রাতের সুরক্ষা", meaning: "হে আল্লাহ, তোমার নামেই আমি মরি এবং বাঁচি।" },
+  },
+  {
+    id: 14, cat: "sleep", icon: "🌌", color: "blue",
+    arabic: "اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ",
+    transliteration: "Allahumma qini 'adhabaka yawma tab'athu 'ibadak",
+    source: "Abu Dawud",
+    en: { name: "Before Sleeping (2)", sub: "Protection on Judgment Day", meaning: "O Allah, protect me from Your punishment on the day You resurrect Your servants." },
+    bn: { name: "ঘুমানোর আগের দোয়া (২)", sub: "কিয়ামতের আজাব থেকে সুরক্ষা", meaning: "হে আল্লাহ, যেদিন তুমি বান্দাদের পুনরুত্থিত করবে, সেদিন তোমার আজাব থেকে রক্ষা করো।" },
+  },
+  {
+    id: 15, cat: "forgiveness", icon: "💚", color: "accent",
+    arabic: "أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ الَّذِي لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ وَأَتُوبُ إِلَيْهِ",
+    transliteration: "Astaghfirullaha al-'adhim al-ladhi la ilaha illa huwal-hayyul-qayyum wa atubu ilayh",
+    source: "Tirmidhi",
+    en: { name: "Seeking Forgiveness", sub: "Istighfar", meaning: "I seek forgiveness from Allah the Magnificent, the Ever-Living, the Sustainer of all, and I turn to Him in repentance." },
+    bn: { name: "ক্ষমা প্রার্থনার দোয়া", sub: "ইস্তেগফার", meaning: "আমি মহান আল্লাহর কাছে ক্ষমা চাই, যিনি চিরঞ্জীব, সর্বস্থায়ী। আমি তাঁর কাছে তওবা করছি।" },
+  },
+  {
+    id: 16, cat: "forgiveness", icon: "🌿", color: "coral",
+    arabic: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ خَلَقْتَنِي وَأَنَا عَبْدُكَ وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ",
+    transliteration: "Allahumma anta rabbi la ilaha illa anta, khalaqtani wa ana 'abduk, wa ana 'ala 'ahdika wa wa'dika mastata't",
+    source: "Bukhari",
+    en: { name: "Sayyidul Istighfar", sub: "Master of forgiveness duas", meaning: "O Allah, You are my Lord, there is no deity except You. You created me and I am Your servant, and I uphold Your covenant and promise to the best of my ability." },
+    bn: { name: "সাইয়্যেদুল ইস্তেগফার", sub: "ক্ষমার সেরা দোয়া", meaning: "হে আল্লাহ, তুমি আমার রব। তুমি ছাড়া কোনো মাবুদ নেই। তুমি আমাকে সৃষ্টি করেছো এবং আমি তোমার বান্দা। আমি সাধ্যমতো তোমার অঙ্গীকারে অবিচল।" },
+  },
+];
+
+const DUA_CATEGORIES = [
+  { key: "all",         tk: "duaCatAll"      },
+  { key: "morning",     tk: "duaCatMorning"  },
+  { key: "evening",     tk: "duaCatEvening"  },
+  { key: "prayer",      tk: "duaCatPrayer"   },
+  { key: "food",        tk: "duaCatFood"     },
+  { key: "travel",      tk: "duaCatTravel"   },
+  { key: "distress",    tk: "duaCatDistress" },
+  { key: "sleep",       tk: "duaCatSleep"    },
+  { key: "forgiveness", tk: "duaCatForgive"  },
+];
+
+// Maps color token → { bg, text } using your theme for "accent",
+// or hardcoded ramp values for named colors
+const duaColor = (colorKey, theme) => {
+  const map = {
+    accent: { bg: theme.accentBg,  text: theme.accent  },
+    purple: { bg: "#EEEDFE",       text: "#534AB7"     },
+    amber:  { bg: "#FAEEDA",       text: "#BA7517"     },
+    blue:   { bg: "#E6F1FB",       text: "#185FA5"     },
+    coral:  { bg: "#FAECE7",       text: "#993C1D"     },
+    pink:   { bg: "#FBEAF0",       text: "#993556"     },
+  };
+  return map[colorKey] || map.accent;
+};
+
+// ── 4. Paste DuaSection inside your main component ────────────────────────────
+//    (next to SettingsSection, PrayerSection, etc.)
+//    It reads `theme`, `lang`, and `t` from your outer scope — no props needed.
+
+const DuaSection = () => {
+  const [activeCat, setActiveCat]   = React.useState("all");
+  const [expandedId, setExpandedId] = React.useState(null);
+  const [search, setSearch]         = React.useState("");
+
+  const L = lang; // "en" | "bn"  ← from your outer useState
+
+  const filtered = React.useMemo(() => {
+    const q = search.toLowerCase();
+    return DUA_DATA.filter((d) => {
+      const matchCat    = activeCat === "all" || d.cat === activeCat;
+      const matchSearch =
+        !q ||
+        d[L].name.toLowerCase().includes(q) ||
+        d[L].meaning.toLowerCase().includes(q) ||
+        d.transliteration.toLowerCase().includes(q);
+      return matchCat && matchSearch;
+    });
+  }, [activeCat, search, L]);
+
+  return (
+    <div style={{ flex: 1, overflowY: "auto", padding: "24px 20px" }}>
+
+      {/* ── Heading — mirrors SettingsSection exactly ── */}
+      <h2
+        style={{
+          fontSize: 17, fontWeight: 600,
+          color: theme.text, marginBottom: 4,
+          fontFamily: "Cinzel, serif",
+        }}
+      >
+        {t("duaTitle")}
+      </h2>
+      <p style={{ fontSize: 12.5, color: theme.textSec, marginBottom: 16 }}>
+        بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
+      </p>
+
+      {/* ── Search bar ── */}
+      <div
+        style={{
+          display: "flex", alignItems: "center", gap: 8,
+          background: theme.bgSec,
+          border: `1px solid ${theme.border}`,
+          borderRadius: 12, padding: "8px 12px",
+          marginBottom: 14,
+        }}
+      >
+        <span style={{ color: theme.textTer, display: "flex" }}>
+          <Icons.Search />
+        </span>
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder={t("duaSearch")}
+          style={{
+            flex: 1, border: "none", outline: "none",
+            background: "transparent",
+            fontSize: 13, color: theme.text,
+          }}
+        />
+        {search && (
+          <button
+            onClick={() => setSearch("")}
+            style={{
+              background: "none", border: "none", cursor: "pointer",
+              color: theme.textTer, fontSize: 17, lineHeight: 1, padding: 0,
+            }}
+          >
+            ×
+          </button>
+        )}
+      </div>
+
+      {/* ── Category tabs — same pill style as your language buttons ── */}
+      <div
+        style={{
+          display: "flex", gap: 6, overflowX: "auto",
+          scrollbarWidth: "none", paddingBottom: 2, marginBottom: 16,
+        }}
+      >
+        {DUA_CATEGORIES.map(({ key, tk }) => {
+          const isActive = activeCat === key;
+          return (
+            <button
+              key={key}
+              onClick={() => { setActiveCat(key); setExpandedId(null); }}
+              style={{
+                padding: "5px 12px", borderRadius: 99,
+                cursor: "pointer", whiteSpace: "nowrap",
+                fontSize: 12, fontWeight: 600,
+                border: `1px solid ${isActive ? theme.accent : theme.borderMed}`,
+                background: isActive ? theme.accentBg : "transparent",
+                color: isActive ? theme.accent : theme.textSec,
+                transition: "all .18s",
+              }}
+            >
+              {t(tk)}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── Empty state ── */}
+      {filtered.length === 0 ? (
+        <div
+          style={{
+            background: theme.bgSec, borderRadius: 14,
+            border: `1px solid ${theme.border}`,
+            padding: "32px 20px", textAlign: "center",
+          }}
+        >
+          <span style={{ fontSize: 13, color: theme.textTer }}>{t("duaEmpty")}</span>
+        </div>
+      ) : (
+
+        /* ── Dua cards — same structure as SettingsSection group cards ── */
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {filtered.map((d) => {
+            const isOpen = expandedId === d.id;
+            const clr    = duaColor(d.color, theme);
+            const info   = d[L];
+
+            return (
+              <div
+                key={d.id}
+                style={{
+                  background: theme.bgSec,
+                  borderRadius: 14,
+                  border: `1px solid ${isOpen ? theme.accent : theme.border}`,
+                  overflow: "hidden",
+                  transition: "border-color .18s",
+                }}
+              >
+                {/* Row header — identical layout to your settings rows */}
+                <div
+                  onClick={() => setExpandedId(isOpen ? null : d.id)}
+                  style={{
+                    display: "flex", alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 12, padding: "13px 16px",
+                    cursor: "pointer",
+                    borderBottom: isOpen ? `1px solid ${theme.border}` : "none",
+                  }}
+                >
+                  {/* Left side — icon + label/desc */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 0 }}>
+                    <div
+                      style={{
+                        width: 36, height: 36, borderRadius: 10,
+                        background: clr.bg, flexShrink: 0,
+                        display: "flex", alignItems: "center",
+                        justifyContent: "center", fontSize: 17,
+                      }}
+                    >
+                      {d.icon}
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 13.5, color: theme.text, fontWeight: 500 }}>
+                        {info.name}
+                      </div>
+                      <div style={{ fontSize: 11.5, color: theme.textTer }}>
+                        {info.sub}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Chevron — same pattern as your accordions */}
+                  <svg
+                    width="15" height="15" viewBox="0 0 16 16"
+                    fill="none" stroke={theme.textTer} strokeWidth="1.5"
+                    style={{
+                      flexShrink: 0, transition: "transform .2s",
+                      transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                    }}
+                  >
+                    <path d="M4 6l4 4 4-4" />
+                  </svg>
+                </div>
+
+                {/* Expanded content */}
+                {isOpen && (
+                  <div style={{ padding: "14px 16px 16px" }}>
+
+                    {/* Arabic text */}
+                    <div
+                      style={{
+                        fontSize: 21, lineHeight: 2.1,
+                        textAlign: "right", direction: "rtl",
+                        color: theme.text, fontWeight: 600,
+                        fontFamily: "'Amiri','Arabic Typesetting','Traditional Arabic',serif",
+                        letterSpacing: 0.4, marginBottom: 10,
+                      }}
+                    >
+                      {d.arabic}
+                    </div>
+
+                    {/* Transliteration */}
+                    <div
+                      style={{
+                        fontSize: 12.5, color: theme.textSec,
+                        fontStyle: "italic", lineHeight: 1.7,
+                        marginBottom: 12,
+                      }}
+                    >
+                      {d.transliteration}
+                    </div>
+
+                    {/* Meaning box — bgTer card like your settings group header */}
+                    <div
+                      style={{
+                        background: theme.bgTer,
+                        border: `1px solid ${theme.border}`,
+                        borderRadius: 10, padding: "10px 13px",
+                        marginBottom: 10,
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: 10.5, fontWeight: 600,
+                          color: theme.accent,
+                          textTransform: "uppercase", letterSpacing: 0.7,
+                          marginBottom: 5,
+                        }}
+                      >
+                        {t("duaMeaning")}
+                      </div>
+                      <div style={{ fontSize: 13, color: theme.text, lineHeight: 1.65 }}>
+                        {info.meaning}
+                      </div>
+                    </div>
+
+                    {/* Source badge — same pill style as language buttons */}
+                    <span
+                      style={{
+                        display: "inline-block",
+                        fontSize: 11, padding: "3px 10px",
+                        background: theme.accentBg,
+                        color: theme.accent,
+                        borderRadius: 99, fontWeight: 600,
+                      }}
+                    >
+                      📖 {t("duaSource")}: {d.source}
+                    </span>
+
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ── 5. Add Icons.Search (if not already in your Icons object) ─────────────────
+//
+
+/*
+── USAGE EXAMPLES ────────────────────────────────────────────────────────────
+
+1. English mode (default):
+   <DuaSection lang="en" />
+
+2. Bangla mode:
+   <DuaSection lang="bn" />
+
+3. With your app theme:
+   <DuaSection
+     lang={userLanguage}       // "en" | "bn"
+     theme={{
+       background: "#FFFFFF",
+       surface:    "#F7F6F3",
+       border:     "rgba(0,0,0,0.09)",
+       text:       "#1A1A1A",
+       textSec:    "#6B6B6B",
+       textTer:    "#A3A3A3",
+       accent:     "#0F6E56",
+       accentBg:   "#E1F5EE",
+     }}
+   />
+
+4. Dynamic language switching:
+   const [lang, setLang] = useState("en");
+   ...
+   <DuaSection lang={lang} theme={theme} />
+
+── PROPS ─────────────────────────────────────────────────────────────────────
+  lang    "en" | "bn"     Language for names, subtitles, and meanings
+  theme   object          Optional: your app's color tokens (see above)
+
+── FEATURES ──────────────────────────────────────────────────────────────────
+  • 16 essential duas across 8 categories
+  • Full Arabic text (every dua)
+  • Transliteration (every dua)
+  • English & Bangla names, subtitles, and meanings
+  • Category tab filtering
+  • Live search (name, meaning, transliteration)
+  • Tap-to-expand cards
+  • Hadith / Quran source badge
+  • Fully theme-able via props
+*/
 
   const Sidebar = ({ setMessages }) => (
     <aside
@@ -3334,6 +4042,7 @@ export default function App() {
             )}
             {section === "history" && <HistorySection />}
             {section === "prayer" && <PrayerSection />}
+            {section === "dua" && <DuaSection theme={theme}/>}
             {section === "about" && <AboutSection theme={theme} t={t} />}
             {/* {section === "profile" && <ProfileSection />} */}
             {section === "settings" && <SettingsSection setMessages={setMessages} />}
