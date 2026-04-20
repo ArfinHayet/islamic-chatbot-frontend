@@ -6,13 +6,11 @@
 
 import axios from "axios";
 import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
-import 'primereact/resources/themes/lara-dark-teal/theme.css';
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
+import "primereact/resources/themes/lara-dark-teal/theme.css";
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 
-
-import { TabMenu } from 'primereact/tabmenu';
-        
+import { TabMenu } from "primereact/tabmenu";
 
 // ── CONSTANTS ────────────────────────────────────────────────
 const API_URL = "https://islamic-chatbot-lac.vercel.app/api/v1/chat/stream";
@@ -102,35 +100,38 @@ const TRANSLATIONS = {
     nextPrayer: "পরবর্তী নামাজ",
     currentPrayer: "এখন",
     hijriDate: "হিজরি তারিখ",
-about: "আমাদের সম্পর্কে",
-aboutLabel: "আমাদের সম্পর্কে",
-aboutAppTitle: "Noor AI — ইসলামিক জ্ঞান সহায়তাকারী",
-aboutAppDesc: "Noor AI একটি দ্বিভাষিক ইসলামিক চ্যাটবট যা মুসলিমদের কুরআন, হাদিস ও ইসলামিক ফিকহ সহজে অন্বেষণে সহায়তা করে। আধুনিক AI দ্বারা চালিত এই বট বাংলা ও ইংরেজিতে নির্ভুলভাবে প্রশ্নের উত্তর দেয়।",
-aboutTags: ["কুরআন ও হাদিস", "দ্বিভাষিক (EN / BN)", "নামাজের সময়", "ফিকহ পছন্দ", "AI চালিত", "v2.0"],
-aboutDevsLabel: "ডেভেলপারদের সাথে পরিচিত হন",
-aboutDevsSubtitle: "আমরা বুদ্ধিমান সিস্টেম তৈরি করি — AI চ্যাটবট থেকে সম্পূর্ণ অটোমেশন পাইপলাইন পর্যন্ত।",
-aboutDev1Name: "আরফিন হায়েত",
-aboutDev1Role: "AI ইঞ্জিনিয়ার",
-aboutDev1Bio: "AI ইন্টিগ্রেশন, LLM-চালিত অ্যাপ্লিকেশন এবং অত্যাধুনিক মডেল ব্যবহার করে জটিল ব্যবসায়িক ওয়ার্কফ্লো অটোমেট করায় বিশেষজ্ঞ।",
-aboutDev2Name: "মোহাম্মাদ রুম্মান",
-aboutDev2Role: "ফুল-স্ট্যাক ডেভেলপার",
-aboutDev2Bio: "রেসপন্সিভ আধুনিক UI এবং স্কেলেবল ব্যাকএন্ড সিস্টেম ডিজাইনে দক্ষ। ধারণাকে পরিশীলিত পণ্যে রূপান্তর করেন।",
-aboutWeDoTitle: "আমরা আপনার জন্য কী করতে পারি",
-aboutWeDoDesc: "আমরা যেকোনো বিদ্যমান সিস্টেমকে AI-চালিত করতে পারি, অটোমেশন পাইপলাইন তৈরি করতে পারি এবং ঐতিহ্যবাহী ডেটাবেজকে ভেক্টর স্টোরে রূপান্তর করতে পারি — আপনার ডেটাকে AI-এর জন্য অর্থবহভাবে ব্যবহারযোগ্য করে তোলে। অটোমেট বা স্মার্ট করা যায় এমন যেকোনো কিছু আমরা তৈরি করি।",
-aboutContactLabel: "যোগাযোগ করুন",
-aboutContactSubtitle: "কোনো প্রজেক্ট মাথায় আছে? আমরা শুনতে আগ্রহী।",
-contactName: "আপনার নাম",
-contactEmail: "আপনার ইমেইল",
-contactMessage: "আপনার প্রজেক্ট সম্পর্কে বলুন...",
-contactSend: "বার্তা পাঠান",
-contactSending: "পাঠানো হচ্ছে...",
-contactSuccess: "বার্তা পাঠানো হয়েছে! আমরা শীঘ্রই যোগাযোগ করব।",
-contactError: "সব ঘর পূরণ করুন বা আবার চেষ্টা করুন।",
-aboutSkills1: ["LLM / RAG", "অটোমেশন", "ভেক্টর DB", "Python"],
-aboutSkills2: ["React", "Node.js", "UI/UX", "APIs"],
+    about: "আমাদের সম্পর্কে",
+    aboutLabel: "আমাদের সম্পর্কে",
+    aboutAppTitle: "Noor AI — ইসলামিক জ্ঞান সহায়তাকারী",
+    aboutAppDesc:
+      "Noor AI একটি দ্বিভাষিক ইসলামিক চ্যাটবট যা মুসলিমদের কুরআন, হাদিস ও ইসলামিক ফিকহ সহজে অন্বেষণে সহায়তা করে। আধুনিক AI দ্বারা চালিত এই বট বাংলা ও ইংরেজিতে নির্ভুলভাবে প্রশ্নের উত্তর দেয়।",
+    aboutTags: ["কুরআন ও হাদিস", "দ্বিভাষিক (EN / BN)", "নামাজের সময়", "ফিকহ পছন্দ", "AI চালিত", "v2.0"],
+    aboutDevsLabel: "ডেভেলপারদের সাথে পরিচিত হন",
+    aboutDevsSubtitle: "আমরা বুদ্ধিমান সিস্টেম তৈরি করি — AI চ্যাটবট থেকে সম্পূর্ণ অটোমেশন পাইপলাইন পর্যন্ত।",
+    aboutDev1Name: "আরফিন হায়েত",
+    aboutDev1Role: "ফুল-স্ট্যাক ডেভেলপার",
+    aboutDev1Bio:
+      "AI ইন্টিগ্রেশন, LLM-চালিত অ্যাপ্লিকেশন এবং অত্যাধুনিক মডেল ব্যবহার করে জটিল ব্যবসায়িক ওয়ার্কফ্লো অটোমেট করায় বিশেষজ্ঞ।",
+    aboutDev2Name: "মোহাম্মাদ রুম্মান",
+    aboutDev2Role: "ফুল-স্ট্যাক ডেভেলপার",
+    aboutDev2Bio:
+      "রেসপন্সিভ আধুনিক UI এবং স্কেলেবল ব্যাকএন্ড সিস্টেম ডিজাইনে দক্ষ। ধারণাকে পরিশীলিত পণ্যে রূপান্তর করেন।",
+    aboutWeDoTitle: "আমরা আপনার জন্য কী করতে পারি",
+    aboutWeDoDesc:
+      "আমরা যেকোনো বিদ্যমান সিস্টেমকে AI-চালিত করতে পারি, অটোমেশন পাইপলাইন তৈরি করতে পারি এবং ঐতিহ্যবাহী ডেটাবেজকে ভেক্টর স্টোরে রূপান্তর করতে পারি — আপনার ডেটাকে AI-এর জন্য অর্থবহভাবে ব্যবহারযোগ্য করে তোলে। অটোমেট বা স্মার্ট করা যায় এমন যেকোনো কিছু আমরা তৈরি করি।",
+    aboutContactLabel: "যোগাযোগ করুন",
+    aboutContactSubtitle: "কোনো প্রজেক্ট মাথায় আছে? আমরা শুনতে আগ্রহী।",
+    contactName: "আপনার নাম",
+    contactEmail: "আপনার ইমেইল",
+    contactMessage: "আপনার প্রজেক্ট সম্পর্কে বলুন...",
+    contactSend: "বার্তা পাঠান",
+    contactSending: "পাঠানো হচ্ছে...",
+    contactSuccess: "বার্তা পাঠানো হয়েছে! আমরা শীঘ্রই যোগাযোগ করব।",
+    contactError: "সব ঘর পূরণ করুন বা আবার চেষ্টা করুন।",
+    aboutSkills1: ["LLM / RAG", "অটোমেশন", "ভেক্টর DB", "Python"],
+    aboutSkills2: ["React", "Node.js", "UI/UX", "APIs"],
 
-// en
-
+    // en
   },
   en: {
     appName: "Noor AI",
@@ -212,30 +213,34 @@ aboutSkills2: ["React", "Node.js", "UI/UX", "APIs"],
     hijriDate: "Hijri Date",
     about: "About Us",
     aboutLabel: "About Us",
-aboutAppTitle: "Noor AI — Islamic Knowledge Assistant",
-aboutAppDesc: "Noor AI is a bilingual Islamic chatbot designed to help Muslims explore the Quran, Hadith, and Islamic jurisprudence with ease. Built with modern AI, it answers questions in both Bangla and English with accuracy and care.",
-aboutTags: ["Quran & Hadith", "Bilingual (EN / BN)", "Prayer Times", "Fiqh Preferences", "AI Powered", "v2.0"],
-aboutDevsLabel: "Meet the Developers",
-aboutDevsSubtitle: "We build intelligent systems — from AI chatbots to full automation pipelines.",
-aboutDev1Name: "Arfin Hayet",
-aboutDev1Role: "AI Engineer",
-aboutDev1Bio: "Specializes in AI integration, LLM-powered applications, and automating complex business workflows using cutting-edge models.",
-aboutDev2Name: "Mohammad Rumman",
-aboutDev2Role: "Full-Stack Dev",
-aboutDev2Bio: "Expert in designing responsive, modern UIs and scalable backend systems. Transforms ideas into polished user-facing products.",
-aboutWeDoTitle: "What we can do for you",
-aboutWeDoDesc: "We convert any existing system into an AI-powered one, build automation pipelines, and transform traditional databases into vector stores — making your data queryable by AI in a semantically rich way. If it can be automated or made smarter, we build it.",
-aboutContactLabel: "Contact Us",
-aboutContactSubtitle: "Have a project in mind? We'd love to hear from you.",
-contactName: "Your name",
-contactEmail: "Your email",
-contactMessage: "Tell us about your project...",
-contactSend: "Send Message",
-contactSending: "Sending...",
-contactSuccess: "Message sent! We'll get back to you soon.",
-contactError: "Please fill all fields or try again.",
-aboutSkills1: ["LLM / RAG", "Automation", "Vector DB", "Python"],
-aboutSkills2: ["React", "Node.js", "UI/UX", "APIs"],
+    aboutAppTitle: "Noor AI — Islamic Knowledge Assistant",
+    aboutAppDesc:
+      "Noor AI is a bilingual Islamic chatbot designed to help Muslims explore the Quran, Hadith, and Islamic jurisprudence with ease. Built with modern AI, it answers questions in both Bangla and English with accuracy and care.",
+    aboutTags: ["Quran & Hadith", "Bilingual (EN / BN)", "Prayer Times", "Fiqh Preferences", "AI Powered", "v2.0"],
+    aboutDevsLabel: "Meet the Developers",
+    aboutDevsSubtitle: "We build intelligent systems — from AI chatbots to full automation pipelines.",
+    aboutDev1Name: "Arfin Hayet",
+    aboutDev1Role: "Full-Stack Dev",
+    aboutDev1Bio:
+      "Specializes in AI integration, LLM-powered applications, and automating complex business workflows using cutting-edge models.",
+    aboutDev2Name: "Mohammad Rumman",
+    aboutDev2Role: "Full-Stack Dev",
+    aboutDev2Bio:
+      "Expert in designing responsive, modern UIs and scalable backend systems. Transforms ideas into polished user-facing products.",
+    aboutWeDoTitle: "What we can do for you",
+    aboutWeDoDesc:
+      "We convert any existing system into an AI-powered one, build automation pipelines, and transform traditional databases into vector stores — making your data queryable by AI in a semantically rich way. If it can be automated or made smarter, we build it.",
+    aboutContactLabel: "Contact Us",
+    aboutContactSubtitle: "Have a project in mind? We'd love to hear from you.",
+    contactName: "Your name",
+    contactEmail: "Your email",
+    contactMessage: "Tell us about your project...",
+    contactSend: "Send Message",
+    contactSending: "Sending...",
+    contactSuccess: "Message sent! We'll get back to you soon.",
+    contactError: "Please fill all fields or try again.",
+    aboutSkills1: ["LLM / RAG", "Automation", "Vector DB", "Python"],
+    aboutSkills2: ["React", "Node.js", "UI/UX", "APIs"],
   },
 };
 
@@ -260,12 +265,21 @@ const MOCK_HISTORY_DATA = {
 // ── SVG ICONS ────────────────────────────────────────────────
 const Icons = {
   Info: () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10" />
-    <line x1="12" y1="8" x2="12" y2="8" />
-    <line x1="12" y1="12" x2="12" y2="16" />
-  </svg>
-),
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="8" />
+      <line x1="12" y1="12" x2="12" y2="16" />
+    </svg>
+  ),
   Chat: () => (
     <svg
       width="18"
@@ -922,11 +936,11 @@ function LangPill({ lang, setLang, theme, setMessages }) {
         <button
           key={code}
           onClick={() => {
-            setLang(code)
+            setLang(code);
             setMessages((prev) => {
-              prev[0] = { id: 0, role: "assistant", content: TRANSLATIONS[code].greeting, streaming: false }
-              return [...prev]
-            })
+              prev[0] = { id: 0, role: "assistant", content: TRANSLATIONS[code].greeting, streaming: false };
+              return [...prev];
+            });
           }}
           style={{
             padding: "4px 11px",
@@ -1004,6 +1018,22 @@ export default function App() {
   const [messages, setMessages] = useState([
     { id: 0, role: "assistant", content: TRANSLATIONS[lang].greeting, streaming: false },
   ]);
+
+  // responsive helper: track desktop vs mobile to reliably hide footer on small screens
+  const [isDesktop, setIsDesktop] = useState(() =>
+    typeof window !== "undefined" ? window.matchMedia("(min-width:768px)").matches : false,
+  );
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(min-width:768px)");
+    const onChange = (e) => setIsDesktop(e.matches);
+    if (mq.addEventListener) mq.addEventListener("change", onChange);
+    else mq.addListener(onChange);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener("change", onChange);
+      else mq.removeListener(onChange);
+    };
+  }, []);
 
   // clipboard copy feedback
   const [copiedId, setCopiedId] = useState(null);
@@ -1330,484 +1360,574 @@ export default function App() {
     { id: "settings", key: "settings", Icon: Icons.Settings },
   ];
 
-const PrayerSection = () => {
-  const [prayerData, setPrayerData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [now, setNow] = useState(new Date());
-  const [countdown, setCountdown] = useState("");
-  const [clockMode, setClockMode] = useState("digital"); // "digital" | "analog"
-  const [madhab, setMadhab] = useState(settings?.madhab ?? "standard"); // local override
+  const PrayerSection = () => {
+    const [prayerData, setPrayerData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+    const [now, setNow] = useState(new Date());
+    const [countdown, setCountdown] = useState("");
+    const [clockMode, setClockMode] = useState("digital"); // "digital" | "analog"
+    const [madhab, setMadhab] = useState(settings?.madhab ?? "standard"); // local override
 
-  const PRAYER_KEYS = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
+    const PRAYER_KEYS = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
 
-  const PRAYER_ICONS = {
-    Fajr: "pi pi-star",
-    Sunrise: "pi pi-sun",
-    Dhuhr: "pi pi-circle-fill",
-    Asr: "pi pi-clock",
-    Maghrib: "pi pi-palette",
-    Isha: "pi pi-moon",
-  };
-
-  // ── Tick every second ───────────────────────────────────────────────────────
-  useEffect(() => {
-    const timer = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-const [rawData, setRawData] = useState(null); // cache full API response
-
-const fetchPrayers = async () => {
-  setLoading(true);
-  setError(false);
-  try {
-    const res = await fetch(
-      "https://islamic-chatbot-lac.vercel.app/api/v1/chat/prayer-times"
-    );
-    const json = await res.json();
-    const entry = json.data[0];
-    setRawData(entry); // cache both madhab entries
-    const idx = madhab === "hanafi" ? "1" : "0";
-    setPrayerData(entry[idx].data);
-  } catch {
-    setError(true);
-  } finally {
-    setLoading(false);
-  }
-};
-
-// Fetch only once on mount
-useEffect(() => {
-  fetchPrayers();
-}, []);
-
-// Switch data locally when madhab changes — no refetch
-useEffect(() => {
-  if (!rawData) return;
-  const idx = madhab === "hanafi" ? "1" : "0";
-  setPrayerData(rawData[idx].data);
-}, [madhab, rawData]);
-
-  // ── Countdown ────────────────────────────────────────────────────────────────
-  useEffect(() => {
-    if (!prayerData) return;
-    const toDate = (str) => {
-      const [h, m] = str.split(":").map(Number);
-      const d = new Date();
-      d.setHours(h, m, 0, 0);
-      return d;
+    const PRAYER_ICONS = {
+      Fajr: "pi pi-star",
+      Sunrise: "pi pi-sun",
+      Dhuhr: "pi pi-circle-fill",
+      Asr: "pi pi-clock",
+      Maghrib: "pi pi-palette",
+      Isha: "pi pi-moon",
     };
-    const times = PRAYER_KEYS.map((k) => ({
-      key: k,
-      date: toDate(prayerData.timings[k]),
-    }));
-    const future = times.filter((t) => t.date > new Date());
-    const next = future.length ? future[0] : times[0];
-    const diff = next.date - new Date();
-    const totalSec = Math.max(0, Math.floor(diff / 1000));
-    const h = Math.floor(totalSec / 3600);
-    const m = Math.floor((totalSec % 3600) / 60);
-    const s = totalSec % 60;
-    setCountdown(
-      `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`
-    );
-  }, [now, prayerData]);
 
-  // ── Helpers ──────────────────────────────────────────────────────────────────
-  const formatTime = (time24) => {
-    if (!time24) return "";
-    const [hourStr, minuteStr] = time24.split(":");
-    let hour = parseInt(hourStr, 10);
-    const minute = minuteStr ?? "00";
-    const period = hour >= 12 ? "PM" : "AM";
-    hour = hour % 12 || 12;
-    return `${hour}:${minute} ${period}`;
-  };
+    // ── Tick every second ───────────────────────────────────────────────────────
+    useEffect(() => {
+      const timer = setInterval(() => setNow(new Date()), 1000);
+      return () => clearInterval(timer);
+    }, []);
 
-  const getStatus = (key, timings) => {
-    const toDate = (str) => {
-      const [h, m] = str.split(":").map(Number);
-      const d = new Date(now);
-      d.setHours(h, m, 0, 0);
-      return d;
+    const [rawData, setRawData] = useState(null); // cache full API response
+
+    const fetchPrayers = async () => {
+      setLoading(true);
+      setError(false);
+      try {
+        const res = await fetch("https://islamic-chatbot-lac.vercel.app/api/v1/chat/prayer-times");
+        const json = await res.json();
+        const entry = json.data[0];
+        setRawData(entry); // cache both madhab entries
+        const idx = madhab === "hanafi" ? "1" : "0";
+        setPrayerData(entry[idx].data);
+      } catch {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
     };
-    const times = PRAYER_KEYS.map((k) => ({ key: k, date: toDate(timings[k]) }));
-    const future = times.filter((t) => t.date > now);
-    const next = future.length ? future[0] : times[0];
-    const prev = times.filter((t) => t.date <= now);
-    const current = prev.length ? prev[prev.length - 1] : null;
-    if (current && current.key === key) return "current";
-    if (next.key === key) return "next";
-    return "done";
-  };
 
-  // ── Analog Clock (pure SVG — no extra library needed) ───────────────────────
-  const AnalogClock = ({ date }) => {
-    const size = 180;
-    const cx = size / 2;
-    const cy = size / 2;
-    const r = size / 2 - 10;
+    // Fetch only once on mount
+    useEffect(() => {
+      fetchPrayers();
+    }, []);
 
-    const sec = date.getSeconds();
-    const min = date.getMinutes();
-    const hr = date.getHours() % 12;
+    // Switch data locally when madhab changes — no refetch
+    useEffect(() => {
+      if (!rawData) return;
+      const idx = madhab === "hanafi" ? "1" : "0";
+      setPrayerData(rawData[idx].data);
+    }, [madhab, rawData]);
 
-    const toRad = (deg) => (deg - 90) * (Math.PI / 180);
-    const hand = (angle, length, width, color) => {
-      const rad = toRad(angle);
-      const x2 = cx + length * Math.cos(rad);
-      const y2 = cy + length * Math.sin(rad);
+    // ── Countdown ────────────────────────────────────────────────────────────────
+    useEffect(() => {
+      if (!prayerData) return;
+      const toDate = (str) => {
+        const [h, m] = str.split(":").map(Number);
+        const d = new Date();
+        d.setHours(h, m, 0, 0);
+        return d;
+      };
+      const times = PRAYER_KEYS.map((k) => ({
+        key: k,
+        date: toDate(prayerData.timings[k]),
+      }));
+      const future = times.filter((t) => t.date > new Date());
+      const next = future.length ? future[0] : times[0];
+      const diff = next.date - new Date();
+      const totalSec = Math.max(0, Math.floor(diff / 1000));
+      const h = Math.floor(totalSec / 3600);
+      const m = Math.floor((totalSec % 3600) / 60);
+      const s = totalSec % 60;
+      setCountdown(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`);
+    }, [now, prayerData]);
+
+    // ── Helpers ──────────────────────────────────────────────────────────────────
+    const formatTime = (time24) => {
+      if (!time24) return "";
+      const [hourStr, minuteStr] = time24.split(":");
+      let hour = parseInt(hourStr, 10);
+      const minute = minuteStr ?? "00";
+      const period = hour >= 12 ? "PM" : "AM";
+      hour = hour % 12 || 12;
+      return `${hour}:${minute} ${period}`;
+    };
+
+    const getStatus = (key, timings) => {
+      const toDate = (str) => {
+        const [h, m] = str.split(":").map(Number);
+        const d = new Date(now);
+        d.setHours(h, m, 0, 0);
+        return d;
+      };
+      const times = PRAYER_KEYS.map((k) => ({ key: k, date: toDate(timings[k]) }));
+      const future = times.filter((t) => t.date > now);
+      const next = future.length ? future[0] : times[0];
+      const prev = times.filter((t) => t.date <= now);
+      const current = prev.length ? prev[prev.length - 1] : null;
+      if (current && current.key === key) return "current";
+      if (next.key === key) return "next";
+      return "done";
+    };
+
+    // ── Analog Clock (pure SVG — no extra library needed) ───────────────────────
+    const AnalogClock = ({ date }) => {
+      const size = 180;
+      const cx = size / 2;
+      const cy = size / 2;
+      const r = size / 2 - 10;
+
+      const sec = date.getSeconds();
+      const min = date.getMinutes();
+      const hr = date.getHours() % 12;
+
+      const toRad = (deg) => (deg - 90) * (Math.PI / 180);
+      const hand = (angle, length, width, color) => {
+        const rad = toRad(angle);
+        const x2 = cx + length * Math.cos(rad);
+        const y2 = cy + length * Math.sin(rad);
+        return <line x1={cx} y1={cy} x2={x2} y2={y2} stroke={color} strokeWidth={width} strokeLinecap="round" />;
+      };
+
+      const hrAngle = (hr + min / 60) * 30;
+      const minAngle = (min + sec / 60) * 6;
+      const secAngle = sec * 6;
+
+      const ticks = Array.from({ length: 60 }, (_, i) => {
+        const isMajor = i % 5 === 0;
+        const rad = toRad(i * 6);
+        const outer = r;
+        const inner = r - (isMajor ? 10 : 5);
+        return (
+          <line
+            key={i}
+            x1={cx + outer * Math.cos(rad)}
+            y1={cy + outer * Math.sin(rad)}
+            x2={cx + inner * Math.cos(rad)}
+            y2={cy + inner * Math.sin(rad)}
+            stroke={isMajor ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.2)"}
+            strokeWidth={isMajor ? 2 : 1}
+          />
+        );
+      });
+
       return (
-        <line
-          x1={cx} y1={cy} x2={x2} y2={y2}
-          stroke={color} strokeWidth={width}
-          strokeLinecap="round"
-        />
+        <svg width={size} height={size} style={{ filter: "drop-shadow(0 4px 16px rgba(0,0,0,0.4))" }}>
+          {/* Face */}
+          <circle cx={cx} cy={cy} r={r} fill="#0d2e27" stroke="rgba(110,231,183,0.3)" strokeWidth={2} />
+          {/* Ticks */}
+          {ticks}
+          {/* Hour numbers */}
+          {[12, 3, 6, 9].map((n, i) => {
+            const angle = (i * 90 - 90) * (Math.PI / 180);
+            return (
+              <text
+                key={n}
+                x={cx + (r - 22) * Math.cos(angle)}
+                y={cy + (r - 22) * Math.sin(angle)}
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fill="rgba(255,255,255,0.7)"
+                fontSize={11}
+                fontFamily="DM Mono, monospace"
+              >
+                {n}
+              </text>
+            );
+          })}
+          {/* Hands */}
+          {hand(hrAngle, r * 0.5, 4, "white")}
+          {hand(minAngle, r * 0.7, 3, "rgba(110,231,183,1)")}
+          {hand(secAngle, r * 0.82, 1.5, "#f59e0b")}
+          {/* Center cap */}
+          <circle cx={cx} cy={cy} r={5} fill="#6ee7b7" />
+        </svg>
       );
     };
 
-    const hrAngle  = (hr + min / 60) * 30;
-    const minAngle = (min + sec / 60) * 6;
-    const secAngle = sec * 6;
-
-    const ticks = Array.from({ length: 60 }, (_, i) => {
-      const isMajor = i % 5 === 0;
-      const rad = toRad(i * 6);
-      const outer = r;
-      const inner = r - (isMajor ? 10 : 5);
+    // ── Digital Clock display ────────────────────────────────────────────────────
+    const DigitalClock = ({ date }) => {
+      const hh = String(date.getHours()).padStart(2, "0");
+      const mm = String(date.getMinutes()).padStart(2, "0");
+      const ss = String(date.getSeconds()).padStart(2, "0");
+      const period = date.getHours() >= 12 ? "PM" : "AM";
+      const h12 = date.getHours() % 12 || 12;
       return (
-        <line
-          key={i}
-          x1={cx + outer * Math.cos(rad)} y1={cy + outer * Math.sin(rad)}
-          x2={cx + inner * Math.cos(rad)} y2={cy + inner * Math.sin(rad)}
-          stroke={isMajor ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.2)"}
-          strokeWidth={isMajor ? 2 : 1}
-        />
+        <div style={{ textAlign: "center" }}>
+          <div
+            style={{
+              fontSize: 46,
+              fontWeight: 800,
+              fontFamily: "DM Mono, monospace",
+              color: "white",
+              letterSpacing: 4,
+              lineHeight: 1,
+            }}
+          >
+            {String(h12).padStart(2, "0")}
+            <span style={{ color: "#6ee7b7", animation: "blink 1s step-end infinite" }}>:</span>
+            {mm}
+            <span style={{ color: "#6ee7b7", animation: "blink 1s step-end infinite" }}>:</span>
+            {ss}
+          </div>
+          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 4, letterSpacing: 3 }}>
+            {period} · {date.toLocaleDateString("en-US", { weekday: "long" })}
+          </div>
+          <style>{`@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }`}</style>
+        </div>
       );
-    });
+    };
 
-    return (
-      <svg width={size} height={size} style={{ filter: "drop-shadow(0 4px 16px rgba(0,0,0,0.4))" }}>
-        {/* Face */}
-        <circle cx={cx} cy={cy} r={r} fill="#0d2e27" stroke="rgba(110,231,183,0.3)" strokeWidth={2} />
-        {/* Ticks */}
-        {ticks}
-        {/* Hour numbers */}
-        {[12,3,6,9].map((n, i) => {
-          const angle = (i * 90 - 90) * (Math.PI / 180);
-          return (
-            <text
-              key={n}
-              x={cx + (r - 22) * Math.cos(angle)}
-              y={cy + (r - 22) * Math.sin(angle)}
-              textAnchor="middle" dominantBaseline="middle"
-              fill="rgba(255,255,255,0.7)" fontSize={11}
-              fontFamily="DM Mono, monospace"
-            >{n}</text>
-          );
-        })}
-        {/* Hands */}
-        {hand(hrAngle,  r * 0.5, 4, "white")}
-        {hand(minAngle, r * 0.7, 3, "rgba(110,231,183,1)")}
-        {hand(secAngle, r * 0.82, 1.5, "#f59e0b")}
-        {/* Center cap */}
-        <circle cx={cx} cy={cy} r={5} fill="#6ee7b7" />
-      </svg>
-    );
-  };
-
-  // ── Digital Clock display ────────────────────────────────────────────────────
-  const DigitalClock = ({ date }) => {
-    const hh = String(date.getHours()).padStart(2, "0");
-    const mm = String(date.getMinutes()).padStart(2, "0");
-    const ss = String(date.getSeconds()).padStart(2, "0");
-    const period = date.getHours() >= 12 ? "PM" : "AM";
-    const h12 = date.getHours() % 12 || 12;
-    return (
-      <div style={{ textAlign: "center" }}>
-        <div style={{
-          fontSize: 46,
-          fontWeight: 800,
-          fontFamily: "DM Mono, monospace",
-          color: "white",
-          letterSpacing: 4,
-          lineHeight: 1,
-        }}>
-          {String(h12).padStart(2,"0")}
-          <span style={{ color: "#6ee7b7", animation: "blink 1s step-end infinite" }}>:</span>
-          {mm}
-          <span style={{ color: "#6ee7b7", animation: "blink 1s step-end infinite" }}>:</span>
-          {ss}
-        </div>
-        <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 4, letterSpacing: 3 }}>
-          {period} · {date.toLocaleDateString("en-US", { weekday: "long" })}
-        </div>
-        <style>{`@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }`}</style>
-      </div>
-    );
-  };
-
-  // ── Madhab Dropdown ──────────────────────────────────────────────────────────
-  const MadhabDropdown = () => (
-    <div style={{ position: "relative", display: "inline-block" }}>
-      <select
-        value={madhab}
-        onChange={(e) => setMadhab(e.target.value)}
-        style={{
-          appearance: "none",
-          background: "rgba(255,255,255,0.12)",
-          border: "1px solid rgba(110,231,183,0.3)",
-          borderRadius: 99,
-          color: "white",
-          fontSize: 12,
-          fontFamily: "DM Mono, monospace",
-          padding: "6px 32px 6px 14px",
-          cursor: "pointer",
-          backdropFilter: "blur(6px)",
-          outline: "none",
-        }}
-      >
-        <option value="standard" style={{ background: "#0d2e27" }}>Standard</option>
-        <option value="hanafi"   style={{ background: "#0d2e27" }}>Hanafi</option>
-      </select>
-      <i
-        className="pi pi-chevron-down"
-        style={{
-          position: "absolute", right: 10, top: "50%",
-          transform: "translateY(-50%)",
-          fontSize: 10, color: "#6ee7b7", pointerEvents: "none",
-        }}
-      />
-    </div>
-  );
-
-  // ── Clock Mode Tab ───────────────────────────────────────────────────────────
-  const ClockTabs = () => (
-    <div style={{
-      display: "inline-flex",
-      background: "rgba(255,255,255,0.08)",
-      borderRadius: 99,
-      padding: 3,
-      gap: 2,
-    }}>
-      {["digital", "analog"].map((mode) => (
-        <button
-          key={mode}
-          onClick={() => setClockMode(mode)}
+    // ── Madhab Dropdown ──────────────────────────────────────────────────────────
+    const MadhabDropdown = () => (
+      <div style={{ position: "relative", display: "inline-block" }}>
+        <select
+          value={madhab}
+          onChange={(e) => setMadhab(e.target.value)}
           style={{
-            padding: "5px 14px",
+            appearance: "none",
+            background: "rgba(255,255,255,0.12)",
+            border: "1px solid rgba(110,231,183,0.3)",
             borderRadius: 99,
-            border: "none",
-            cursor: "pointer",
-            fontSize: 11,
+            color: "white",
+            fontSize: 12,
             fontFamily: "DM Mono, monospace",
-            fontWeight: 600,
-            letterSpacing: 0.5,
-            textTransform: "capitalize",
-            background: clockMode === mode ? "#6ee7b7" : "transparent",
-            color: clockMode === mode ? "#0d2e27" : "rgba(255,255,255,0.6)",
-            transition: "all 0.2s",
+            padding: "6px 32px 6px 14px",
+            cursor: "pointer",
+            backdropFilter: "blur(6px)",
+            outline: "none",
           }}
         >
-          {mode === "digital" ? "⏱ Digital" : "🕐 Analog"}
-        </button>
-      ))}
-    </div>
-  );
+          <option value="standard" style={{ background: "#0d2e27" }}>
+            Standard
+          </option>
+          <option value="hanafi" style={{ background: "#0d2e27" }}>
+            Hanafi
+          </option>
+        </select>
+        <i
+          className="pi pi-chevron-down"
+          style={{
+            position: "absolute",
+            right: 10,
+            top: "50%",
+            transform: "translateY(-50%)",
+            fontSize: 10,
+            color: "#6ee7b7",
+            pointerEvents: "none",
+          }}
+        />
+      </div>
+    );
 
-
-
-  const madhabItems = [
-  { label: "Standard", icon: "pi pi-globe" },
-  { label: "Hanafi",   icon: "pi pi-star"  },
-];
-
-const [activeMadhabIndex, setActiveMadhabIndex] = useState(
-  madhab === "hanafi" ? 1 : 0
-);
-
-const MadhabTabs = () => (
-  <div style={{
-    display: "inline-flex",
-    background: "rgba(255,255,255,0.08)",
-    borderRadius: 99,
-    padding: 3,
-    gap: 2,
-  }}>
-    {[
-      { label: "🌍 Standard", value: "standard" },
-      { label: "☪️ Hanafi",   value: "hanafi"   },
-    ].map((opt) => (
-      <button
-        key={opt.value}
-        onClick={() => setMadhab(opt.value)}
+    // ── Clock Mode Tab ───────────────────────────────────────────────────────────
+    const ClockTabs = () => (
+      <div
         style={{
-          padding: "5px 14px",
+          display: "inline-flex",
+          background: "rgba(255,255,255,0.08)",
           borderRadius: 99,
-          border: "none",
-          cursor: "pointer",
-          fontSize: 11,
-          fontFamily: "DM Mono, monospace",
-          fontWeight: 600,
-          letterSpacing: 0.5,
-          background: madhab === opt.value ? "#6ee7b7" : "transparent",
-          color: madhab === opt.value ? "#0d2e27" : "rgba(255,255,255,0.6)",
-          transition: "all 0.2s",
+          padding: 3,
+          gap: 2,
         }}
       >
-        {opt.label}
-      </button>
-    ))}
-  </div>
-);
-
-  // ── Render guards ────────────────────────────────────────────────────────────
-  const prayerNames = t("prayerNames");
-
-  if (loading)
-    return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center",
-        height: "100%", color: theme.textSec, fontSize: 14 }}>
-        <i className="pi pi-spin pi-spinner"
-          style={{ fontSize: 22, marginRight: 10, color: theme.accent }} />
-        {t("prayerLoading")}
+        {["digital", "analog"].map((mode) => (
+          <button
+            key={mode}
+            onClick={() => setClockMode(mode)}
+            style={{
+              padding: "5px 14px",
+              borderRadius: 99,
+              border: "none",
+              cursor: "pointer",
+              fontSize: 11,
+              fontFamily: "DM Mono, monospace",
+              fontWeight: 600,
+              letterSpacing: 0.5,
+              textTransform: "capitalize",
+              background: clockMode === mode ? "#6ee7b7" : "transparent",
+              color: clockMode === mode ? "#0d2e27" : "rgba(255,255,255,0.6)",
+              transition: "all 0.2s",
+            }}
+          >
+            {mode === "digital" ? "⏱ Digital" : "🕐 Analog"}
+          </button>
+        ))}
       </div>
     );
 
-  if (error)
-    return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center",
-        justifyContent: "center", height: "100%", gap: 14 }}>
-        <i className="pi pi-exclamation-circle" style={{ fontSize: 32, color: "#e74c3c" }} />
-        <p style={{ color: theme.textSec, fontSize: 14 }}>{t("prayerError")}</p>
-        <button onClick={fetchPrayers} style={{ padding: "8px 20px", borderRadius: 99,
-          background: theme.accent, border: "none", color: "white", fontSize: 13, cursor: "pointer" }}>
-          {t("prayerRetry")}
-        </button>
+    const madhabItems = [
+      { label: "Standard", icon: "pi pi-globe" },
+      { label: "Hanafi", icon: "pi pi-star" },
+    ];
+
+    const [activeMadhabIndex, setActiveMadhabIndex] = useState(madhab === "hanafi" ? 1 : 0);
+
+    const MadhabTabs = () => (
+      <div
+        style={{
+          display: "inline-flex",
+          background: "rgba(255,255,255,0.08)",
+          borderRadius: 99,
+          padding: 3,
+          gap: 2,
+        }}
+      >
+        {[
+          { label: "🌍 Standard", value: "standard" },
+          { label: "☪️ Hanafi", value: "hanafi" },
+        ].map((opt) => (
+          <button
+            key={opt.value}
+            onClick={() => setMadhab(opt.value)}
+            style={{
+              padding: "5px 14px",
+              borderRadius: 99,
+              border: "none",
+              cursor: "pointer",
+              fontSize: 11,
+              fontFamily: "DM Mono, monospace",
+              fontWeight: 600,
+              letterSpacing: 0.5,
+              background: madhab === opt.value ? "#6ee7b7" : "transparent",
+              color: madhab === opt.value ? "#0d2e27" : "rgba(255,255,255,0.6)",
+              transition: "all 0.2s",
+            }}
+          >
+            {opt.label}
+          </button>
+        ))}
       </div>
     );
 
-  const { timings, date } = prayerData;
+    // ── Render guards ────────────────────────────────────────────────────────────
+    const prayerNames = t("prayerNames");
 
-  // ── Main render ──────────────────────────────────────────────────────────────
-  return (
-    <div style={{ flex: 1, overflowY: "auto", padding: "24px 20px" }}>
-
-      {/* ── Date / Clock card ── */}
-      <div style={{
-        background: "linear-gradient(135deg, #1a6b5a, #0d4a3e)",
-        borderRadius: 16,
-        padding: "24px 20px",
-        marginBottom: 16,
-        position: "relative",
-        overflow: "hidden",
-        textAlign: "center",
-      }}>
-        <IslamicPattern dark={true} />
-
-        {/* Top row: Madhab selector left, Clock tabs right */}
-        <div style={{ position: "relative", display: "flex",
-          justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-          <MadhabTabs />  
-          <ClockTabs />
+    if (loading)
+      return (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            color: theme.textSec,
+            fontSize: 14,
+          }}
+        >
+          <i className="pi pi-spin pi-spinner" style={{ fontSize: 22, marginRight: 10, color: theme.accent }} />
+          {t("prayerLoading")}
         </div>
+      );
 
-        {/* Clock display */}
-        <div style={{ position: "relative", marginBottom: 16,
-          display: "flex", justifyContent: "center", alignItems: "center", minHeight: 100 }}>
-          {clockMode === "digital"
-            ? <DigitalClock date={now} />
-            : <AnalogClock date={now} />}
+    if (error)
+      return (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            gap: 14,
+          }}
+        >
+          <i className="pi pi-exclamation-circle" style={{ fontSize: 32, color: "#e74c3c" }} />
+          <p style={{ color: theme.textSec, fontSize: 14 }}>{t("prayerError")}</p>
+          <button
+            onClick={fetchPrayers}
+            style={{
+              padding: "8px 20px",
+              borderRadius: 99,
+              background: theme.accent,
+              border: "none",
+              color: "white",
+              fontSize: 13,
+              cursor: "pointer",
+            }}
+          >
+            {t("prayerRetry")}
+          </button>
         </div>
+      );
 
-        {/* Hijri date */}
-        <div style={{ position: "relative" }}>
-          <div style={{ fontSize: 12.5, color: "rgba(255,255,255,0.65)",
-            marginBottom: 6, letterSpacing: 0.5 }}>
-            {date.gregorian.weekday.en} · {date.readable}
-          </div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: "white",
-            fontFamily: "Cinzel, serif", letterSpacing: 0.5, marginBottom: 4 }}>
-            {date.hijri.day} {date.hijri.month.en} {date.hijri.year} AH
-          </div>
-          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", marginBottom: 16 }}>
-            {date.hijri.month.ar} · {date.hijri.weekday.ar}
-          </div>
+    const { timings, date } = prayerData;
 
-          {/* Countdown */}
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 8,
-            background: "rgba(255,255,255,0.12)", borderRadius: 99,
-            padding: "8px 20px", backdropFilter: "blur(6px)" }}>
-            <i className="pi pi-hourglass" style={{ fontSize: 13, color: "rgba(255,255,255,0.8)" }} />
-            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", marginRight: 4 }}>
-              {t("nextPrayer")}
-            </span>
-            <span style={{ fontSize: 18, fontWeight: 800, color: "white",
-              fontFamily: "DM Mono, monospace", letterSpacing: 2 }}>
-              {countdown}
-            </span>
-          </div>
-        </div>
-      </div>
+    // ── Main render ──────────────────────────────────────────────────────────────
+    return (
+      <div style={{ flex: 1, overflowY: "auto", padding: "24px 20px" }}>
+        {/* ── Date / Clock card ── */}
+        <div
+          style={{
+            background: "linear-gradient(135deg, #1a6b5a, #0d4a3e)",
+            borderRadius: 16,
+            padding: "24px 20px",
+            marginBottom: 16,
+            position: "relative",
+            overflow: "hidden",
+            textAlign: "center",
+          }}
+        >
+          <IslamicPattern dark={true} />
 
-      {/* ── Prayer time cards ── */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {PRAYER_KEYS.map((key) => {
-          const status = getStatus(key, timings);
-          const isCurrent = status === "current";
-          const isNext = status === "next";
-
-          return (
-            <div key={key} style={{
-              display: "flex", alignItems: "center",
+          {/* Top row: Madhab selector left, Clock tabs right */}
+          <div
+            style={{
+              position: "relative",
+              display: "flex",
               justifyContent: "space-between",
-              padding: "14px 16px", borderRadius: 14,
-              border: `1px solid ${isCurrent ? theme.accent : isNext ? theme.borderMed : theme.border}`,
-              background: isCurrent ? theme.accentBg : theme.bgSec,
-              transition: "all .2s",
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{ width: 38, height: 38, borderRadius: "50%",
-                  background: isCurrent ? theme.accent : isNext ? theme.accentBg : theme.bgTer,
-                  display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <i className={PRAYER_ICONS[key]}
-                    style={{ fontSize: 16,
-                      color: isCurrent ? "white" : isNext ? theme.accent : theme.textTer }} />
-                </div>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 600,
-                    color: isCurrent ? theme.accent : theme.text }}>
-                    {prayerNames[key]}
-                  </div>
-                  <div style={{ fontSize: 11.5, color: theme.textTer }}>{key}</div>
-                </div>
-              </div>
+              alignItems: "center",
+              marginBottom: 16,
+            }}
+          >
+            <MadhabTabs />
+            <ClockTabs />
+          </div>
 
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                {(isCurrent || isNext) && (
-                  <span style={{ fontSize: 10.5, fontWeight: 600,
-                    padding: "3px 9px", borderRadius: 99,
-                    background: isCurrent ? theme.accent : theme.accentBg,
-                    color: isCurrent ? "white" : theme.accent }}>
-                    {isCurrent ? t("currentPrayer") : t("nextPrayer")}
-                  </span>
-                )}
-                <div style={{ fontSize: 18, fontWeight: 800,
-                  color: isCurrent ? theme.accent : theme.text,
-                  fontFamily: "DM Mono, monospace", letterSpacing: 0.5 }}>
-                  {formatTime(timings[key])}
-                </div>
-              </div>
+          {/* Clock display */}
+          <div
+            style={{
+              position: "relative",
+              marginBottom: 16,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: 100,
+            }}
+          >
+            {clockMode === "digital" ? <DigitalClock date={now} /> : <AnalogClock date={now} />}
+          </div>
+
+          {/* Hijri date */}
+          <div style={{ position: "relative" }}>
+            <div style={{ fontSize: 12.5, color: "rgba(255,255,255,0.65)", marginBottom: 6, letterSpacing: 0.5 }}>
+              {date.gregorian.weekday.en} · {date.readable}
             </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
+            <div
+              style={{
+                fontSize: 20,
+                fontWeight: 800,
+                color: "white",
+                fontFamily: "Cinzel, serif",
+                letterSpacing: 0.5,
+                marginBottom: 4,
+              }}
+            >
+              {date.hijri.day} {date.hijri.month.en} {date.hijri.year} AH
+            </div>
+            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", marginBottom: 16 }}>
+              {date.hijri.month.ar} · {date.hijri.weekday.ar}
+            </div>
 
-  const Sidebar = ({setMessages}) => (
+            {/* Countdown */}
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                background: "rgba(255,255,255,0.12)",
+                borderRadius: 99,
+                padding: "8px 20px",
+                backdropFilter: "blur(6px)",
+              }}
+            >
+              <i className="pi pi-hourglass" style={{ fontSize: 13, color: "rgba(255,255,255,0.8)" }} />
+              <span style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", marginRight: 4 }}>{t("nextPrayer")}</span>
+              <span
+                style={{
+                  fontSize: 18,
+                  fontWeight: 800,
+                  color: "white",
+                  fontFamily: "DM Mono, monospace",
+                  letterSpacing: 2,
+                }}
+              >
+                {countdown}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Prayer time cards ── */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {PRAYER_KEYS.map((key) => {
+            const status = getStatus(key, timings);
+            const isCurrent = status === "current";
+            const isNext = status === "next";
+
+            return (
+              <div
+                key={key}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "14px 16px",
+                  borderRadius: 14,
+                  border: `1px solid ${isCurrent ? theme.accent : isNext ? theme.borderMed : theme.border}`,
+                  background: isCurrent ? theme.accentBg : theme.bgSec,
+                  transition: "all .2s",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div
+                    style={{
+                      width: 38,
+                      height: 38,
+                      borderRadius: "50%",
+                      background: isCurrent ? theme.accent : isNext ? theme.accentBg : theme.bgTer,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <i
+                      className={PRAYER_ICONS[key]}
+                      style={{ fontSize: 16, color: isCurrent ? "white" : isNext ? theme.accent : theme.textTer }}
+                    />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: isCurrent ? theme.accent : theme.text }}>
+                      {prayerNames[key]}
+                    </div>
+                    <div style={{ fontSize: 11.5, color: theme.textTer }}>{key}</div>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  {(isCurrent || isNext) && (
+                    <span
+                      style={{
+                        fontSize: 10.5,
+                        fontWeight: 600,
+                        padding: "3px 9px",
+                        borderRadius: 99,
+                        background: isCurrent ? theme.accent : theme.accentBg,
+                        color: isCurrent ? "white" : theme.accent,
+                      }}
+                    >
+                      {isCurrent ? t("currentPrayer") : t("nextPrayer")}
+                    </span>
+                  )}
+                  <div
+                    style={{
+                      fontSize: 18,
+                      fontWeight: 800,
+                      color: isCurrent ? theme.accent : theme.text,
+                      fontFamily: "DM Mono, monospace",
+                      letterSpacing: 0.5,
+                    }}
+                  >
+                    {formatTime(timings[key])}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  const Sidebar = ({ setMessages }) => (
     <aside
       style={{
         width: 224,
@@ -2015,9 +2135,6 @@ const MadhabTabs = () => (
     e.target.style.height = Math.min(e.target.scrollHeight, 180) + "px";
   };
 
-
-
-
   // ──────────────────────────────────────────────────────────
   // HISTORY SECTION
   // ──────────────────────────────────────────────────────────
@@ -2100,163 +2217,291 @@ const MadhabTabs = () => (
     </div>
   );
 
-
-  {/* ── Footer ── */}
-
-
-
-const AboutSection = ({ theme, t }) => {
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [status, setStatus] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async () => {
-    if (!form.name || !form.email || !form.message) { setStatus("error"); return; }
-    setLoading(true); setStatus("");
-    try {
-      const res = await fetch("/contacts/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      if (res.ok) { setStatus("success"); setForm({ name: "", email: "", message: "" }); }
-      else throw new Error();
-    } catch { setStatus("error"); }
-    setLoading(false);
-  };
-
-  const inputStyle = {
-    width: "100%", boxSizing: "border-box",
-    padding: "10px 14px", borderRadius: 8,
-    border: `1px solid ${theme.border}`,
-    background: theme.bgSec, color: theme.text,
-    fontSize: 14, fontFamily: "inherit", outline: "none",
-  };
-
-  const tagStyle = {
-    display: "inline-block", fontSize: 12,
-    padding: "4px 10px", borderRadius: 99, margin: "3px 3px 3px 0",
-    background: theme.bgTer, color: theme.textSec,
-    border: `1px solid ${theme.border}`,
-  };
-
-  const sectionLabel = {
-    fontSize: 11, color: theme.accent, fontWeight: 600,
-    letterSpacing: "0.06em", textTransform: "uppercase",
-  };
-
-  const iconCircle = {
-    width: 34, height: 34, borderRadius: "50%",
-    background: theme.accentBg,
-    display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-  };
-
-  const divider = {
-    borderBottom: `1px solid ${theme.border}`,
-    paddingBottom: 24, marginBottom: 24,
-  };
-
-  const devSkillTags = (skills) => skills.map(s => <span key={s} style={tagStyle}>{s}</span>);
-
-  return (
-    <div style={{ flex: 1, overflowY: "auto", padding: "28px 20px 48px" }}>
-
-      {/* ── About the App ── */}
-      <div style={divider}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-          <div style={iconCircle}><Icons.Chat /></div>
-          <span style={sectionLabel}>{t("aboutLabel")}</span>
-        </div>
-        <h2 style={{ fontSize: 20, fontWeight: 700, color: theme.text, margin: "0 0 10px", fontFamily: "Cinzel, serif" }}>
-          {t("aboutAppTitle")}
-        </h2>
-        <p style={{ fontSize: 14, color: theme.textSec, lineHeight: 1.75, margin: "0 0 14px" }}>
-          {t("aboutAppDesc")}
-        </p>
-        <div>{t("aboutTags").map(tag => <span key={tag} style={tagStyle}>{tag}</span>)}</div>
-      </div>
-
-      {/* ── Developers ── */}
-      <div style={divider}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-          <div style={iconCircle}><Icons.Profile /></div>
-          <span style={sectionLabel}>{t("aboutDevsLabel")}</span>
-        </div>
-        <p style={{ fontSize: 13, color: theme.textTer, margin: "0 0 16px" }}>{t("aboutDevsSubtitle")}</p>
-
-        <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-          {[
-            { initials: "AH", nameKey: "aboutDev1Name", roleKey: "aboutDev1Role", bioKey: "aboutDev1Bio", skillsKey: "aboutSkills1", avatarBg: theme.accentBg, avatarColor: theme.accent, avatarUrl: "https://lh3.googleusercontent.com/a-/ALV-UjWw93hvXrYt1WhNueHLG0lQXyxpnExavnle9-AF7jh9kKOcN4o=s300-p-k-rw-no" },
-            { initials: "RU", nameKey: "aboutDev2Name", roleKey: "aboutDev2Role", bioKey: "aboutDev2Bio", skillsKey: "aboutSkills2", avatarBg: "#5340b720", avatarColor: "#7f77dd", avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocLJk_vtv_dHuJFyJPejdFG4YKuMsXUlz4iMaFSSjqy3aVWCsS8=s360-c-no" },
-          ].map(dev => (
-            <div key={dev.initials} style={{
-              flex: 1, minWidth: 200,
-              background: theme.bgSec, border: `1px solid ${theme.border}`,
-              borderRadius: 12, padding: "1.25rem",
-            }}>
-<div style={{
-  width: 52, height: 52, borderRadius: "50%",
-  background: dev.avatarBg, overflow: "hidden",
-  display: "flex", alignItems: "center", justifyContent: "center",
-  fontSize: 18, fontWeight: 700, marginBottom: 12,
-}}>
-  {dev.avatarUrl
-    ? <img src={dev.avatarUrl} alt={t(dev.nameKey)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-    : <span style={{ color: dev.avatarColor }}>{dev.initials}</span>
+  {
+    /* ── Footer ── */
   }
-</div>
-              <p style={{ fontSize: 16, fontWeight: 600, color: theme.text, margin: 0 }}>{t(dev.nameKey)}</p>
-              <span style={{
-                display: "inline-block", fontSize: 11, padding: "3px 10px",
-                borderRadius: 99, marginTop: 5,
-                background: dev.avatarBg, color: dev.avatarColor,
-              }}>{t(dev.roleKey)}</span>
-              <p style={{ fontSize: 13, color: theme.textSec, margin: "10px 0", lineHeight: 1.65 }}>{t(dev.bioKey)}</p>
-              <div>{devSkillTags(t(dev.skillsKey))}</div>
+
+  const AboutSection = ({ theme, t }) => {
+    const [form, setForm] = useState({ name: "", email: "", message: "" });
+    const [status, setStatus] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async () => {
+      if (!form.name || !form.email || !form.message) {
+        setStatus("error");
+        return;
+      }
+      setLoading(true);
+      setStatus("");
+      try {
+        const res = await fetch("/contacts/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        });
+        if (res.ok) {
+          setStatus("success");
+          setForm({ name: "", email: "", message: "" });
+        } else throw new Error();
+      } catch {
+        setStatus("error");
+      }
+      setLoading(false);
+    };
+
+    const inputStyle = {
+      width: "100%",
+      boxSizing: "border-box",
+      padding: "10px 14px",
+      borderRadius: 8,
+      border: `1px solid ${theme.border}`,
+      background: theme.bgSec,
+      color: theme.text,
+      fontSize: 14,
+      fontFamily: "inherit",
+      outline: "none",
+    };
+
+    const tagStyle = {
+      display: "inline-block",
+      fontSize: 12,
+      padding: "4px 10px",
+      borderRadius: 99,
+      margin: "3px 3px 3px 0",
+      background: theme.bgTer,
+      color: theme.textSec,
+      border: `1px solid ${theme.border}`,
+    };
+
+    const sectionLabel = {
+      fontSize: 11,
+      color: theme.accent,
+      fontWeight: 600,
+      letterSpacing: "0.06em",
+      textTransform: "uppercase",
+    };
+
+    const iconCircle = {
+      width: 34,
+      height: 34,
+      borderRadius: "50%",
+      background: theme.accentBg,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      flexShrink: 0,
+    };
+
+    const divider = {
+      borderBottom: `1px solid ${theme.border}`,
+      paddingBottom: 24,
+      marginBottom: 24,
+    };
+
+    const devSkillTags = (skills) =>
+      skills.map((s) => (
+        <span key={s} style={tagStyle}>
+          {s}
+        </span>
+      ));
+
+    return (
+      <div style={{ flex: 1, overflowY: "auto", padding: "28px 20px 48px" }}>
+        {/* ── About the App ── */}
+        <div style={divider}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+            <div style={iconCircle}>
+              <Icons.Chat />
             </div>
-          ))}
+            <span style={sectionLabel}>{t("aboutLabel")}</span>
+          </div>
+          <h2
+            style={{
+              fontSize: 20,
+              fontWeight: 700,
+              color: theme.text,
+              margin: "0 0 10px",
+              fontFamily: "Cinzel, serif",
+            }}
+          >
+            {t("aboutAppTitle")}
+          </h2>
+          <p style={{ fontSize: 14, color: theme.textSec, lineHeight: 1.75, margin: "0 0 14px" }}>
+            {t("aboutAppDesc")}
+          </p>
+          <div>
+            {t("aboutTags").map((tag) => (
+              <span key={tag} style={tagStyle}>
+                {tag}
+              </span>
+            ))}
+          </div>
         </div>
 
-        <div style={{
-          marginTop: 16, background: theme.bgTer,
-          border: `1px solid ${theme.border}`, borderRadius: 12, padding: "16px 18px",
-        }}>
-          <p style={{ fontSize: 13, fontWeight: 600, color: theme.text, margin: "0 0 6px" }}>{t("aboutWeDoTitle")}</p>
-          <p style={{ fontSize: 13, color: theme.textSec, lineHeight: 1.75, margin: 0 }}>{t("aboutWeDoDesc")}</p>
+        {/* ── Developers ── */}
+        <div style={divider}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+            <div style={iconCircle}>
+              <Icons.Profile />
+            </div>
+            <span style={sectionLabel}>{t("aboutDevsLabel")}</span>
+          </div>
+          <p style={{ fontSize: 13, color: theme.textTer, margin: "0 0 16px" }}>{t("aboutDevsSubtitle")}</p>
+
+          <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+            {[
+              {
+                initials: "AH",
+                nameKey: "aboutDev1Name",
+                roleKey: "aboutDev1Role",
+                bioKey: "aboutDev1Bio",
+                skillsKey: "aboutSkills1",
+                avatarBg: theme.accentBg,
+                avatarColor: theme.accent,
+                avatarUrl:
+                  "https://lh3.googleusercontent.com/a-/ALV-UjWw93hvXrYt1WhNueHLG0lQXyxpnExavnle9-AF7jh9kKOcN4o=s300-p-k-rw-no",
+              },
+              {
+                initials: "RU",
+                nameKey: "aboutDev2Name",
+                roleKey: "aboutDev2Role",
+                bioKey: "aboutDev2Bio",
+                skillsKey: "aboutSkills2",
+                avatarBg: "#5340b720",
+                avatarColor: "#7f77dd",
+                avatarUrl:
+                  "https://lh3.googleusercontent.com/a/ACg8ocLJk_vtv_dHuJFyJPejdFG4YKuMsXUlz4iMaFSSjqy3aVWCsS8=s360-c-no",
+              },
+            ].map((dev) => (
+              <div
+                key={dev.initials}
+                style={{
+                  flex: 1,
+                  minWidth: 200,
+                  background: theme.bgSec,
+                  border: `1px solid ${theme.border}`,
+                  borderRadius: 12,
+                  padding: "1.25rem",
+                }}
+              >
+                <div
+                  style={{
+                    width: 52,
+                    height: 52,
+                    borderRadius: "50%",
+                    background: dev.avatarBg,
+                    overflow: "hidden",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 18,
+                    fontWeight: 700,
+                    marginBottom: 12,
+                  }}
+                >
+                  {dev.avatarUrl ? (
+                    <img
+                      src={dev.avatarUrl}
+                      alt={t(dev.nameKey)}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <span style={{ color: dev.avatarColor }}>{dev.initials}</span>
+                  )}
+                </div>
+                <p style={{ fontSize: 16, fontWeight: 600, color: theme.text, margin: 0 }}>{t(dev.nameKey)}</p>
+                <span
+                  style={{
+                    display: "inline-block",
+                    fontSize: 11,
+                    padding: "3px 10px",
+                    borderRadius: 99,
+                    marginTop: 5,
+                    background: dev.avatarBg,
+                    color: dev.avatarColor,
+                  }}
+                >
+                  {t(dev.roleKey)}
+                </span>
+                <p style={{ fontSize: 13, color: theme.textSec, margin: "10px 0", lineHeight: 1.65 }}>
+                  {t(dev.bioKey)}
+                </p>
+                <div>{devSkillTags(t(dev.skillsKey))}</div>
+              </div>
+            ))}
+          </div>
+
+          <div
+            style={{
+              marginTop: 16,
+              background: theme.bgTer,
+              border: `1px solid ${theme.border}`,
+              borderRadius: 12,
+              padding: "16px 18px",
+            }}
+          >
+            <p style={{ fontSize: 13, fontWeight: 600, color: theme.text, margin: "0 0 6px" }}>{t("aboutWeDoTitle")}</p>
+            <p style={{ fontSize: 13, color: theme.textSec, lineHeight: 1.75, margin: 0 }}>{t("aboutWeDoDesc")}</p>
+          </div>
+        </div>
+
+        {/* ── Contact ── */}
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+            <div style={iconCircle}>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={theme.accent}
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
+              </svg>
+            </div>
+            <span style={sectionLabel}>{t("aboutContactLabel")}</span>
+          </div>
+          <p style={{ fontSize: 13, color: theme.textTer, margin: "0 0 16px" }}>{t("aboutContactSubtitle")}</p>
+
+          <a
+            href="mailto:arfinhayet786@gmail.com"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              background: theme.accentBg,
+              color: theme.accent,
+              border: `1px solid ${theme.accent}40`,
+              borderRadius: 10,
+              padding: "11px 22px",
+              fontSize: 14,
+              fontWeight: 600,
+              textDecoration: "none",
+            }}
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke={theme.accent}
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            {t("aboutContactLabel")}
+          </a>
         </div>
       </div>
-
-{/* ── Contact ── */}
-<div>
-  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-    <div style={iconCircle}>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={theme.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-        <polyline points="22,6 12,13 2,6"/>
-      </svg>
-    </div>
-    <span style={sectionLabel}>{t("aboutContactLabel")}</span>
-  </div>
-  <p style={{ fontSize: 13, color: theme.textTer, margin: "0 0 16px" }}>{t("aboutContactSubtitle")}</p>
-
-  <a href="mailto:arfinhayet786@gmail.com" style={{
-    display: "inline-flex", alignItems: "center", gap: 8,
-    background: theme.accentBg, color: theme.accent,
-    border: `1px solid ${theme.accent}40`,
-    borderRadius: 10, padding: "11px 22px",
-    fontSize: 14, fontWeight: 600, textDecoration: "none",
-  }}>
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={theme.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-      <polyline points="22,6 12,13 2,6"/>
-    </svg>
-    {t("aboutContactLabel")}
-  </a>
-</div>
-
-    </div>
-  );
-};
+    );
+  };
 
   // ──────────────────────────────────────────────────────────
   // PROFILE SECTION
@@ -2499,11 +2744,16 @@ const AboutSection = ({ theme, t }) => {
             <select
               value={lang}
               onChange={(e) => {
-                setLang(e.target.value)
+                setLang(e.target.value);
                 setMessages((prev) => {
-                  prev[0] = { id: 0, role: "assistant", content: TRANSLATIONS[e.target.value].greeting, streaming: false }
-                  return [...prev]
-                })
+                  prev[0] = {
+                    id: 0,
+                    role: "assistant",
+                    content: TRANSLATIONS[e.target.value].greeting,
+                    streaming: false,
+                  };
+                  return [...prev];
+                });
               }}
               style={{
                 padding: "7px 28px 7px 10px",
@@ -2590,11 +2840,11 @@ const AboutSection = ({ theme, t }) => {
                   <button
                     key={code}
                     onClick={() => {
-                setLang(code)
-                setMessages((prev) => {
-                  prev[0] = { id: 0, role: "assistant", content: TRANSLATIONS[code].greeting, streaming: false }
-                  return [...prev]
-                })
+                      setLang(code);
+                      setMessages((prev) => {
+                        prev[0] = { id: 0, role: "assistant", content: TRANSLATIONS[code].greeting, streaming: false };
+                        return [...prev];
+                      });
                     }}
                     style={{
                       padding: "5px 12px",
@@ -2768,7 +3018,7 @@ const AboutSection = ({ theme, t }) => {
   // ──────────────────────────────────────────────────────────
   // MOBILE HEADER
   // ──────────────────────────────────────────────────────────
-  const MobileHeader = ({setMessages}) => (
+  const MobileHeader = ({ setMessages }) => (
     <>
       {showInstall && (
         <div
@@ -3089,45 +3339,58 @@ const AboutSection = ({ theme, t }) => {
             {section === "settings" && <SettingsSection setMessages={setMessages} />}
           </div>
 
+          {isDesktop && (
+            <footer
+              className="desktop-only"
+              style={{
+                flexShrink: 0,
+                borderTop: `1px solid ${theme.border}`,
+                background: theme.headerBg,
+                backdropFilter: "blur(10px)",
+                padding: "10px 20px",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: 8,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div
+                style={{
+                  width: 22,
+                  height: 22,
+                  borderRadius: "50%",
+                  background: "linear-gradient(135deg, #1d9e75, #0f6e56)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M12 2L3 7l9 5 9-5-9-5zM3 17l9 5 9-5M3 12l9 5 9-5"
+                    stroke="white"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+              <span style={{ fontSize: 12, fontWeight: 600, color: theme.text, fontFamily: "Cinzel, serif" }}>
+                Noor AI
+              </span>
+              <span style={{ fontSize: 11, color: theme.textTer }}>v2.0</span>
+            </div>
 
+            <span style={{ fontSize: 11, color: theme.textTer, textAlign: "center" }}>
+              {lang === "bn" ? "বিসমিল্লাহির রাহমানির রাহিম" : "Bismillahir Rahmanir Rahim"}
+            </span>
 
-         <footer style={{
-  flexShrink: 0,
-  borderTop: `1px solid ${theme.border}`,
-  background: theme.headerBg,
-  backdropFilter: "blur(10px)",
-  padding: "10px 20px",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  flexWrap: "wrap",
-  gap: 8,
-}}>
-  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-    <div style={{
-      width: 22, height: 22, borderRadius: "50%",
-      background: "linear-gradient(135deg, #1d9e75, #0f6e56)",
-      display: "flex", alignItems: "center", justifyContent: "center",
-    }}>
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
-        <path d="M12 2L3 7l9 5 9-5-9-5zM3 17l9 5 9-5M3 12l9 5 9-5"
-          stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    </div>
-    <span style={{ fontSize: 12, fontWeight: 600, color: theme.text, fontFamily: "Cinzel, serif" }}>
-      Noor AI
-    </span>
-    <span style={{ fontSize: 11, color: theme.textTer }}>v2.0</span>
-  </div>
-
-  <span style={{ fontSize: 11, color: theme.textTer, textAlign: "center" }}>
-    {lang === "bn" ? "বিসমিল্লাহির রাহমানির রাহিম" : "Bismillahir Rahmanir Rahim"}
-  </span>
-
-  <span style={{ fontSize: 11, color: theme.textTer }}>
-    {lang === "bn" ? "আরফিন হায়েত ও রুম্মান কর্তৃক নির্মিত" : "Built by Arfin Hayet & Rumman"}
-  </span>
-</footer>
+            <span style={{ fontSize: 11, color: theme.textTer }}>
+              {lang === "bn" ? "আরফিন হায়েত ও রুম্মান কর্তৃক নির্মিত" : "Built by Arfin Hayet & Rumman"}
+            </span>
+            </footer>
+          )}
         </main>
       </div>
     </>
