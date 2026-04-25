@@ -97,7 +97,7 @@ const TRANSLATIONS = {
     aboutTags: ["কুরআন ও হাদিস", "দ্বিভাষিক (EN / BN)", "নামাজের সময়", "ফিকহ পছন্দ", "AI চালিত", "v2.0"],
     aboutDevsLabel: "ডেভেলপারদের সাথে পরিচিত হন",
     aboutDevsSubtitle: "আমরা বুদ্ধিমান সিস্টেম তৈরি করি — AI চ্যাটবট থেকে সম্পূর্ণ অটোমেশন পাইপলাইন পর্যন্ত।",
-    aboutDev1Name: "আরফিন হায়েত",
+    aboutDev1Name: "আরফিন হায়াত",
     aboutDev1Role: "ফুল-স্ট্যাক ডেভেলপার",
     aboutDev1Bio:
       "AI ইন্টিগ্রেশন, LLM-চালিত অ্যাপ্লিকেশন এবং অত্যাধুনিক মডেল ব্যবহার করে জটিল ব্যবসায়িক ওয়ার্কফ্লো অটোমেট করায় বিশেষজ্ঞ।",
@@ -3461,37 +3461,51 @@ export default function App() {
           </div>
           <p style={{ fontSize: 13, color: theme.textTer, margin: "0 0 16px" }}>{t("aboutContactSubtitle")}</p>
 
-          <a
-            href="mailto:arfinhayet786@gmail.com"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              background: theme.accentBg,
-              color: theme.accent,
-              border: `1px solid ${theme.accent}40`,
-              borderRadius: 10,
-              padding: "11px 22px",
-              fontSize: 14,
-              fontWeight: 600,
-              textDecoration: "none",
-            }}
-          >
-            <svg
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke={theme.accent}
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <a
+              href="mailto:arfinhayet786@gmail.com"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                background: theme.accentBg,
+                color: theme.accent,
+                border: `1px solid ${theme.accent}40`,
+                borderRadius: 10,
+                padding: "11px 22px",
+                fontSize: 14,
+                fontWeight: 600,
+                textDecoration: "none",
+              }}
             >
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-              <polyline points="22,6 12,13 2,6" />
-            </svg>
-            {t("aboutContactLabel")}
-          </a>
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={theme.accent}
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
+              </svg>
+              {t("aboutContactLabel")}
+            </a>
+
+            <a
+              href="https://wa.me/8801533748448"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Chat on WhatsApp"
+              style={{ display: "inline-flex", alignItems: "center", color: "#25D366", flexShrink: 0 }}
+            >
+              <svg width="36" height="36" viewBox="0 0 32 32" fill="currentColor">
+                <path d="M16 3C8.82 3 3 8.82 3 16c0 2.35.63 4.67 1.83 6.69L3 29l6.49-1.8A13.01 13.01 0 0 0 16 29c7.18 0 13-5.82 13-13S23.18 3 16 3zm0 2c6.08 0 11 4.92 11 11S22.08 27 16 27a10.96 10.96 0 0 1-5.56-1.52l-.4-.24-4.13 1.14 1.1-4-.27-.42A10.96 10.96 0 0 1 5 16c0-6.08 4.92-11 11-11zm-3.22 5.5c-.2 0-.52.07-.79.37-.27.3-1.03 1-1.03 2.44s1.05 2.83 1.2 3.03c.14.2 2.04 3.2 5 4.36.7.28 1.24.44 1.66.56.7.2 1.33.17 1.83.1.56-.08 1.72-.7 1.97-1.38.24-.68.24-1.26.17-1.38-.07-.12-.27-.2-.57-.34-.3-.14-1.72-.85-1.99-.95-.27-.1-.46-.14-.66.14-.2.27-.75.95-.92 1.15-.17.2-.34.22-.63.08-.3-.14-1.25-.46-2.38-1.47-.88-.79-1.47-1.76-1.65-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.34.44-.51.14-.17.18-.3.27-.5.1-.2.05-.37-.02-.52-.07-.14-.66-1.58-.9-2.16-.24-.57-.48-.5-.66-.5z"/>
+              </svg>
+            </a>
+          </div>
         </div>
       </div>
     );
@@ -4110,7 +4124,7 @@ export default function App() {
           <Icons.Menu />
         </button>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div
+          {/* <div
             style={{
               width: 26,
               height: 26,
@@ -4130,7 +4144,7 @@ export default function App() {
                 strokeLinejoin="round"
               />
             </svg>
-          </div>
+          </div> */}
           <span style={{ fontSize: 14, fontWeight: 600, color: theme.text, fontFamily: "Cinzel, serif" }}>
             {t(section)}
           </span>
