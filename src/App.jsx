@@ -25,7 +25,7 @@ const TRANSLATIONS = {
     lightMode: "লাইট মোড",
     member: "সদস্য",
     welcomeTitle: "Noor AI",
-    welcomeSubtitle: "ইসলামিক বিষয়ে জ্ঞান অর্জনে আপনাকে সহায়তা করতে সদা প্রস্তুত",
+    welcomeSubtitle: "ইসলামিক প্রশ্ন? পান সঠিক উত্তর, কোরআন-হাদিসের রেফারেন্সসহ এক ক্লিকে!",
     placeholder: "একটি বার্তা লিখুন...",
     disclaimer: "এই চ্যাটবট ইসলামিক তথ্য প্রদান করে। সর্বদা বিশেষজ্ঞ আলেমের পরামর্শ নিন।",
     greeting:
