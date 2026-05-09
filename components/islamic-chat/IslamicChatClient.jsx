@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import React, { useState, useRef, useEffect, useMemo } from "react";
+import Link from "next/link";
 
 import { useChat } from "@/context/ChatContext";
 import { useLocale } from "@/context/LocaleContext";
@@ -2191,42 +2192,39 @@ export function IslamicChatClient() {
 
       <nav style={{ padding: "4px 10px", flex: 1 }}>
         {navItems.map(({ id, key, Icon }) => {
+          const route = `/${id}`;
           const active = section === id;
           return (
-            <button
-              key={id}
-              className="sidebar-item"
-              onClick={() => {
-                setSection(id);
-                setSidebarOpen(false);
-              }}
-              style={{
-                width: "100%",
-                padding: "10px 12px",
-                marginBottom: 2,
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                background: active ? theme.accentBg : "transparent",
-                border: "none",
-                borderRadius: 10,
-                cursor: "pointer",
-                color: active ? theme.accent : theme.textSec,
-                fontSize: 13.5,
-                fontWeight: active ? 600 : 400,
-                textAlign: "left",
-              }}
-            >
-              <span style={{ opacity: active ? 1 : 0.7 }}>
-                <Icon />
-              </span>
-              {t(key)}
-              {active && (
-                <span
-                  style={{ marginLeft: "auto", width: 6, height: 6, borderRadius: "50%", background: theme.accent }}
-                />
-              )}
-            </button>
+            <Link key={id} href={route} legacyBehavior>
+              <a
+                className="sidebar-item"
+                onClick={() => setSidebarOpen(false)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  width: "100%",
+                  padding: "10px 12px",
+                  marginBottom: 2,
+                  background: active ? theme.accentBg : "transparent",
+                  borderRadius: 10,
+                  color: active ? theme.accent : theme.textSec,
+                  fontSize: 13.5,
+                  fontWeight: active ? 600 : 400,
+                  textDecoration: "none",
+                }}
+              >
+                <span style={{ opacity: active ? 1 : 0.7 }}>
+                  <Icon />
+                </span>
+                {t(key)}
+                {active && (
+                  <span
+                    style={{ marginLeft: "auto", width: 6, height: 6, borderRadius: "50%", background: theme.accent }}
+                  />
+                )}
+              </a>
+            </Link>
           );
         })}
       </nav>

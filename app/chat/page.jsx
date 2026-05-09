@@ -1,14 +1,14 @@
-"use client";
+'use client'
 
-import React, { useEffect } from "react";
 import { IslamicChatClient } from "@/components/islamic-chat/IslamicChatClient";
 import { useUi } from "@/context/UiContext";
+import { useEffect } from "react";
 
-export default function Page() {
+export default function ChatPage() {
   const { setSection } = useUi();
 
   useEffect(() => {
-    setSection("chat");
+    setSection("dua");
   }, [setSection]);
 
   return <IslamicChatClient />;

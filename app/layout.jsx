@@ -15,7 +15,16 @@ export default function RootLayout({ children }) {
     <html lang="bn">
       <body>
         <ServiceWorkerRegistrar />
-        <AllProviders>{children}</AllProviders>
+        <AllProviders>
+          <header style={{padding: '1rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.06)'}}>
+            <nav style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
+              <a href="/" style={{color: 'inherit', textDecoration: 'none'}}>Home</a>
+              <a href="/chat" style={{color: 'inherit', textDecoration: 'none'}}>Chat</a>
+              <a href="/about" style={{color: 'inherit', textDecoration: 'none'}}>About</a>
+            </nav>
+          </header>
+          {children}
+        </AllProviders>
       </body>
     </html>
   );
