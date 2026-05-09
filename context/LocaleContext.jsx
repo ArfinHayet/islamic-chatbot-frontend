@@ -6,9 +6,7 @@ import { TRANSLATIONS } from "@/lib/translations";
 const LocaleContext = createContext(null);
 
 export function LocaleProvider({ children }) {
-  const [lang, setLang] = useState(() =>
-    typeof window !== "undefined" ? localStorage.getItem("lang") || "bn" : "bn",
-  );
+  const [lang, setLang] = useState(() => (typeof window !== "undefined" ? localStorage.getItem("lang") || "bn" : "bn"));
 
   useEffect(() => {
     localStorage.setItem("lang", lang);
@@ -18,10 +16,7 @@ export function LocaleProvider({ children }) {
   const font = lang === "bn" ? "Hind Siliguri, sans-serif" : "DM Sans, sans-serif";
   const userInitials = lang === "bn" ? "আ" : "A";
 
-  const value = useMemo(
-    () => ({ lang, setLang, t, font, userInitials }),
-    [lang, setLang, t, font, userInitials],
-  );
+  const value = useMemo(() => ({ lang, setLang, t, font, userInitials }), [lang, setLang, t, font, userInitials]);
 
   return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;
 }

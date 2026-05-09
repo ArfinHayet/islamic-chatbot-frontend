@@ -1,14 +1,6 @@
 "use client";
 
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { API_URL } from "@/lib/constants";
 import { TRANSLATIONS } from "@/lib/translations";
 import { useLocale } from "@/context/LocaleContext";
@@ -200,18 +192,7 @@ export function ChatProvider({ children }) {
       handleStop,
       clearChat,
     }),
-    [
-      userId,
-      messages,
-      isLoading,
-      input,
-      copiedId,
-      copyMessage,
-      sendMessage,
-      handleInput,
-      handleKeyDown,
-      clearChat,
-    ],
+    [userId, messages, isLoading, input, copiedId, copyMessage, sendMessage, handleInput, handleKeyDown, clearChat],
   );
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
