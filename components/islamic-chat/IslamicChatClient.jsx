@@ -2195,35 +2195,43 @@ export function IslamicChatClient() {
           const route = `/${id}`;
           const active = section === id;
           return (
-            <Link key={id} href={route} legacyBehavior>
-              <a
-                className="sidebar-item"
-                onClick={() => setSidebarOpen(false)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                  width: "100%",
-                  padding: "10px 12px",
-                  marginBottom: 2,
-                  background: active ? theme.accentBg : "transparent",
-                  borderRadius: 10,
-                  color: active ? theme.accent : theme.textSec,
-                  fontSize: 13.5,
-                  fontWeight: active ? 600 : 400,
-                  textDecoration: "none",
-                }}
-              >
-                <span style={{ opacity: active ? 1 : 0.7 }}>
-                  <Icon />
-                </span>
-                {t(key)}
-                {active && (
-                  <span
-                    style={{ marginLeft: "auto", width: 6, height: 6, borderRadius: "50%", background: theme.accent }}
-                  />
-                )}
-              </a>
+            <Link
+              key={id}
+              href={route}
+              className="sidebar-item"
+              onClick={() => setSidebarOpen(false)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                width: "100%",
+                padding: "10px 12px",
+                marginBottom: 2,
+                background: active ? theme.accentBg : "transparent",
+                borderRadius: 10,
+                color: active ? theme.accent : theme.textSec,
+                fontSize: 13.5,
+                fontWeight: active ? 600 : 400,
+                textDecoration: "none",
+              }}
+            >
+              <span style={{ opacity: active ? 1 : 0.7 }}>
+                <Icon />
+              </span>
+
+              {t(key)}
+
+              {active && (
+                <span
+                  style={{
+                    marginLeft: "auto",
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    background: theme.accent,
+                  }}
+                />
+              )}
             </Link>
           );
         })}
@@ -2637,7 +2645,7 @@ export function IslamicChatClient() {
           <p style={{ fontSize: 13, color: theme.textTer, margin: "0 0 16px" }}>{t("aboutContactSubtitle")}</p>
 
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <a
+            <Link
               href="mailto:arfinhayet786@gmail.com"
               style={{
                 display: "inline-flex",
@@ -2667,9 +2675,9 @@ export function IslamicChatClient() {
                 <polyline points="22,6 12,13 2,6" />
               </svg>
               {t("aboutContactLabel")}
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="https://wa.me/8801533748448"
               target="_blank"
               rel="noopener noreferrer"
@@ -2677,9 +2685,9 @@ export function IslamicChatClient() {
               style={{ display: "inline-flex", alignItems: "center", color: "#25D366", flexShrink: 0 }}
             >
               <svg width="36" height="36" viewBox="0 0 32 32" fill="currentColor">
-                <path d="M16 3C8.82 3 3 8.82 3 16c0 2.35.63 4.67 1.83 6.69L3 29l6.49-1.8A13.01 13.01 0 0 0 16 29c7.18 0 13-5.82 13-13S23.18 3 16 3zm0 2c6.08 0 11 4.92 11 11S22.08 27 16 27a10.96 10.96 0 0 1-5.56-1.52l-.4-.24-4.13 1.14 1.1-4-.27-.42A10.96 10.96 0 0 1 5 16c0-6.08 4.92-11 11-11zm-3.22 5.5c-.2 0-.52.07-.79.37-.27.3-1.03 1-1.03 2.44s1.05 2.83 1.2 3.03c.14.2 2.04 3.2 5 4.36.7.28 1.24.44 1.66.56.7.2 1.33.17 1.83.1.56-.08 1.72-.7 1.97-1.38.24-.68.24-1.26.17-1.38-.07-.12-.27-.2-.57-.34-.3-.14-1.72-.85-1.99-.95-.27-.1-.46-.14-.66.14-.2.27-.75.95-.92 1.15-.17.2-.34.22-.63.08-.3-.14-1.25-.46-2.38-1.47-.88-.79-1.47-1.76-1.65-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.34.44-.51.14-.17.18-.3.27-.5.1-.2.05-.37-.02-.52-.07-.14-.66-1.58-.9-2.16-.24-.57-.48-.5-.66-.5z"/>
+                <path d="M16 3C8.82 3 3 8.82 3 16c0 2.35.63 4.67 1.83 6.69L3 29l6.49-1.8A13.01 13.01 0 0 0 16 29c7.18 0 13-5.82 13-13S23.18 3 16 3zm0 2c6.08 0 11 4.92 11 11S22.08 27 16 27a10.96 10.96 0 0 1-5.56-1.52l-.4-.24-4.13 1.14 1.1-4-.27-.42A10.96 10.96 0 0 1 5 16c0-6.08 4.92-11 11-11zm-3.22 5.5c-.2 0-.52.07-.79.37-.27.3-1.03 1-1.03 2.44s1.05 2.83 1.2 3.03c.14.2 2.04 3.2 5 4.36.7.28 1.24.44 1.66.56.7.2 1.33.17 1.83.1.56-.08 1.72-.7 1.97-1.38.24-.68.24-1.26.17-1.38-.07-.12-.27-.2-.57-.34-.3-.14-1.72-.85-1.99-.95-.27-.1-.46-.14-.66.14-.2.27-.75.95-.92 1.15-.17.2-.34.22-.63.08-.3-.14-1.25-.46-2.38-1.47-.88-.79-1.47-1.76-1.65-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.34.44-.51.14-.17.18-.3.27-.5.1-.2.05-.37-.02-.52-.07-.14-.66-1.58-.9-2.16-.24-.57-.48-.5-.66-.5z" />
               </svg>
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -3340,6 +3348,14 @@ export function IslamicChatClient() {
   // ──────────────────────────────────────────────────────────
   // ROOT RENDER
   // ──────────────────────────────────────────────────────────
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
   return (
     <>
       <style>{css}</style>
