@@ -4,7 +4,8 @@ body {
   overflow: hidden;
 }
 
-#root {
+#__next,
+body > div:first-of-type {
   height: 100%;
 }
 

@@ -1,592 +1,16 @@
+"use client";
+
 import axios from "axios";
-import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
-import "primereact/resources/themes/lara-dark-teal/theme.css";
-import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 
-import { TabMenu } from "primereact/tabmenu";
+import { useChat } from "@/context/ChatContext";
+import { useLocale } from "@/context/LocaleContext";
+import { useTheme } from "@/context/ThemeContext";
+import { useUi } from "@/context/UiContext";
+import { MOCK_HISTORY_DATA } from "@/lib/mockHistory";
+import { TRANSLATIONS } from "@/lib/translations";
 
-const API_URL = "https://islamic-chatbot-lac.vercel.app/api/v1/chat/stream";
-const USER_ID = null;
-
-const TRANSLATIONS = {
-  bn: {
-    appName: "Noor AI",
-    appTagline: "Chatbot",
-    appSubtitle: "ইসলামিক জ্ঞানের আলোকে পথ দেখাই",
-    version: "ইসলামিক AI চ্যাটবট v2.0",
-    bismillah: "বিসমিল্লাহির রাহমানির রাহিম",
-    chat: "চ্যাট",
-    history: "ইতিহাস",
-    profile: "প্রোফাইল",
-    settings: "সেটিংস",
-    newChat: "নতুন চ্যাট",
-    darkMode: "ডার্ক মোড",
-    lightMode: "লাইট মোড",
-    member: "সদস্য",
-    welcomeTitle: "Noor AI",
-    welcomeSubtitle: "ইসলামিক বিষয়ে জ্ঞান অর্জনে আপনাকে সহায়তা করতে সদা প্রস্তুত",
-    placeholder: "একটি বার্তা লিখুন...",
-    disclaimer: "এই চ্যাটবট ইসলামিক তথ্য প্রদান করে। সর্বদা বিশেষজ্ঞ আলেমের পরামর্শ নিন।",
-    greeting:
-      "আসসালামু আলাইকুম ওয়া রাহমাতুল্লাহি ওয়া বারাকাতুহু! আমি একটি ইসলামিক AI সহায়তাকারী। কুরআন, হাদিস ও ইসলামিক বিষয়ে আপনার যেকোনো প্রশ্ন করুন।",
-    errorMsg: "দুঃখিত, একটি সমস্যা হয়েছে। আবার চেষ্টা করুন।",
-    resetMsg: "আবার শুরু করুন। আপনার যেকোনো ইসলামিক প্রশ্ন জিজ্ঞেস করুন।",
-    active: "সক্রিয়",
-    quickPrompts: [
-      "আজকের নামাজের সময় কত ?",
-      "নামাজের সঠিক নিয়ম ও পদ্ধতি কী?",
-      "রমজান মাসের ফজিলত ও আমল",
-      "যাকাত কীভাবে হিসাব করবো?",
-      "কুরআন তেলাওয়াতের আদব ও ফজিলত",
-      "হালাল ও হারাম উপার্জনের পার্থক্য",
-    ],
-    historyTitle: "চ্যাট ইতিহাস",
-    historySubtitle: "আপনার আগের সকল কথোপকথন",
-    noHistory: "কোনো ইতিহাস নেই",
-    profileTitle: "প্রোফাইল",
-    userName: "আব্দুল্লাহ রহমান",
-    userEmail: "abdullah@example.com",
-    membershipBasic: "বেসিক সদস্যতা",
-    totalQuestions: "মোট প্রশ্ন",
-    thisWeek: "এই সপ্তাহে",
-    sessions: "সেশন",
-    badgesTitle: "অর্জিত ব্যাজ",
-    badge1: "নিয়মিত ব্যবহারকারী",
-    badge2: "জ্ঞানপিপাসু",
-    badge3: "বিশ্বস্ত সদস্য",
-    editProfile: "প্রোফাইল সম্পাদনা",
-    changePassword: "পাসওয়ার্ড পরিবর্তন",
-    deleteAccount: "অ্যাকাউন্ট মুছুন",
-    settingsTitle: "সেটিংস",
-    settingsSubtitle: "আপনার অভিজ্ঞতা কাস্টমাইজ করুন",
-    groupGeneral: "সাধারণ সেটিংস",
-    groupIslamic: "ইসলামিক পছন্দ",
-    groupDisplay: "উপস্থাপনা",
-    language: "ভাষা",
-    languageDesc: "ইন্টারফেস ভাষা",
-    notifications: "বিজ্ঞপ্তি",
-    notificationsDesc: "পুশ নোটিফিকেশন",
-    madhab: "মাযহাব",
-    madhabDesc: "ফিকহ অনুসরণ",
-    saveHistory: "ইতিহাস সংরক্ষণ",
-    saveHistoryDesc: "চ্যাট লগ রাখুন",
-    darkModeLabel: "ডার্ক মোড",
-    darkModeDesc: "অন্ধকার থিম",
-    madhabHanafi: "হানাফি",
-    madhabMaliki: "মালিকি",
-    madhabShafii: "শাফেয়ি",
-    madhabHanbali: "হাম্বলি",
-    langSelected: "বাংলা ভাষা নির্বাচিত",
-    statsValues: ["১২৭", "১৮", "৪২"],
-
-    prayerTitle: "নামাজের সময়",
-    prayerSubtitle: "আজকের নামাজের সময়সূচি",
-    prayerNames: { Fajr: "ফজর", Sunrise: "সূর্যোদয়", Dhuhr: "যোহর", Asr: "আসর", Maghrib: "মাগরিব", Isha: "এশা" },
-    prayerLoading: "লোড হচ্ছে...",
-    prayerError: "সময় লোড করতে সমস্যা হয়েছে",
-    prayerRetry: "আবার চেষ্টা করুন",
-    nextPrayer: "পরবর্তী নামাজ",
-    currentPrayer: "এখন",
-    hijriDate: "হিজরি তারিখ",
-    about: "আমাদের সম্পর্কে",
-    aboutLabel: "আমাদের সম্পর্কে",
-    aboutAppTitle: "Noor AI — ইসলামিক জ্ঞান সহায়তাকারী",
-    aboutAppDesc:
-      "Noor AI একটি দ্বিভাষিক ইসলামিক চ্যাটবট যা মুসলিমদের কুরআন, হাদিস ও ইসলামিক ফিকহ সহজে অন্বেষণে সহায়তা করে। আধুনিক AI দ্বারা চালিত এই বট বাংলা ও ইংরেজিতে নির্ভুলভাবে প্রশ্নের উত্তর দেয়।",
-    aboutTags: ["কুরআন ও হাদিস", "দ্বিভাষিক (EN / BN)", "নামাজের সময়", "ফিকহ পছন্দ", "AI চালিত", "v2.0"],
-    aboutDevsLabel: "ডেভেলপারদের সাথে পরিচিত হন",
-    aboutDevsSubtitle: "আমরা বুদ্ধিমান সিস্টেম তৈরি করি — AI চ্যাটবট থেকে সম্পূর্ণ অটোমেশন পাইপলাইন পর্যন্ত।",
-    aboutDev1Name: "আরফিন হায়েত",
-    aboutDev1Role: "ফুল-স্ট্যাক ডেভেলপার",
-    aboutDev1Bio:
-      "AI ইন্টিগ্রেশন, LLM-চালিত অ্যাপ্লিকেশন এবং অত্যাধুনিক মডেল ব্যবহার করে জটিল ব্যবসায়িক ওয়ার্কফ্লো অটোমেট করায় বিশেষজ্ঞ।",
-    aboutDev2Name: "মোহাম্মাদ রুম্মান",
-    aboutDev2Role: "ফুল-স্ট্যাক ডেভেলপার",
-    aboutDev2Bio:
-      "রেসপন্সিভ আধুনিক UI এবং স্কেলেবল ব্যাকএন্ড সিস্টেম ডিজাইনে দক্ষ। ধারণাকে পরিশীলিত পণ্যে রূপান্তর করেন।",
-    aboutWeDoTitle: "আমরা আপনার জন্য কী করতে পারি",
-    aboutWeDoDesc:
-      "আমরা যেকোনো বিদ্যমান সিস্টেমকে AI-চালিত করতে পারি, অটোমেশন পাইপলাইন তৈরি করতে পারি এবং ঐতিহ্যবাহী ডেটাবেজকে ভেক্টর স্টোরে রূপান্তর করতে পারি — আপনার ডেটাকে AI-এর জন্য অর্থবহভাবে ব্যবহারযোগ্য করে তোলে। অটোমেট বা স্মার্ট করা যায় এমন যেকোনো কিছু আমরা তৈরি করি।",
-    aboutContactLabel: "যোগাযোগ করুন",
-    aboutContactSubtitle: "কোনো প্রজেক্ট মাথায় আছে? আমরা শুনতে আগ্রহী।",
-    contactName: "আপনার নাম",
-    contactEmail: "আপনার ইমেইল",
-    contactMessage: "আপনার প্রজেক্ট সম্পর্কে বলুন...",
-    contactSend: "বার্তা পাঠান",
-    contactSending: "পাঠানো হচ্ছে...",
-    contactSuccess: "বার্তা পাঠানো হয়েছে! আমরা শীঘ্রই যোগাযোগ করব।",
-    contactError: "সব ঘর পূরণ করুন বা আবার চেষ্টা করুন।",
-    aboutSkills1: ["LLM / RAG", "অটোমেশন", "ভেক্টর DB", "Python"],
-    aboutSkills2: ["React", "Node.js", "UI/UX", "APIs"],
-    dua: "দোয়া সমুহ",
-    duaComing: "দ্রুত আসছে...",
-    duaTitle: "দৈনন্দিন দোয়া",
-    duaSearch: "দোয়া খুঁজুন...",
-    duaMeaning: "অর্থ",
-    duaSource: "সূত্র",
-    duaEmpty: "কোনো দোয়া পাওয়া যায়নি",
-    duaCatAll: "সব",
-    duaCatMorning: "সকাল",
-    duaCatEvening: "সন্ধ্যা",
-    duaCatPrayer: "নামাজ",
-    duaCatFood: "খাবার",
-    duaCatTravel: "সফর",
-    duaCatDistress: "বিপদ",
-    duaCatSleep: "ঘুম",
-    duaCatForgive: "ক্ষমা",
-    duaCatHajj: "হজ্জ",
-  },
-
-  en: {
-    duaTitle: "Daily Duas",
-    duaSearch: "Search duas...",
-    duaMeaning: "Meaning",
-    duaSource: "Source",
-    duaEmpty: "No duas found",
-    duaCatAll: "All",
-    duaCatMorning: "Morning",
-    duaCatEvening: "Evening",
-    duaCatPrayer: "Prayer",
-    duaCatFood: "Food",
-    duaCatTravel: "Travel",
-    duaCatDistress: "Distress",
-    duaCatSleep: "Sleep",
-    duaCatForgive: "Forgiveness",
-    duaCatHajj: "Hajj",
-    appName: "Noor AI",
-    appTagline: "Chatbot",
-    appSubtitle: "Guiding you through Islamic knowledge",
-    version: "Noor AI Chatbot v2.0",
-    bismillah: "Bismillahir Rahmanir Rahim",
-    chat: "Chat",
-    history: "History",
-    profile: "Profile",
-    settings: "Settings",
-    newChat: "New Chat",
-    darkMode: "Dark Mode",
-    lightMode: "Light Mode",
-    member: "Member",
-    welcomeTitle: "Noor AI",
-    welcomeSubtitle: "Always ready to help you gain knowledge in Islamic matters",
-    placeholder: "Type a message...",
-    disclaimer: "This chatbot provides Islamic information. Always consult a qualified scholar.",
-    greeting:
-      "Assalamu Alaikum Wa Rahmatullahi Wa Barakatuh! I am an Islamic AI assistant. Ask me anything about the Quran, Hadith, and Islamic topics.",
-    errorMsg: "Sorry, something went wrong. Please try again.",
-    resetMsg: "Starting fresh. Ask me any Islamic question.",
-    active: "Active",
-    quickPrompts: [
-      "What is the Salah time today?",
-      "What are the rules and steps of Salah?",
-      "What are the virtues and acts of Ramadan?",
-      "How do I calculate my Zakat?",
-      "What are the etiquettes of reciting the Quran?",
-    ],
-    historyTitle: "Chat History",
-    historySubtitle: "All your previous conversations",
-    noHistory: "No history yet",
-    profileTitle: "Profile",
-    userName: "Abdullah Rahman",
-    userEmail: "abdullah@example.com",
-    membershipBasic: "Basic Membership",
-    totalQuestions: "Total Questions",
-    thisWeek: "This Week",
-    sessions: "Sessions",
-    badgesTitle: "Earned Badges",
-    badge1: "Regular User",
-    badge2: "Knowledge Seeker",
-    badge3: "Trusted Member",
-    editProfile: "Edit Profile",
-    changePassword: "Change Password",
-    deleteAccount: "Delete Account",
-    settingsTitle: "Settings",
-    settingsSubtitle: "Customize your experience",
-    groupGeneral: "General Settings",
-    groupIslamic: "Islamic Preferences",
-    groupDisplay: "Display",
-    language: "Language",
-    languageDesc: "Interface language",
-    notifications: "Notifications",
-    notificationsDesc: "Push notifications",
-    madhab: "Madhab",
-    madhabDesc: "Fiqh preference",
-    saveHistory: "Save History",
-    saveHistoryDesc: "Keep chat logs",
-    darkModeLabel: "Dark Mode",
-    darkModeDesc: "Dark theme",
-    madhabHanafi: "Hanafi",
-    madhabMaliki: "Maliki",
-    madhabShafii: "Shafi'i",
-    madhabHanbali: "Hanbali",
-    langSelected: "English selected",
-    statsValues: ["127", "18", "42"],
-
-    prayerTitle: "Prayer Times",
-    prayerSubtitle: "Today's prayer schedule",
-    prayerNames: { Fajr: "Fajr", Sunrise: "Sunrise", Dhuhr: "Dhuhr", Asr: "Asr", Maghrib: "Maghrib", Isha: "Isha" },
-    prayerLoading: "Loading...",
-    prayerError: "Failed to load prayer times",
-    prayerRetry: "Try Again",
-    nextPrayer: "Next Prayer",
-    currentPrayer: "Now",
-    hijriDate: "Hijri Date",
-    about: "About Us",
-    aboutLabel: "About Us",
-    aboutAppTitle: "Noor AI — Islamic Knowledge Assistant",
-    aboutAppDesc:
-      "Noor AI is a bilingual Islamic chatbot designed to help Muslims explore the Quran, Hadith, and Islamic jurisprudence with ease. Built with modern AI, it answers questions in both Bangla and English with accuracy and care.",
-    aboutTags: ["Quran & Hadith", "Bilingual (EN / BN)", "Prayer Times", "Fiqh Preferences", "AI Powered", "v2.0"],
-    aboutDevsLabel: "Meet the Developers",
-    aboutDevsSubtitle: "We build intelligent systems — from AI chatbots to full automation pipelines.",
-    aboutDev1Name: "Arfin Hayet",
-    aboutDev1Role: "Full-Stack Dev",
-    aboutDev1Bio:
-      "Specializes in AI integration, LLM-powered applications, and automating complex business workflows using cutting-edge models.",
-    aboutDev2Name: "Mohammad Rumman",
-    aboutDev2Role: "Full-Stack Dev",
-    aboutDev2Bio:
-      "Expert in designing responsive, modern UIs and scalable backend systems. Transforms ideas into polished user-facing products.",
-    aboutWeDoTitle: "What we can do for you",
-    aboutWeDoDesc:
-      "We convert any existing system into an AI-powered one, build automation pipelines, and transform traditional databases into vector stores — making your data queryable by AI in a semantically rich way. If it can be automated or made smarter, we build it.",
-    aboutContactLabel: "Contact Us",
-    aboutContactSubtitle: "Have a project in mind? We'd love to hear from you.",
-    contactName: "Your name",
-    contactEmail: "Your email",
-    contactMessage: "Tell us about your project...",
-    contactSend: "Send Message",
-    contactSending: "Sending...",
-    contactSuccess: "Message sent! We'll get back to you soon.",
-    contactError: "Please fill all fields or try again.",
-    aboutSkills1: ["LLM / RAG", "Automation", "Vector DB", "Python"],
-    aboutSkills2: ["React", "Node.js", "UI/UX", "APIs"],
-    dua: "Dua",
-    duaComing: "Coming soon...",
-    duaSubtitle: "Essential supplications for every Muslim",
-  },
-};
-
-const MOCK_HISTORY_DATA = {
-  bn: [
-    { id: 1, title: "নামাজের ওয়াক্ত সম্পর্কে", preview: "ফজরের নামাজ কখন পড়তে হয়?", time: "২ ঘণ্টা আগে" },
-    { id: 2, title: "যাকাতের নিসাব", preview: "সোনার যাকাতের নিসাব কত?", time: "গতকাল" },
-    { id: 3, title: "রমজানের রোজা", preview: "রোজা রাখার নিয়ত কীভাবে করতে হয়?", time: "৩ দিন আগে" },
-    { id: 4, title: "হজ্জের ফরজ", preview: "হজ্জের ফরজগুলো কী কী?", time: "১ সপ্তাহ আগে" },
-    { id: 5, title: "দোয়া কুনুত", preview: "বিতর নামাজে দোয়া কুনুত পড়া কি ওয়াজিব?", time: "১ সপ্তাহ আগে" },
-  ],
-  en: [
-    { id: 1, title: "About Prayer Times", preview: "When should Fajr prayer be performed?", time: "2 hours ago" },
-    { id: 2, title: "Nisab for Zakat", preview: "What is the nisab for gold zakat?", time: "Yesterday" },
-    { id: 3, title: "Fasting in Ramadan", preview: "How do you make the intention for fasting?", time: "3 days ago" },
-    { id: 4, title: "Obligatory Acts of Hajj", preview: "What are the fard acts of Hajj?", time: "1 week ago" },
-    { id: 5, title: "Dua Qunoot", preview: "Is Dua Qunoot wajib in Witr prayer?", time: "1 week ago" },
-  ],
-};
-
-const Icons = {
-  Search: () => (
-    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <circle cx="7" cy="7" r="4.5" />
-      <path d="M10.5 10.5l2.5 2.5" />
-    </svg>
-  ),
-  Info: () => (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <line x1="12" y1="8" x2="12" y2="8" />
-      <line x1="12" y1="12" x2="12" y2="16" />
-    </svg>
-  ),
-  Chat: () => (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-    </svg>
-  ),
-  History: () => (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <polyline points="12 6 12 12 16 14" />
-    </svg>
-  ),
-  Profile: () => (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
-  ),
-  Settings: () => (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="3" />
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-    </svg>
-  ),
-  Moon: () => (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-    </svg>
-  ),
-  Sun: () => (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="5" />
-      <line x1="12" y1="1" x2="12" y2="3" />
-      <line x1="12" y1="21" x2="12" y2="23" />
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-      <line x1="1" y1="12" x2="3" y2="12" />
-      <line x1="21" y1="12" x2="23" y2="12" />
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-    </svg>
-  ),
-  Send: () => (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="22" y1="2" x2="11" y2="13" />
-      <polygon points="22 2 15 22 11 13 2 9 22 2" />
-    </svg>
-  ),
-  Stop: () => (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-      <rect x="4" y="4" width="16" height="16" rx="2" />
-    </svg>
-  ),
-  Menu: () => (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-    >
-      <line x1="3" y1="6" x2="21" y2="6" />
-      <line x1="3" y1="12" x2="21" y2="12" />
-      <line x1="3" y1="18" x2="21" y2="18" />
-    </svg>
-  ),
-  Close: () => (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-    >
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
-    </svg>
-  ),
-  Plus: () => (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    >
-      <line x1="12" y1="5" x2="12" y2="19" />
-      <line x1="5" y1="12" x2="19" y2="12" />
-    </svg>
-  ),
-  Trash: () => (
-    <svg
-      width="15"
-      height="15"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="3 6 5 6 21 6" />
-      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-      <path d="M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-    </svg>
-  ),
-  Star: () => (
-    <svg
-      width="15"
-      height="15"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-    </svg>
-  ),
-  Bell: () => (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-      <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-    </svg>
-  ),
-  Globe: () => (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <line x1="2" y1="12" x2="22" y2="12" />
-      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-    </svg>
-  ),
-  Shield: () => (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-    </svg>
-  ),
-  Book: () => (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-    </svg>
-  ),
-  Chevron: ({ dir = "right" }) => (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      style={{ transform: dir === "left" ? "rotate(180deg)" : dir === "down" ? "rotate(90deg)" : "none" }}
-    >
-      <polyline points="9 18 15 12 9 6" />
-    </svg>
-  ),
-
-  Prayer: () => (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z" />
-      <circle cx="12" cy="9" r="2.5" />
-    </svg>
-  ),
-};
+import { Icons } from "./Icons";
 
 function IslamicPattern({ dark }) {
   const c = dark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.025)";
@@ -989,130 +413,44 @@ function LangPill({ lang, setLang, theme, setMessages }) {
 // ════════════════════════════════════════════════════════════
 // MAIN APP
 // ════════════════════════════════════════════════════════════
-export default function App() {
-  const [lang, setLang] = useState(() => localStorage.getItem("lang") || "bn");
-  const [dark, setDark] = useState(() => localStorage.getItem("dark") === "true");
+export function IslamicChatClient() {
+  const { lang, setLang, t, font, userInitials } = useLocale();
+  const { dark, setDark, theme } = useTheme();
+  const {
+    messages,
+    setMessages,
+    isLoading,
+    input,
+    copiedId,
+    copyMessage,
+    bottomRef,
+    textareaRef,
+    sendMessage,
+    handleInput,
+    handleKeyDown,
+    handleStop,
+    clearChat,
+  } = useChat();
 
-  const [section, setSection] = useState("chat");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [input, setInput] = useState("");
-  const [settings, setSettings] = useState({ notifications: true, madhab: "hanafi", saveHistory: true });
+  const {
+    section,
+    setSection,
+    sidebarOpen,
+    setSidebarOpen,
+    settings,
+    history,
+    setHistory,
+    showInstall,
+    setShowInstall,
+    handleInstall,
+    isDesktop,
+  } = useUi();
 
-  useEffect(() => {
-    localStorage.setItem("lang", lang);
-  }, [lang]);
+  const appRootRef = useRef(null);
 
-  useEffect(() => {
-    localStorage.setItem("dark", dark);
-  }, [dark]);
-
-  const [installPrompt, setInstallPrompt] = useState(null);
-  const [showInstall, setShowInstall] = useState(false);
-
-  useEffect(() => {
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      setInstallPrompt(e);
-      setShowInstall(true);
-    });
-  }, []);
-
-  const handleInstall = async () => {
-    if (!installPrompt) return;
-    await installPrompt.prompt();
-    const { outcome } = await installPrompt.userChoice;
-    if (outcome === "accepted") setShowInstall(false);
-    setInstallPrompt(null);
-  };
-
-  const genUserId = () =>
-    typeof crypto !== "undefined" && crypto.randomUUID
-      ? crypto.randomUUID()
-      : `user_${Date.now()}_${Math.floor(Math.random() * 9000 + 1000)}`;
-  const [userId, setUserId] = useState(() => genUserId());
-
-  const t = useCallback((key) => TRANSLATIONS[lang][key] ?? key, [lang]);
-
-  const font = lang === "bn" ? "Hind Siliguri, sans-serif" : "DM Sans, sans-serif";
-
-  const userInitials = lang === "bn" ? "আ" : "A";
-
-  const [messages, setMessages] = useState([
-    { id: 0, role: "assistant", content: TRANSLATIONS[lang].greeting, streaming: false },
-  ]);
-
-  // responsive helper: track desktop vs mobile to reliably hide footer on small screens
-  const [isDesktop, setIsDesktop] = useState(() =>
-    typeof window !== "undefined" ? window.matchMedia("(min-width:768px)").matches : false,
-  );
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const mq = window.matchMedia("(min-width:768px)");
-    const onChange = (e) => setIsDesktop(e.matches);
-    if (mq.addEventListener) mq.addEventListener("change", onChange);
-    else mq.addListener(onChange);
-    return () => {
-      if (mq.removeEventListener) mq.removeEventListener("change", onChange);
-      else mq.removeListener(onChange);
-    };
-  }, []);
-
-  // clipboard copy feedback
-  const [copiedId, setCopiedId] = useState(null);
-  const copyMessage = async (id, text) => {
-    try {
-      const str = String(text ?? "");
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(str);
-      } else {
-        const ta = document.createElement("textarea");
-        ta.value = str;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-      }
-      setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 1400);
-    } catch (e) {
-      console.error("copy failed", e);
-    }
-  };
-
-  // History list driven by language
-  const [history, setHistory] = useState(MOCK_HISTORY_DATA.bn);
-
-  // ── Sync history data when lang changes ───────────────────
   useEffect(() => {
     setHistory(MOCK_HISTORY_DATA[lang]);
-  }, [lang]);
-
-  // ── Auto-scroll on new messages ───────────────────────────
-  const bottomRef = useRef(null);
-  const scrollThrottleRef = useRef(0);
-  useEffect(() => {
-    const now = Date.now();
-    const isStreaming = messages.some((m) => m.streaming);
-    // When streaming, throttle scrolls to avoid frequent layout jumps.
-    if (isStreaming) {
-      if (now - scrollThrottleRef.current > 120) {
-        bottomRef.current?.scrollIntoView({ behavior: "auto" });
-        scrollThrottleRef.current = now;
-      }
-    } else {
-      // final message: smooth scroll to show completion
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-      scrollThrottleRef.current = now;
-    }
-  }, [messages]);
-
-  // ── Facebook WebView viewport fix ───────────────────────
-  const textareaRef = useRef(null);
-  const abortRef = useRef(null);
-  // Direct ref to the root div so we can set its styles immediately
-  // (CSS variable updates have a render-frame delay; direct style is synchronous).
-  const appRootRef = useRef(null);
+  }, [lang, setHistory]);
 
   useEffect(() => {
     const syncVP = () => {
@@ -1155,53 +493,6 @@ export default function App() {
     };
   }, []);
 
-  // ── Theme tokens ──────────────────────────────────────────
-  const theme = dark
-    ? {
-        bg: "#0e1117",
-        bgSec: "#161b25",
-        bgTer: "#1c2333",
-        bgHov: "#222c3c",
-        border: "rgba(255,255,255,0.07)",
-        borderMed: "rgba(255,255,255,0.12)",
-        text: "#e8edf5",
-        textSec: "#8a96a8",
-        textTer: "#5a6478",
-        accent: "#2ecfa0",
-        accentBg: "rgba(46,207,160,0.1)",
-        accentBgHov: "rgba(46,207,160,0.18)",
-        botBubble: "#1c2333",
-        userBubble: "#1a3550",
-        userText: "#c8e0f8",
-        inputBg: "#1c2333",
-        sidebarBg: "#0e1117",
-        headerBg: "rgba(14,17,23,0.92)",
-        shadow: "0 4px 24px rgba(0,0,0,0.4)",
-        scrollbar: "#2a3445",
-      }
-    : {
-        bg: "#f7f5f0",
-        bgSec: "#ffffff",
-        bgTer: "#eeeae2",
-        bgHov: "#f0ebe0",
-        border: "rgba(0,0,0,0.07)",
-        borderMed: "rgba(0,0,0,0.12)",
-        text: "#1a1f2e",
-        textSec: "#6b7385",
-        textTer: "#9ba3b5",
-        accent: "#1a6b5a",
-        accentBg: "rgba(26,107,90,0.08)",
-        accentBgHov: "rgba(26,107,90,0.14)",
-        botBubble: "#ffffff",
-        userBubble: "#1a3550",
-        userText: "#ffffff",
-        inputBg: "#ffffff",
-        sidebarBg: "#ffffff",
-        headerBg: "rgba(255,255,255,0.92)",
-        shadow: "0 4px 24px rgba(0,0,0,0.08)",
-        scrollbar: "#d4cfc5",
-      };
-
   // ── Global CSS ────────────────────────────────────────────
   const css = useMemo(
     () => `
@@ -1239,110 +530,6 @@ export default function App() {
     [dark, lang, theme.scrollbar],
   );
 
-  // ── Streaming send (original logic preserved) ─────────────
-  const sendMessage = useCallback(
-    async (promptText) => {
-      const text = (typeof promptText === "string" ? promptText : input).trim();
-      if (!text || isLoading) return;
-      const userMsg = { id: Date.now(), role: "user", content: text, streaming: false };
-      const aId = Date.now() + 1;
-      const assistantMsg = { id: aId, role: "assistant", content: "", streaming: true };
-      setMessages((prev) => [...prev, userMsg, assistantMsg]);
-      setInput("");
-      setIsLoading(true);
-      if (textareaRef.current) textareaRef.current.style.height = "auto";
-      abortRef.current = new AbortController();
-      try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: userId, message: text }),
-          signal: abortRef.current.signal,
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let acc = "";
-        const isMeaningless = (s) => {
-          if (!s || typeof s !== "string") return true;
-          const trimmed = s.trim();
-          return trimmed === "" || trimmed === "[DONE]";
-        };
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          acc += decoder.decode(value, { stream: true });
-          const clean = acc
-            .split("\n")
-            .filter((l) => l.startsWith("data:"))
-            .map((l) => l.replace(/^data:\s*/, ""))
-            .map((l) => {
-              try {
-                const p = JSON.parse(l);
-                if (p && p.type === "done") return "";
-                return (
-                  p.content ??
-                  p.text ??
-                  (p.delta && (p.delta.content ?? p.delta)) ??
-                  p.choices?.[0]?.delta?.content ??
-                  p.choices?.[0]?.text ??
-                  ""
-                );
-              } catch {
-                return l;
-              }
-            })
-            .filter(Boolean)
-            .join("");
-
-          if (clean && !isMeaningless(clean)) {
-            setMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, content: clean } : m)));
-          } else if (!clean && acc.replace(/\n/g, "").length > 0) {
-            const raw = acc
-              .split("\n")
-              .filter((l) => l.startsWith("data:"))
-              .map((l) => l.replace(/^data:\s*/, ""))
-              .map((l) => l.trim())
-              .filter((l) => l && l !== "[DONE]")
-              .join("\n")
-              .trim();
-            if (raw && !isMeaningless(raw))
-              setMessages((prev) => prev.map((m) => (m.id === aId ? { ...m, content: raw } : m)));
-          }
-        }
-      } catch (err) {
-        if (err.name !== "AbortError")
-          setMessages((prev) =>
-            prev.map((m) => (m.id === aId ? { ...m, content: t("errorMsg"), streaming: false } : m)),
-          );
-      } finally {
-        // Mark streaming as finished and remove any assistant messages that are empty/whitespace
-        setMessages((prev) =>
-          prev
-            .map((m) => (m.id === aId ? { ...m, streaming: false } : m))
-            .filter((m) => !(m.role === "assistant" && (!m.content || String(m.content).trim() === ""))),
-        );
-        setIsLoading(false);
-      }
-    },
-    [input, isLoading, lang],
-  );
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  };
-
-  // const handleInput = (e) => {
-  //   setInput(e.target.value);
-  //   e.target.style.height = "auto";
-  //   e.target.style.height = Math.min(e.target.scrollHeight, 180) + "px";
-  // };
-
-  const handleStop = () => abortRef.current?.abort();
-
   const handleFocus = () => {
     // Facebook WebView: keyboard appearance often doesn't fire visualViewport/resize
     // events reliably, or fires them mid-animation with partial height.
@@ -1368,11 +555,6 @@ export default function App() {
     // Run immediately, then at 100 / 300 / 600 ms to catch slow keyboard animations.
     poll();
     [100, 300, 600].forEach((ms) => setTimeout(poll, ms));
-  };
-
-  const clearChat = () => {
-    setMessages([{ id: 0, role: "assistant", content: t("resetMsg"), streaming: false }]);
-    setUserId(genUserId());
   };
 
   const navItems = [
@@ -3123,11 +2305,6 @@ export default function App() {
       </div>
     </aside>
   );
-  const handleInput = (e) => {
-    setInput(e.target.value);
-    e.target.style.height = "auto";
-    e.target.style.height = Math.min(e.target.scrollHeight, 180) + "px";
-  };
 
   // ──────────────────────────────────────────────────────────
   // HISTORY SECTION
@@ -3563,7 +2740,7 @@ export default function App() {
       } catch (error) {
         showToast(t("savedError"), "err");
       } finally {
-        s;
+        setSaving(false);
       }
     };
 
