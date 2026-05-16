@@ -1,6 +1,8 @@
 import { ServiceWorkerRegistrar } from "@/components/ServiceWorkerRegistrar";
 import { AppShell } from "@/components/AppShell";
 import { AllProviders } from "@/components/providers/AllProviders";
+import { GA_MEASUREMENT_ID } from "@/lib/constants";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import "primereact/resources/themes/lara-dark-teal/theme.css";
 import "primereact/resources/primereact.min.css";
@@ -114,6 +116,7 @@ export default function RootLayout({ children }) {
         <AllProviders>
           <AppShell>{children}</AppShell>
         </AllProviders>
+        <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />
       </body>
     </html>
   );

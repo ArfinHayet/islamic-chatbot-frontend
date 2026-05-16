@@ -1,0 +1,5 @@
+# Noor AI
+
+This file is an alias for AI agents that check `llm.txt`.
+
+Canonical LLM guide: https://www.noorai.online/llms.txt

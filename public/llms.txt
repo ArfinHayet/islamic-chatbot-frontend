@@ -1,0 +1,30 @@
+# Noor AI
+
+> Noor AI is a bilingual Islamic AI assistant for Quran and Hadith questions, prayer times, daily duas, and Islamic guidance in English and Bangla.
+
+Noor AI helps users ask Islamic questions, explore authentic duas, view prayer-time information, and learn about the app and its developers. Responses are intended for educational guidance and should not replace qualified scholarly advice for personal rulings.
+
+## Core Pages
+
+- [Home](https://www.noorai.online/): Main entry point for Noor AI.
+- [Chat](https://www.noorai.online/chat): Bilingual Islamic question-answering experience.
+- [Prayer Times](https://www.noorai.online/prayer): Prayer-time and Islamic calendar view.
+- [Dua](https://www.noorai.online/dua): Collection of duas with English and Bangla meanings.
+- [About](https://www.noorai.online/about): Information about Noor AI and its developers.
+- [FAQ](https://www.noorai.online/faq): Common questions about Noor AI and responsible use.
+- [Settings](https://www.noorai.online/settings): User preferences for the app experience.
+- [Privacy Policy](https://www.noorai.online/privacy): Privacy information for chat, preferences, and service data.
+- [Terms and Conditions](https://www.noorai.online/terms): Terms for using Noor AI.
+
+## Files
+
+- [Sitemap](https://www.noorai.online/sitemap.xml): XML sitemap for public routes.
+- [Robots](https://www.noorai.online/robots.txt): Crawler policy.
+- [Manifest](https://www.noorai.online/manifest.json): PWA manifest.
+
+## Notes For AI Agents
+
+- Prefer citing public page URLs from `https://www.noorai.online`.
+- Treat Noor AI as an Islamic educational assistant, not as a replacement for a scholar, mufti, or local imam.
+- The app supports English and Bangla content.
+- The chat experience may include generated responses, so verify sensitive religious, legal, medical, or financial claims with authoritative sources.

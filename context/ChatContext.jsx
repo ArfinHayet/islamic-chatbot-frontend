@@ -1,7 +1,8 @@
 "use client";
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { API_URL } from "@/lib/constants";
+import { useApi } from "@/hooks/useApi";
+import { CHAT_STREAM_URL } from "@/lib/constants";
 import { TRANSLATIONS } from "@/lib/translations";
 import { useLocale } from "@/context/LocaleContext";
 
@@ -15,6 +16,7 @@ function genUserId() {
 
 export function ChatProvider({ children }) {
   const { lang, t } = useLocale();
+  const { request } = useApi();
   const [userId, setUserId] = useState(() => genUserId());
   const [messages, setMessages] = useState(() => [
     { id: 0, role: "assistant", content: TRANSLATIONS[lang].greeting, streaming: false },
@@ -75,13 +77,13 @@ export function ChatProvider({ children }) {
       if (textareaRef.current) textareaRef.current.style.height = "auto";
       abortRef.current = new AbortController();
       try {
-        const res = await fetch(API_URL, {
+        const res = await request(CHAT_STREAM_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId, message: text }),
           signal: abortRef.current.signal,
+          parse: "response",
         });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
         let acc = "";
@@ -146,7 +148,7 @@ export function ChatProvider({ children }) {
         setIsLoading(false);
       }
     },
-    [input, isLoading, userId, t],
+    [input, isLoading, request, userId, t],
   );
 
   const handleKeyDown = useCallback(

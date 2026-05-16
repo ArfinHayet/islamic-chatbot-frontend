@@ -5,6 +5,8 @@ import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import { useUi } from "@/context/UiContext";
 import { IslamicPattern } from "@/components/ui/IslamicPattern";
+import { useApi } from "@/hooks/useApi";
+import { PRAYER_TIMES_URL } from "@/lib/constants";
 
 const PRAYER_KEYS = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
 
@@ -18,6 +20,7 @@ const PRAYER_ICONS = {
 };
 
 function PrayerSection({ t, theme, settings }) {
+      const { request } = useApi();
       const [prayerData, setPrayerData] = useState(null);
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState(false);
@@ -42,8 +45,7 @@ function PrayerSection({ t, theme, settings }) {
         setLoading(true);
         setError(false);
         try {
-          const res = await fetch("https://islamic-chatbot-lac.vercel.app/api/v1/chat/prayer-times");
-          const json = await res.json();
+          const json = await request(PRAYER_TIMES_URL);
           const entry = json.data[0];
           setRawData(entry); // cache both madhab entries
           const idx = madhabRef.current === "hanafi" ? "1" : "0";
@@ -53,7 +55,7 @@ function PrayerSection({ t, theme, settings }) {
         } finally {
           setLoading(false);
         }
-      }, []);
+      }, [request]);
   
       // Fetch only once on mount
       useEffect(() => {

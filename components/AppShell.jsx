@@ -16,6 +16,9 @@ const NAV_ITEMS = [
   { id: "dua", key: "dua" },
   { id: "about", key: "about" },
   { id: "settings", key: "settings" },
+  { id: "faq", key: "faq" },
+  { id: "privacy", key: "privacy" },
+  { id: "terms", key: "terms" },
 ];
 
 // ── Context so child pages can call handleFocus on the fixed root ──────────

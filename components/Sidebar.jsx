@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useChat } from "@/context/ChatContext";
@@ -16,6 +17,12 @@ const NAV_ITEMS = [
   { id: "dua", key: "dua", Icon: Icons.Book },
   { id: "about", key: "about", Icon: Icons.Info },
   { id: "settings", key: "settings", Icon: Icons.Settings },
+];
+
+const FOOTER_LINKS = [
+  { id: "faq", key: "faq" },
+  { id: "privacy", key: "privacy" },
+  { id: "terms", key: "terms" },
 ];
 
 export function Sidebar() {
@@ -113,7 +120,7 @@ export function Sidebar() {
 
       {/* Nav */}
       <nav style={{ padding: "4px 10px", flex: 1 }}>
-        {NAV_ITEMS.map(({ id, key, Icon }) => {
+        {NAV_ITEMS.map(({ id, key, Icon: NavIcon }) => {
           const active = activeSection === id;
           return (
             <Link
@@ -137,7 +144,7 @@ export function Sidebar() {
               }}
             >
               <span style={{ opacity: active ? 1 : 0.7 }}>
-                <Icon />
+                {React.createElement(NavIcon)}
               </span>
               {t(key)}
               {active && (
@@ -189,6 +196,21 @@ export function Sidebar() {
         </div>
         <div style={{ fontSize: 10.5, color: theme.textTer, textAlign: "center", marginBottom: 10 }}>
           {t("langSelected")}
+        </div>
+        <div
+          aria-label={t("legalLinks")}
+          style={{ display: "flex", justifyContent: "center", gap: 8, flexWrap: "wrap", marginBottom: 8 }}
+        >
+          {FOOTER_LINKS.map(({ id, key }) => (
+            <Link
+              key={id}
+              href={`/${id}`}
+              onClick={() => setSidebarOpen(false)}
+              style={{ color: activeSection === id ? theme.accent : theme.textTer, fontSize: 10.5, textDecoration: "none" }}
+            >
+              {t(key)}
+            </Link>
+          ))}
         </div>
       </div>
     </aside>
