@@ -1,15 +1,5 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import React, { useEffect } from "react";
-import { IslamicChatClient } from "@/components/islamic-chat/IslamicChatClient";
-import { useUi } from "@/context/UiContext";
-
-export default function Page() {
-  const { setSection } = useUi();
-
-  useEffect(() => {
-    setSection("chat");
-  }, [setSection]);
-
-  return <IslamicChatClient />;
+export default function HomePage() {
+  redirect("/chat");
 }

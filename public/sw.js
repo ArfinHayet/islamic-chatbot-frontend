@@ -1,5 +1,5 @@
-const CACHE_NAME = "noor-ai-v1";
-const STATIC_ASSETS = ["/", "/index.html", "/favicon.png", "/manifest.json"];
+const CACHE_NAME = "noor-ai-v2";
+const STATIC_ASSETS = ["/", "/favicon.png", "/manifest.json"];
 
 // Install — cache static assets
 self.addEventListener("install", (e) => {
