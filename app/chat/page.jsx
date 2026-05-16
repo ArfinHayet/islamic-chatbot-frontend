@@ -350,9 +350,9 @@ function ChatContent() {
             {isLoading ? <Icons.Stop /> : <Icons.Send />}
           </button>
         </div>
-        <p style={{ fontSize: 11, color: theme.textTer, textAlign: "center", marginTop: 8, lineHeight: 1.5 }}>
+        {/* <p style={{ fontSize: 11, color: theme.textTer, textAlign: "center", marginTop: 8, lineHeight: 1.5 }}>
           {t("disclaimer")}
-        </p>
+        </p> */}
         <p style={{ fontSize: 10.5, color: theme.textTer, textAlign: "center", marginTop: 2, lineHeight: 1.5 }}>
           {t("termsAgree")} <a href='/terms' target='_blank' rel='noopener noreferrer' style={{ color: theme.accent, textDecoration: "underline" }}>{t("termsSection")}</a>
         </p>
