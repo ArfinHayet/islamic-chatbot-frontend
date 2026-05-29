@@ -59,6 +59,7 @@ export function AdminShell({ children }) {
         minHeight: "100dvh",
         background: dark ? "#0f172a" : "#f6f8f7",
         color: theme.text,
+        minWidth: 0,
       },
       sidebar: {
         width: 248,
@@ -93,6 +94,7 @@ export function AdminShell({ children }) {
       content: {
         flex: 1,
         minHeight: 0,
+        minWidth: 0,
         overflow: "auto",
         padding: "20px",
       },

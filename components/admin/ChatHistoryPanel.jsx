@@ -174,14 +174,30 @@ export function ChatHistoryPanel() {
   };
 
   return (
-    <section style={{ width: "100%", maxWidth: 1180, margin: "0 auto", display: "grid", gap: 16 }}>
+    <section style={{ width: "100%", maxWidth: 1180, minWidth: 0, margin: "0 auto", display: "grid", gap: 16 }}>
       <style>{`
         .admin-filter-input::placeholder { color: ${theme.textTer}; opacity: 1; }
+        .admin-table-scroll {
+          width: 100%;
+          max-width: 100%;
+          min-width: 0;
+          overflow-x: auto;
+          overflow-y: visible;
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior-x: contain;
+          scrollbar-width: thin;
+        }
+        .admin-chat-table {
+          width: max-content;
+          min-width: 1180px;
+          border-collapse: collapse;
+        }
         @media (max-width: 720px) {
           .admin-history-titlebar { align-items: flex-start !important; flex-direction: column !important; }
           .admin-history-pagination { align-items: flex-start !important; flex-direction: column !important; }
           .admin-history-actions { width: 100%; }
           .admin-history-actions button { flex: 1; }
+          .admin-chat-table { min-width: 1040px; }
         }
       `}</style>
 
@@ -290,10 +306,11 @@ export function ChatHistoryPanel() {
           borderRadius: 8,
           boxShadow: theme.shadow,
           overflow: "hidden",
+          minWidth: 0,
         }}
       >
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 980 }}>
+        <div className="admin-table-scroll">
+          <table className="admin-chat-table">
             <thead>
               <tr style={{ background: theme.bgTer, color: theme.textSec, textAlign: "left" }}>
                 {["Time", "User ID", "IP Address", "Source", "Message", "Response"].map((heading) => (
@@ -335,8 +352,8 @@ export function ChatHistoryPanel() {
                       </button>
                     </td>
                     <td style={{ padding: 14, fontSize: 12 }}>{log.source}</td>
-                    <td style={{ padding: 14, fontSize: 13, lineHeight: 1.5, maxWidth: 280 }}>{log.message}</td>
-                    <td style={{ padding: 14, fontSize: 13, lineHeight: 1.5, maxWidth: 360 }}>{log.response || "-"}</td>
+                    <td style={{ padding: 14, fontSize: 13, lineHeight: 1.5, width: 300, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{log.message}</td>
+                    <td style={{ padding: 14, fontSize: 13, lineHeight: 1.5, width: 380, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{log.response || "-"}</td>
                   </tr>
                 ))
               )}
