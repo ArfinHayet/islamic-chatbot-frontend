@@ -246,6 +246,14 @@ export function ChatProvider({ children }) {
         const finalPayload = readEventText(buffer);
         handleStreamPayload(finalPayload);
       } catch (err) {
+        if (err.status === 400 || err.status === 401) {
+          setCaptchaToken("");
+          setCaptchaPass("");
+          setCaptchaPassExpiresAt("");
+          clearStoredCaptchaPass();
+          setCaptchaResetKey((current) => current + 1);
+        }
+
         if (err.name !== "AbortError")
           setMessages((prev) =>
             prev.map((m) => (m.id === aId ? { ...m, content: t("errorMsg"), streaming: false } : m)),
