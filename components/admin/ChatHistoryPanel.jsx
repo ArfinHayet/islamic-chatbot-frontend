@@ -5,7 +5,7 @@ import { ADMIN_MESSAGE_LOGS_URL } from "@/lib/constants";
 import { useTheme } from "@/context/ThemeContext";
 import { useAdminSession } from "@/components/admin/AdminShell";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 function formatDate(value) {
   if (!value) return "-";

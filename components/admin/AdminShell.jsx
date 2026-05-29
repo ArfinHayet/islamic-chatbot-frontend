@@ -56,10 +56,12 @@ export function AdminShell({ children }) {
   const styles = useMemo(
     () => ({
       root: {
+        height: "100dvh",
         minHeight: "100dvh",
         background: dark ? "#0f172a" : "#f6f8f7",
         color: theme.text,
         minWidth: 0,
+        overflow: "hidden",
       },
       sidebar: {
         width: 248,
