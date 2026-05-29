@@ -141,6 +141,15 @@ export function AppShell({ children }) {
 
   if (!mounted) return null;
 
+  if (pathname.startsWith("/admin")) {
+    return (
+      <AppShellContext.Provider value={{ handleFocus }}>
+        <style>{css}</style>
+        {children}
+      </AppShellContext.Provider>
+    );
+  }
+
   return (
     <AppShellContext.Provider value={{ handleFocus }}>
       <style>{css}</style>
