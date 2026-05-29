@@ -3,7 +3,11 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { isSupabaseConfigured, supabase } from "@/lib/supabaseClient";
+import { AUTH_LOGIN_URL } from "@/lib/constants";
+import { TurnstileWidget } from "@/components/security/TurnstileWidget";
 import { useTheme } from "@/context/ThemeContext";
+
+const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 export function LoginForm() {
   const router = useRouter();
@@ -12,6 +16,8 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaResetKey, setCaptchaResetKey] = useState(0);
 
   useEffect(() => {
     if (!supabase) return;
@@ -32,19 +38,46 @@ export function LoginForm() {
       return;
     }
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    });
-
-    setLoading(false);
-
-    if (signInError) {
-      setError(signInError.message);
+    if (!captchaToken) {
+      setError("Please complete the Turnstile verification.");
+      setLoading(false);
       return;
     }
 
-    router.replace("/admin/chat-history");
+    try {
+      const response = await fetch(AUTH_LOGIN_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim(),
+          password,
+          captchaToken,
+        }),
+      });
+      const payload = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(payload?.error || "Unable to sign in.");
+      }
+
+      const authData = payload?.data ?? payload;
+      const { error: sessionError } = await supabase.auth.setSession({
+        access_token: authData.accessToken,
+        refresh_token: authData.refreshToken,
+      });
+
+      if (sessionError) {
+        throw new Error(sessionError.message);
+      }
+
+      router.replace("/admin/chat-history");
+    } catch (loginError) {
+      setError(loginError.message || "Unable to sign in.");
+      setCaptchaToken("");
+      setCaptchaResetKey((current) => current + 1);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputStyle = {
@@ -111,11 +144,17 @@ export function LoginForm() {
           required
         />
 
+        <TurnstileWidget
+          siteKey={turnstileSiteKey}
+          resetKey={captchaResetKey}
+          onVerify={setCaptchaToken}
+        />
+
         {error && <div style={{ color: "#e11d48", fontSize: 13 }}>{error}</div>}
 
         <button
           type="submit"
-          disabled={loading || !isSupabaseConfigured}
+          disabled={loading || !isSupabaseConfigured || !captchaToken}
           style={{
             minHeight: 42,
             border: "none",
@@ -126,7 +165,7 @@ export function LoginForm() {
             fontSize: 14,
             fontWeight: 700,
             cursor: loading ? "wait" : "pointer",
-            opacity: loading || !isSupabaseConfigured ? 0.65 : 1,
+            opacity: loading || !isSupabaseConfigured || !captchaToken ? 0.65 : 1,
           }}
         >
           {loading ? "Signing in..." : "Sign in"}

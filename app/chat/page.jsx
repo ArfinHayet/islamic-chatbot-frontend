@@ -6,8 +6,12 @@ import { useChat } from "@/context/ChatContext";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "@/context/ThemeContext";
 import { Icons } from "@/components/islamic-chat/Icons";
+import { TurnstileWidget } from "@/components/security/TurnstileWidget";
 import { TypingDots } from "@/components/ui/TypingDots";
 import { MarkdownMessage } from "@/components/ui/MarkdownMessage";
+import { SurahAudioPlayer } from "@/components/ui/SurahAudioPlayer";
+
+const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 function ChatContent() {
   const {
@@ -16,6 +20,10 @@ function ChatContent() {
     input,
     copiedId,
     copyMessage,
+    captchaToken,
+    captchaPass,
+    verifyCaptchaToken,
+    captchaResetKey,
     bottomRef,
     textareaRef,
     sendMessage,
@@ -29,6 +37,17 @@ function ChatContent() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      {!captchaPass && (
+        <TurnstileWidget
+          siteKey={turnstileSiteKey}
+          resetKey={captchaResetKey}
+          onVerify={verifyCaptchaToken}
+          fullPage
+          appearance="interaction-only"
+          statusText="Verifying your browser..."
+        />
+      )}
+
       {/* Messages list */}
       <div
         style={{
@@ -124,6 +143,9 @@ function ChatContent() {
                   msg.streaming ? "" : "…"
                 )}
               </div>
+              {msg.role === "assistant" && msg.media?.type === "quran_recitation" && (
+                <SurahAudioPlayer media={msg.media} theme={theme} />
+              )}
               {msg.streaming && <TypingDots />}
               {msg.role === "assistant" && msg.content && (
                 <div
@@ -217,15 +239,17 @@ function ChatContent() {
           <button
             className="send-btn"
             onClick={isLoading ? handleStop : sendMessage}
+            disabled={!isLoading && !captchaPass && !captchaToken}
             style={{
               width: 36,
               height: 36,
               borderRadius: 10,
               border: "none",
-              cursor: "pointer",
+              cursor: !isLoading && !captchaPass && !captchaToken ? "not-allowed" : "pointer",
               flexShrink: 0,
-              background: isLoading ? "#c0392b" : input.trim() ? theme.accent : theme.bgTer,
-              color: isLoading || input.trim() ? "white" : theme.textTer,
+              background: isLoading ? "#c0392b" : input.trim() && (captchaPass || captchaToken) ? theme.accent : theme.bgTer,
+              color: isLoading || (input.trim() && (captchaPass || captchaToken)) ? "white" : theme.textTer,
+              opacity: !isLoading && !captchaPass && !captchaToken ? 0.65 : 1,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
