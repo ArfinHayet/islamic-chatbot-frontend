@@ -181,18 +181,18 @@ function ChatContent() {
                       e.stopPropagation();
                       toggleMessageAudio && toggleMessageAudio(msg);
                     }}
-                    disabled={ttsLoadingId === msg.id || msg.streaming}
-                    title={ttsPlayingId === msg.id ? "Stop audio" : "Read aloud"}
-                    aria-label={ttsPlayingId === msg.id ? "Stop audio" : "Read aloud"}
+                    disabled={ttsLoadingId === msg.id || msg.streaming || (!captchaPass && !captchaToken)}
+                    title={!captchaPass && !captchaToken ? "Complete verification first" : ttsPlayingId === msg.id ? "Stop audio" : "Read aloud"}
+                    aria-label={!captchaPass && !captchaToken ? "Complete verification first" : ttsPlayingId === msg.id ? "Stop audio" : "Read aloud"}
                     style={{
                       background: "transparent",
                       border: "none",
                       color: ttsPlayingId === msg.id ? theme.accent : theme.textTer,
-                      cursor: ttsLoadingId === msg.id || msg.streaming ? "wait" : "pointer",
+                      cursor: ttsLoadingId === msg.id ? "wait" : msg.streaming || (!captchaPass && !captchaToken) ? "not-allowed" : "pointer",
                       padding: 6,
                       borderRadius: 8,
                       fontSize: 15,
-                      opacity: ttsLoadingId === msg.id || msg.streaming ? 0.65 : 1,
+                      opacity: ttsLoadingId === msg.id || msg.streaming || (!captchaPass && !captchaToken) ? 0.65 : 1,
                     }}
                   >
                     <i
