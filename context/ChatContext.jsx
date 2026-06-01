@@ -174,17 +174,50 @@ export function ChatProvider({ children }) {
 
       setTtsLoadingId(message.id);
       try {
+        let accessCaptchaPass = captchaPass;
+        let accessCaptchaToken = captchaToken;
+
+        if (!accessCaptchaPass && accessCaptchaToken) {
+          const payload = await request(TURNSTILE_PASS_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ captchaToken: accessCaptchaToken }),
+          });
+          const pass = unwrapApiResponse(payload);
+
+          if (!pass?.captchaPass || !pass?.expiresAt) {
+            throw new Error("Invalid Turnstile pass response.");
+          }
+
+          accessCaptchaPass = pass.captchaPass;
+          accessCaptchaToken = "";
+          setCaptchaToken("");
+          setCaptchaPass(pass.captchaPass);
+          setCaptchaPassExpiresAt(pass.expiresAt);
+          writeStoredCaptchaPass(pass);
+        }
+
+        if (!accessCaptchaPass && !accessCaptchaToken) {
+          setCaptchaResetKey((current) => current + 1);
+          return;
+        }
+
         const blob = await request(CHAT_TTS_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text, captchaToken, captchaPass }),
+          body: JSON.stringify({
+            userId,
+            text: text.slice(0, 4000),
+            captchaToken: accessCaptchaToken,
+            captchaPass: accessCaptchaPass,
+          }),
           parse: "blob",
         });
         const url = URL.createObjectURL(blob);
         ttsUrlCacheRef.current.set(message.id, url);
         await playTtsUrl(message.id, url);
       } catch (error) {
-        if (error.status === 400 || error.status === 401) {
+        if (error.status === 401 || (error.status === 400 && !captchaPass)) {
           setCaptchaToken("");
           setCaptchaPass("");
           setCaptchaPassExpiresAt("");
@@ -197,7 +230,7 @@ export function ChatProvider({ children }) {
         setTtsLoadingId(null);
       }
     },
-    [captchaPass, captchaToken, playTtsUrl, request, stopTtsAudio, ttsLoadingId, ttsPlayingId],
+    [captchaPass, captchaToken, playTtsUrl, request, stopTtsAudio, ttsLoadingId, ttsPlayingId, userId],
   );
 
   const verifyCaptchaToken = useCallback(
