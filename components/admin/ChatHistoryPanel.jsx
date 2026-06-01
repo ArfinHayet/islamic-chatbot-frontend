@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ADMIN_MESSAGE_LOGS_URL } from "@/lib/constants";
 import { useTheme } from "@/context/ThemeContext";
 import { useAdminSession } from "@/components/admin/AdminShell";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20;
 
 function formatDate(value) {
   if (!value) return "-";
@@ -20,6 +20,73 @@ function unwrapApiResponse(payload) {
   return payload?.data ?? payload;
 }
 
+function ResponseCell({ response, theme, onSeeMore }) {
+  const textRef = useRef(null);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const responseText = response || "-";
+
+  useEffect(() => {
+    const element = textRef.current;
+    if (!element) return undefined;
+
+    const checkOverflow = () => {
+      setIsOverflowing(element.scrollWidth > element.clientWidth);
+    };
+
+    checkOverflow();
+
+    if (typeof ResizeObserver !== "undefined") {
+      const observer = new ResizeObserver(checkOverflow);
+      observer.observe(element);
+      return () => observer.disconnect();
+    }
+
+    window.addEventListener("resize", checkOverflow);
+    return () => window.removeEventListener("resize", checkOverflow);
+  }, [responseText]);
+
+  return (
+    <td style={{ padding: 14, fontSize: 13, lineHeight: 1.5, width: 380, maxWidth: 380 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+        <span
+          ref={textRef}
+          title={responseText}
+          style={{
+            minWidth: 0,
+            flex: "1 1 auto",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            color: response ? theme.text : theme.textTer,
+          }}
+        >
+          {responseText}
+        </span>
+        {response && isOverflowing && (
+          <button
+            type="button"
+            onClick={() => onSeeMore(response)}
+            style={{
+              border: "none",
+              background: "transparent",
+              color: theme.accent,
+              cursor: "pointer",
+              fontSize: 12,
+              fontWeight: 700,
+              padding: 0,
+              whiteSpace: "nowrap",
+              textDecoration: "underline",
+              textUnderlineOffset: 3,
+            }}
+          >
+            See more
+          </button>
+        )}
+      </div>
+    </td>
+  );
+}
+
 export function ChatHistoryPanel() {
   const { theme } = useTheme();
   const { session } = useAdminSession();
@@ -31,12 +98,14 @@ export function ChatHistoryPanel() {
   const [appliedFilters, setAppliedFilters] = useState({ userId: "", ipAddress: "" });
   const [logsLoading, setLogsLoading] = useState(false);
   const [logsError, setLogsError] = useState("");
+  const [expandedResponse, setExpandedResponse] = useState("");
   const [ipLookup, setIpLookup] = useState({
     ip: "",
     loading: false,
     error: "",
     data: null,
   });
+  const isIpLookupOpen = Boolean(ipLookup.loading || ipLookup.error || ipLookup.data);
 
   const queryString = useMemo(() => {
     const params = new URLSearchParams({
@@ -103,6 +172,27 @@ export function ChatHistoryPanel() {
     setPage(1);
     setAppliedFilters({ userId: "", ipAddress: "" });
   };
+
+  const closeIpLookup = useCallback(() => {
+    setIpLookup({ ip: "", loading: false, error: "", data: null });
+  }, []);
+
+  useEffect(() => {
+    if (!expandedResponse && !isIpLookupOpen) return undefined;
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        if (expandedResponse) {
+          setExpandedResponse("");
+        } else {
+          closeIpLookup();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [closeIpLookup, expandedResponse, isIpLookupOpen]);
 
   const lookupIpAddress = async (ip) => {
     if (!ip) return;
@@ -245,60 +335,6 @@ export function ChatHistoryPanel() {
         </div>
       </form>
 
-      {(ipLookup.loading || ipLookup.error || ipLookup.data) && (
-        <section
-          style={{
-            background: theme.bgSec,
-            border: `1px solid ${theme.border}`,
-            borderRadius: 8,
-            boxShadow: theme.shadow,
-            padding: 14,
-            display: "grid",
-            gap: 10,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 700 }}>IP address lookup</div>
-              <div style={{ fontSize: 12, color: theme.textSec }}>{ipLookup.ip}</div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIpLookup({ ip: "", loading: false, error: "", data: null })}
-              style={{ ...secondaryButtonStyle, minHeight: 34, padding: "0 10px" }}
-            >
-              Close
-            </button>
-          </div>
-
-          {ipLookup.loading && <div style={{ fontSize: 13, color: theme.textSec }}>Looking up IP details...</div>}
-          {ipLookup.error && <div style={{ fontSize: 13, color: "#e11d48" }}>{ipLookup.error}</div>}
-          {ipLookup.data && (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-              {[
-                ["Country", ipLookup.data.country],
-                ["City", ipLookup.data.city],
-                ["ISP", ipLookup.data.isp],
-              ].map(([label, value]) => (
-                <div
-                  key={label}
-                  style={{
-                    flex: "1 1 180px",
-                    border: `1px solid ${theme.border}`,
-                    borderRadius: 8,
-                    background: theme.bgTer,
-                    padding: 12,
-                  }}
-                >
-                  <div style={{ fontSize: 11, color: theme.textTer, marginBottom: 4 }}>{label}</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: theme.text }}>{value}</div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
-
       <section
         style={{
           background: theme.bgSec,
@@ -353,7 +389,7 @@ export function ChatHistoryPanel() {
                     </td>
                     <td style={{ padding: 14, fontSize: 12 }}>{log.source}</td>
                     <td style={{ padding: 14, fontSize: 13, lineHeight: 1.5, width: 300, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{log.message}</td>
-                    <td style={{ padding: 14, fontSize: 13, lineHeight: 1.5, width: 380, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{log.response || "-"}</td>
+                    <ResponseCell response={log.response} theme={theme} onSeeMore={setExpandedResponse} />
                   </tr>
                 ))
               )}
@@ -385,6 +421,163 @@ export function ChatHistoryPanel() {
           </button>
         </div>
       </footer>
+
+      {isIpLookupOpen && (
+        <div
+          role="presentation"
+          onClick={closeIpLookup}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 50,
+            background: "rgba(15, 23, 42, 0.52)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 18,
+          }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="ip-lookup-modal-title"
+            onClick={(event) => event.stopPropagation()}
+            style={{
+              width: "min(560px, 100%)",
+              background: theme.bgSec,
+              border: `1px solid ${theme.border}`,
+              borderRadius: 8,
+              boxShadow: theme.shadow,
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 12,
+                padding: "14px 16px",
+                borderBottom: `1px solid ${theme.border}`,
+                background: theme.bgTer,
+              }}
+            >
+              <div>
+                <h2 id="ip-lookup-modal-title" style={{ fontSize: 16, margin: 0 }}>
+                  IP address lookup
+                </h2>
+                <div style={{ fontSize: 12, color: theme.textSec, marginTop: 3 }}>{ipLookup.ip}</div>
+              </div>
+              <button
+                type="button"
+                onClick={closeIpLookup}
+                style={{ ...secondaryButtonStyle, minHeight: 32, padding: "0 10px" }}
+              >
+                Close
+              </button>
+            </div>
+
+            <div style={{ padding: 16 }}>
+              {ipLookup.loading && <div style={{ fontSize: 13, color: theme.textSec }}>Looking up IP details...</div>}
+              {ipLookup.error && <div style={{ fontSize: 13, color: "#e11d48" }}>{ipLookup.error}</div>}
+              {ipLookup.data && (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                  {[
+                    ["Country", ipLookup.data.country],
+                    ["City", ipLookup.data.city],
+                    ["ISP", ipLookup.data.isp],
+                  ].map(([label, value]) => (
+                    <div
+                      key={label}
+                      style={{
+                        flex: "1 1 150px",
+                        border: `1px solid ${theme.border}`,
+                        borderRadius: 8,
+                        background: theme.bgTer,
+                        padding: 12,
+                      }}
+                    >
+                      <div style={{ fontSize: 11, color: theme.textTer, marginBottom: 4 }}>{label}</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: theme.text }}>{value}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {expandedResponse && (
+        <div
+          role="presentation"
+          onClick={() => setExpandedResponse("")}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 50,
+            background: "rgba(15, 23, 42, 0.52)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 18,
+          }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="response-modal-title"
+            onClick={(event) => event.stopPropagation()}
+            style={{
+              width: "min(720px, 100%)",
+              maxHeight: "min(78vh, 720px)",
+              background: theme.bgSec,
+              border: `1px solid ${theme.border}`,
+              borderRadius: 8,
+              boxShadow: theme.shadow,
+              display: "grid",
+              gridTemplateRows: "auto minmax(0, 1fr)",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 12,
+                padding: "14px 16px",
+                borderBottom: `1px solid ${theme.border}`,
+                background: theme.bgTer,
+              }}
+            >
+              <h2 id="response-modal-title" style={{ fontSize: 16, margin: 0 }}>
+                Full response
+              </h2>
+              <button
+                type="button"
+                onClick={() => setExpandedResponse("")}
+                style={{ ...secondaryButtonStyle, minHeight: 32, padding: "0 10px" }}
+              >
+                Close
+              </button>
+            </div>
+            <div
+              style={{
+                padding: 16,
+                overflow: "auto",
+                color: theme.text,
+                fontSize: 14,
+                lineHeight: 1.6,
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+              }}
+            >
+              {expandedResponse}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
