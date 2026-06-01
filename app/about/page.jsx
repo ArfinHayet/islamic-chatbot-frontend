@@ -86,7 +86,7 @@ function AboutSection({ theme, t }) {
           </div>
   
           {/* ── Developers ── */}
-          <div style={divider}>
+          {/* <div style={divider}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
               <div style={iconCircle}>
                 <Icons.Profile />
@@ -191,7 +191,7 @@ function AboutSection({ theme, t }) {
               <p style={{ fontSize: 13, fontWeight: 600, color: theme.text, margin: "0 0 6px" }}>{t("aboutWeDoTitle")}</p>
               <p style={{ fontSize: 13, color: theme.textSec, lineHeight: 1.75, margin: 0 }}>{t("aboutWeDoDesc")}</p>
             </div>
-          </div>
+          </div> */}
   
           {/* ── Contact ── */}
           <div>

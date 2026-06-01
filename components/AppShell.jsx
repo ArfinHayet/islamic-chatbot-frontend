@@ -304,7 +304,7 @@ export function AppShell({ children }) {
           </div>
 
           {/* Desktop footer */}
-          {isDesktop && (
+          {/* {isDesktop && (
             <footer
               className="desktop-only"
               style={{
@@ -353,7 +353,7 @@ export function AppShell({ children }) {
                 {lang === "bn" ? "আরফিন হায়েত ও রুম্মান কর্তৃক নির্মিত" : "Built by Arfin Hayet & Rumman"}
               </span>
             </footer>
-          )}
+          )} */}
         </main>
       </div>
     </AppShellContext.Provider>
