@@ -2,7 +2,7 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useApi } from "@/hooks/useApi";
-import { CHAT_STREAM_URL, TURNSTILE_PASS_URL } from "@/lib/constants";
+import { CHAT_STREAM_URL, CHAT_TTS_URL, TURNSTILE_PASS_URL } from "@/lib/constants";
 import { TRANSLATIONS } from "@/lib/translations";
 import { useLocale } from "@/context/LocaleContext";
 
@@ -73,11 +73,15 @@ export function ChatProvider({ children }) {
   const [captchaPass, setCaptchaPass] = useState(() => readStoredCaptchaPass()?.captchaPass ?? "");
   const [captchaPassExpiresAt, setCaptchaPassExpiresAt] = useState(() => readStoredCaptchaPass()?.expiresAt ?? "");
   const [captchaResetKey, setCaptchaResetKey] = useState(0);
+  const [ttsLoadingId, setTtsLoadingId] = useState(null);
+  const [ttsPlayingId, setTtsPlayingId] = useState(null);
 
   const bottomRef = useRef(null);
   const scrollThrottleRef = useRef(0);
   const textareaRef = useRef(null);
   const abortRef = useRef(null);
+  const ttsAudioRef = useRef(null);
+  const ttsUrlCacheRef = useRef(new Map());
 
   const copyMessage = useCallback(async (id, text) => {
     try {
@@ -98,6 +102,103 @@ export function ChatProvider({ children }) {
       console.error("copy failed", e);
     }
   }, []);
+
+  const stopTtsAudio = useCallback(() => {
+    const audio = ttsAudioRef.current;
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+      audio.src = "";
+    }
+    ttsAudioRef.current = null;
+    setTtsPlayingId(null);
+  }, []);
+
+  const revokeTtsAudio = useCallback(() => {
+    stopTtsAudio();
+    ttsUrlCacheRef.current.forEach((url) => URL.revokeObjectURL(url));
+    ttsUrlCacheRef.current.clear();
+    setTtsLoadingId(null);
+  }, [stopTtsAudio]);
+
+  useEffect(() => () => revokeTtsAudio(), [revokeTtsAudio]);
+
+  const playTtsUrl = useCallback(
+    async (messageId, url) => {
+      stopTtsAudio();
+
+      const audio = new Audio(url);
+      ttsAudioRef.current = audio;
+      audio.onended = () => {
+        if (ttsAudioRef.current === audio) {
+          ttsAudioRef.current = null;
+          setTtsPlayingId(null);
+        }
+      };
+      audio.onerror = audio.onended;
+
+      try {
+        await audio.play();
+        setTtsPlayingId(messageId);
+      } catch (error) {
+        if (ttsAudioRef.current === audio) {
+          audio.src = "";
+          ttsAudioRef.current = null;
+        }
+        throw error;
+      }
+    },
+    [stopTtsAudio],
+  );
+
+  const toggleMessageAudio = useCallback(
+    async (message) => {
+      const text = String(message?.content ?? "").trim();
+      if (message?.id == null || !text || message.streaming || ttsLoadingId === message.id) return;
+
+      if (ttsPlayingId === message.id) {
+        stopTtsAudio();
+        return;
+      }
+
+      const cachedUrl = ttsUrlCacheRef.current.get(message.id);
+      if (cachedUrl) {
+        try {
+          await playTtsUrl(message.id, cachedUrl);
+        } catch (error) {
+          console.error("TTS playback failed", error);
+          setTtsPlayingId(null);
+        }
+        return;
+      }
+
+      setTtsLoadingId(message.id);
+      try {
+        const blob = await request(CHAT_TTS_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, captchaToken, captchaPass }),
+          parse: "blob",
+        });
+        const url = URL.createObjectURL(blob);
+        ttsUrlCacheRef.current.set(message.id, url);
+        await playTtsUrl(message.id, url);
+      } catch (error) {
+        if (error.status === 400 || error.status === 401) {
+          setCaptchaToken("");
+          setCaptchaPass("");
+          setCaptchaPassExpiresAt("");
+          clearStoredCaptchaPass();
+          setCaptchaResetKey((current) => current + 1);
+        }
+        console.error("TTS generation failed", error);
+        setTtsPlayingId(null);
+      } finally {
+        setTtsLoadingId(null);
+      }
+    },
+    [captchaPass, captchaToken, playTtsUrl, request, stopTtsAudio, ttsLoadingId, ttsPlayingId],
+  );
 
   const verifyCaptchaToken = useCallback(
     async (token) => {
@@ -293,9 +394,10 @@ export function ChatProvider({ children }) {
   }, []);
 
   const clearChat = useCallback(() => {
+    revokeTtsAudio();
     setMessages([{ id: 0, role: "assistant", content: t("resetMsg"), streaming: false }]);
     setUserId(genUserId());
-  }, [t]);
+  }, [revokeTtsAudio, t]);
 
   const value = useMemo(
     () => ({
@@ -308,6 +410,9 @@ export function ChatProvider({ children }) {
       setInput,
       copiedId,
       copyMessage,
+      ttsLoadingId,
+      ttsPlayingId,
+      toggleMessageAudio,
       captchaToken,
       setCaptchaToken,
       captchaPass,
@@ -330,6 +435,9 @@ export function ChatProvider({ children }) {
       input,
       copiedId,
       copyMessage,
+      ttsLoadingId,
+      ttsPlayingId,
+      toggleMessageAudio,
       captchaToken,
       captchaPass,
       captchaPassExpiresAt,
