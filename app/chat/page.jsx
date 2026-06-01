@@ -20,6 +20,9 @@ function ChatContent() {
     input,
     copiedId,
     copyMessage,
+    ttsLoadingId,
+    ttsPlayingId,
+    toggleMessageAudio,
     captchaToken,
     captchaPass,
     verifyCaptchaToken,
@@ -172,6 +175,35 @@ function ChatContent() {
                     }}
                   >
                     <i className={copiedId === msg.id ? "pi pi-check" : "pi pi-copy"} />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleMessageAudio && toggleMessageAudio(msg);
+                    }}
+                    disabled={ttsLoadingId === msg.id || msg.streaming}
+                    title={ttsPlayingId === msg.id ? "Stop audio" : "Read aloud"}
+                    aria-label={ttsPlayingId === msg.id ? "Stop audio" : "Read aloud"}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: ttsPlayingId === msg.id ? theme.accent : theme.textTer,
+                      cursor: ttsLoadingId === msg.id || msg.streaming ? "wait" : "pointer",
+                      padding: 6,
+                      borderRadius: 8,
+                      fontSize: 15,
+                      opacity: ttsLoadingId === msg.id || msg.streaming ? 0.65 : 1,
+                    }}
+                  >
+                    <i
+                      className={
+                        ttsLoadingId === msg.id
+                          ? "pi pi-spinner pi-spin"
+                          : ttsPlayingId === msg.id
+                            ? "pi pi-pause"
+                            : "pi pi-volume-up"
+                      }
+                    />
                   </button>
                   <button
                     onClick={(e) => {
