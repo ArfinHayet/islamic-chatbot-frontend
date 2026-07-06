@@ -100,7 +100,7 @@ export function MarkdownMessage({ content, theme, isUser }) {
             style={{
               border: `1px solid ${borderColor}`,
               padding: "6px 8px",
-              textAlign: "left",
+              textAlign: "start",
               background: codeBg,
               fontWeight: 700,
             }}

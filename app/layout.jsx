@@ -15,7 +15,7 @@ export const metadata = {
     template: "%s | Noor AI",
   },
   description:
-    "Noor AI is a bilingual Islamic AI assistant for Quran and Hadith questions, daily duas, prayer times, Islamic guidance, and reminders in English and Bangla.",
+    "Noor AI is a multilingual Islamic AI assistant for Quran and Hadith questions, daily duas, prayer times, Islamic guidance, and reminders in English, Bangla, and Urdu.",
   applicationName: "Noor AI",
   generator: "Next.js",
   manifest: "/manifest.json",
@@ -29,6 +29,7 @@ export const metadata = {
     "Prayer times",
     "Daily duas",
     "Bangla Islamic chatbot",
+    "Urdu Islamic chatbot",
     "Muslim AI assistant",
   ],
   authors: [{ name: "Noor AI", url: "https://www.noorai.online" }],
@@ -41,6 +42,7 @@ export const metadata = {
     languages: {
       en: "/",
       bn: "/",
+      ur: "/",
       "x-default": "/",
     },
   },
@@ -80,14 +82,14 @@ export const metadata = {
       },
     ],
     locale: "en_US",
-    alternateLocale: ["bn_BD"],
+    alternateLocale: ["bn_BD", "ur_PK"],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Noor AI — Islamic Chatbot",
     description:
-      "A bilingual Islamic AI assistant for Quran, Hadith, prayer times, duas, and daily guidance in English and Bangla.",
+      "A multilingual Islamic AI assistant for Quran, Hadith, prayer times, duas, and daily guidance in English, Bangla, and Urdu.",
     images: ["https://www.noorai.online/favicon-social.png"],
   },
   appleWebApp: {
@@ -110,8 +112,8 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="bn">
-      <body>
+    <html lang="bn" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <ServiceWorkerRegistrar />
         <AllProviders>
           <AppShell>{children}</AppShell>

@@ -18,6 +18,7 @@ export function LangPill({ lang, setLang, theme, setMessages }) {
       {[
         { code: "bn", label: "বাং" },
         { code: "en", label: "EN" },
+        { code: "ur", label: "اردو" },
       ].map(({ code, label }) => (
         <button
           key={code}

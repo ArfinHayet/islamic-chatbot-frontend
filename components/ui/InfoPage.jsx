@@ -38,7 +38,7 @@ export function InfoPage({ eyebrow, title, subtitle, sections, updated }) {
           <p style={{ fontSize: 14, color: theme.textSec, lineHeight: 1.75, margin: 0 }}>{subtitle}</p>
           {updated && (
             <p style={{ fontSize: 12, color: theme.textTer, marginTop: 10 }}>
-              {lang === "bn" ? "সর্বশেষ আপডেট" : "Last updated"}: {updated}
+              {lang === "bn" ? "সর্বশেষ আপডেট" : lang === "ur" ? "آخری تازہ کاری" : "Last updated"}: {updated}
             </p>
           )}
         </header>
@@ -61,7 +61,7 @@ export function InfoPage({ eyebrow, title, subtitle, sections, updated }) {
                 </p>
               )}
               {section.items && (
-                <ul style={{ margin: "0 0 0 18px", padding: 0, color: theme.textSec, fontSize: 13.5, lineHeight: 1.8 }}>
+                <ul style={{ margin: 0, padding: 0, paddingInlineStart: 18, color: theme.textSec, fontSize: 13.5, lineHeight: 1.8 }}>
                   {section.items.map((item) => (
                     <li key={item}>{item}</li>
                   ))}

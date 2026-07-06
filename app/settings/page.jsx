@@ -22,6 +22,7 @@ function SettingsSection({ t, lang, setLang, theme, dark, setDark, setMessages }
                   {[
                     { code: "bn", label: "বাংলা" },
                     { code: "en", label: "English" },
+                    { code: "ur", label: "اردو" },
                   ].map(({ code, label }) => (
                     <button
                       key={code}
