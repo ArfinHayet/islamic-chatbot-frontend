@@ -18,14 +18,36 @@ export function TurnstileWidget({
   const { dark, theme } = useTheme();
   const containerRef = useRef(null);
   const widgetIdRef = useRef(null);
-  const [scriptReady, setScriptReady] = useState(false);
+  const [turnstileReady, setTurnstileReady] = useState(false);
   const [verifiedResetKey, setVerifiedResetKey] = useState(null);
   const isVerified = verifiedResetKey === resetKey;
 
   useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    let checkInterval;
+    const checkTurnstile = () => {
+      if (window.turnstile) {
+        setTurnstileReady(true);
+        if (checkInterval) clearInterval(checkInterval);
+        return true;
+      }
+      return false;
+    };
+
+    if (!checkTurnstile()) {
+      checkInterval = setInterval(checkTurnstile, 50);
+    }
+
+    return () => {
+      if (checkInterval) clearInterval(checkInterval);
+    };
+  }, []);
+
+  useEffect(() => {
     const turnstile = window.turnstile;
 
-    if (!scriptReady || !siteKey || !containerRef.current || !turnstile) return undefined;
+    if (!turnstileReady || !siteKey || !containerRef.current || !turnstile) return undefined;
 
     if (widgetIdRef.current !== null) {
       turnstile.remove(widgetIdRef.current);
@@ -57,7 +79,7 @@ export function TurnstileWidget({
         widgetIdRef.current = null;
       }
     };
-  }, [appearance, compact, dark, onVerify, resetKey, scriptReady, siteKey]);
+  }, [appearance, compact, dark, onVerify, resetKey, turnstileReady, siteKey]);
 
   if (!siteKey) {
     return (
@@ -70,7 +92,7 @@ export function TurnstileWidget({
   if (fullPage) {
     return (
       <>
-        <Script src={TURNSTILE_SCRIPT_SRC} strategy="afterInteractive" onLoad={() => setScriptReady(true)} />
+        <Script src={TURNSTILE_SCRIPT_SRC} strategy="afterInteractive" onReady={() => setTurnstileReady(true)} />
         <div
           style={{
             minHeight: isVerified ? 0 : "100dvh",
@@ -105,7 +127,7 @@ export function TurnstileWidget({
 
   return (
     <>
-      <Script src={TURNSTILE_SCRIPT_SRC} strategy="afterInteractive" onLoad={() => setScriptReady(true)} />
+      <Script src={TURNSTILE_SCRIPT_SRC} strategy="afterInteractive" onReady={() => setTurnstileReady(true)} />
       <div
         ref={containerRef}
         style={{
