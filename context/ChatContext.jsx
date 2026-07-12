@@ -350,6 +350,12 @@ export function ChatProvider({ children }) {
               return;
             }
 
+            if (payload.type === "error") {
+              contentAcc = payload.message || t("errorMsg");
+              applyAssistantUpdate({ content: contentAcc, streaming: false });
+              return;
+            }
+
             const text =
               payload.content ??
               payload.text ??
