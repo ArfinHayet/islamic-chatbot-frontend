@@ -349,7 +349,7 @@ export function ChatHistoryPanel() {
           <table className="admin-chat-table">
             <thead>
               <tr style={{ background: theme.bgTer, color: theme.textSec, textAlign: "left" }}>
-                {["Time", "User ID", "IP Address", "Source", "Message", "Response"].map((heading) => (
+                {["Time", "User ID", "IP Address", "Source", "Message", "Response", "Failed"].map((heading) => (
                   <th key={heading} style={{ padding: "12px 14px", fontSize: 12, fontWeight: 700 }}>
                     {heading}
                   </th>
@@ -390,6 +390,7 @@ export function ChatHistoryPanel() {
                     <td style={{ padding: 14, fontSize: 12 }}>{log.source}</td>
                     <td style={{ padding: 14, fontSize: 13, lineHeight: 1.5, width: 300, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{log.message}</td>
                     <ResponseCell response={log.response} theme={theme} onSeeMore={setExpandedResponse} />
+                    <td style={{ padding: 14, fontSize: 12}}>{log.failureReason}</td>
                   </tr>
                 ))
               )}
