@@ -393,11 +393,22 @@ export function ChatProvider({ children }) {
           clearStoredCaptchaPass();
           setCaptchaResetKey((current) => current + 1);
         }
-
-        if (err.name !== "AbortError")
+        if (err.name !== "AbortError") {
+          let errorMsg = t("errorMsg");
+          if (err.response) {
+            try {
+              const errBody = await err.response.clone().json();
+              if (errBody && errBody.error) {
+                errorMsg = errBody.error;
+              }
+            } catch (e) {
+              console.error("Failed to parse error response JSON", e);
+            }
+          }
           setMessages((prev) =>
-            prev.map((m) => (m.id === aId ? { ...m, content: t("errorMsg"), streaming: false } : m)),
+            prev.map((m) => (m.id === aId ? { ...m, content: errorMsg, streaming: false } : m)),
           );
+        }
       } finally {
         setMessages((prev) =>
           prev
