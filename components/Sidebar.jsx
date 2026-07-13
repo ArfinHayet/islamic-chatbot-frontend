@@ -160,7 +160,7 @@ export function Sidebar() {
       {/* Footer: lang + dark toggle */}
       <div style={{ padding: "12px 14px 14px", borderTop: `1px solid ${theme.border}` }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-          <LangPill lang={lang} setLang={setLang} theme={theme} setMessages={setMessages} />
+          <LangPill lang={lang} setLang={setLang} theme={theme} setMessages={setMessages} openUp align="start" />
           <button
             onClick={() => setDark((d) => !d)}
             title={dark ? t("lightMode") : t("darkMode")}

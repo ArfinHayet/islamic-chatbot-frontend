@@ -38,7 +38,7 @@ export function InfoPage({ eyebrow, title, subtitle, sections, updated }) {
           <p style={{ fontSize: 14, color: theme.textSec, lineHeight: 1.75, margin: 0 }}>{subtitle}</p>
           {updated && (
             <p style={{ fontSize: 12, color: theme.textTer, marginTop: 10 }}>
-              {lang === "bn" ? "সর্বশেষ আপডেট" : lang === "ur" ? "آخری تازہ کاری" : "Last updated"}: {updated}
+              {lang === "bn" ? "সর্বশেষ আপডেট" : lang === "ur" ? "آخری تازہ کاری" : lang === "ar" ? "آخر تحديث" : "Last updated"}: {updated}
             </p>
           )}
         </header>

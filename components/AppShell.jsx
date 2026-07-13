@@ -105,10 +105,12 @@ export function AppShell({ children }) {
   // ── Global CSS ─────────────────────────────────────────────────────────────
   const css = useMemo(
     () => `
-    @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600&family=Cinzel:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600&family=Noto+Nastaliq+Urdu:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600&family=Cinzel:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600&family=Noto+Nastaliq+Urdu:wght@400;500;600&family=Noto+Naskh+Arabic:wght@400;500;600&display=swap');
     *{box-sizing:border-box;margin:0;padding:0}
     html[lang="ur"] body{font-family:'Noto Nastaliq Urdu','Hind Siliguri',serif}
     html[lang="ur"] button,html[lang="ur"] input,html[lang="ur"] textarea{font-family:inherit}
+    html[lang="ar"] body{font-family:'Noto Naskh Arabic','Amiri',serif}
+    html[lang="ar"] button,html[lang="ar"] input,html[lang="ar"] textarea{font-family:inherit}
     ::-webkit-scrollbar{width:4px;height:4px}
     ::-webkit-scrollbar-track{background:transparent}
     ::-webkit-scrollbar-thumb{background:${theme.scrollbar};border-radius:99px}

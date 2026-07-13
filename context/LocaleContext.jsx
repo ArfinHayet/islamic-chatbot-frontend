@@ -9,12 +9,13 @@ const FONTS = {
   bn: "Hind Siliguri, sans-serif",
   en: "DM Sans, sans-serif",
   ur: "'Noto Nastaliq Urdu', 'Hind Siliguri', serif",
+  ar: "'Noto Naskh Arabic', 'Amiri', serif",
 };
 
-const USER_INITIALS = { bn: "আ", en: "A", ur: "ع" };
+const USER_INITIALS = { bn: "আ", en: "A", ur: "ع", ar: "ع" };
 
-// Urdu is written right-to-left
-const RTL_LANGS = ["ur"];
+// Urdu and Arabic are written right-to-left
+const RTL_LANGS = ["ur", "ar"];
 
 /** Read a cookie value by name from document.cookie */
 function getCookie(name) {

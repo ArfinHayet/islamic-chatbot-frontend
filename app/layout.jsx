@@ -15,7 +15,7 @@ export const metadata = {
     template: "%s | Noor AI",
   },
   description:
-    "Noor AI is a multilingual Islamic AI assistant for Quran and Hadith questions, daily duas, prayer times, Islamic guidance, and reminders in English, Bangla, and Urdu.",
+    "Noor AI is a multilingual Islamic AI assistant for Quran and Hadith questions, daily duas, prayer times, Islamic guidance, and reminders in English, Bangla, Urdu, and Arabic.",
   applicationName: "Noor AI",
   generator: "Next.js",
   manifest: "/manifest.json",
@@ -30,6 +30,7 @@ export const metadata = {
     "Daily duas",
     "Bangla Islamic chatbot",
     "Urdu Islamic chatbot",
+    "Arabic Islamic chatbot",
     "Muslim AI assistant",
   ],
   authors: [{ name: "Noor AI", url: "https://www.noorai.online" }],
@@ -43,6 +44,7 @@ export const metadata = {
       en: "/",
       bn: "/",
       ur: "/",
+      ar: "/",
       "x-default": "/",
     },
   },
@@ -82,14 +84,14 @@ export const metadata = {
       },
     ],
     locale: "en_US",
-    alternateLocale: ["bn_BD", "ur_PK"],
+    alternateLocale: ["bn_BD", "ur_PK", "ar_SA"],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Noor AI — Islamic Chatbot",
     description:
-      "A multilingual Islamic AI assistant for Quran, Hadith, prayer times, duas, and daily guidance in English, Bangla, and Urdu.",
+      "A multilingual Islamic AI assistant for Quran, Hadith, prayer times, duas, and daily guidance in English, Bangla, Urdu, and Arabic.",
     images: ["https://www.noorai.online/favicon-social.png"],
   },
   appleWebApp: {

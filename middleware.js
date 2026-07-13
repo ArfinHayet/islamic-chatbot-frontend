@@ -3,6 +3,26 @@ import { NextResponse } from "next/server";
 const COUNTRY_LANG_MAP = {
   BD: "bn", // Bangladesh → Bangla
   PK: "ur", // Pakistan → Urdu
+  // Arabic-speaking countries → Arabic
+  SA: "ar", // Saudi Arabia
+  AE: "ar", // United Arab Emirates
+  EG: "ar", // Egypt
+  QA: "ar", // Qatar
+  KW: "ar", // Kuwait
+  BH: "ar", // Bahrain
+  OM: "ar", // Oman
+  JO: "ar", // Jordan
+  IQ: "ar", // Iraq
+  SY: "ar", // Syria
+  LB: "ar", // Lebanon
+  PS: "ar", // Palestine
+  YE: "ar", // Yemen
+  LY: "ar", // Libya
+  DZ: "ar", // Algeria
+  MA: "ar", // Morocco
+  TN: "ar", // Tunisia
+  SD: "ar", // Sudan
+  MR: "ar", // Mauritania
 };
 
 const COOKIE_NAME = "detected-lang";
