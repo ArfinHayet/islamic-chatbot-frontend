@@ -15,6 +15,7 @@ const NAV_ITEMS = [
   { id: "chat", key: "chat", Icon: Icons.Chat },
   { id: "prayer", key: "prayerTitle", Icon: Icons.Prayer },
   { id: "dua", key: "dua", Icon: Icons.Book },
+  { id: "game", key: "game", Icon: Icons.Game },
   { id: "about", key: "about", Icon: Icons.Info },
   { id: "settings", key: "settings", Icon: Icons.Settings },
 ];

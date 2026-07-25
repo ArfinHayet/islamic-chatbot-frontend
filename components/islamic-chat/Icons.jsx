@@ -301,4 +301,20 @@ export const Icons = {
       <circle cx="12" cy="9" r="2.5" />
     </svg>
   ),
+  Game: () => (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5C7 4 9 8 12 8s5-4 7.5-4a2.5 2.5 0 0 1 0 5H18" />
+      <path d="M18 9v3a8 8 0 0 1-1.2 4.2L15 19h-2l-1-2-1 2H9l-1.8-2.8A8 8 0 0 1 6 12V9" />
+      <circle cx="12" cy="13" r="1" />
+    </svg>
+  ),
 };

@@ -1,0 +1,578 @@
+/* ── Virtue Quest — Vintage Indie Parchment UI (Matching Image 2) ─── */
+
+.game-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #eef5db;
+}
+
+/* ── Canvas Layer ────────────────────────────────────────────────── */
+.game-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* ── UI Overlay Layer ────────────────────────────────────────────── */
+.game-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-overlay > * {
+  pointer-events: auto;
+}
+
+/* ── Splash Screen ───────────────────────────────────────────────── */
+.game-splash {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  background: radial-gradient(circle at 50% 40%, #fefae0 0%, #e9edc9 60%, #ccd5ae 100%);
+  animation: gameFadeIn 0.5s ease;
+}
+
+.game-splash-title {
+  font-family: "Cinzel", serif;
+  font-size: 38px;
+  font-weight: 700;
+  color: #3a2e2b;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 10px rgba(58, 46, 43, 0.15);
+}
+
+.game-splash-desc {
+  font-size: 15px;
+  color: #5c4d49;
+  text-align: center;
+  max-width: 360px;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.game-splash-btn {
+  margin-top: 16px;
+  padding: 14px 38px;
+  background: linear-gradient(135deg, #2a9d8f, #1d7065);
+  border: 2px solid #5c3a21;
+  border-radius: 16px;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(42, 157, 143, 0.3);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.game-splash-btn:hover {
+  transform: scale(1.04);
+  box-shadow: 0 8px 25px rgba(42, 157, 143, 0.45);
+}
+
+.game-splash-btn:active {
+  transform: scale(0.97);
+}
+
+.game-splash-ornament {
+  width: 68px;
+  height: 68px;
+  border: 3px solid #c9a96e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fefae0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  animation: splashPulse 2.5s ease-in-out infinite;
+}
+
+.game-splash-ornament-inner {
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(135deg, #e76f51, #f4a261);
+  border-radius: 50%;
+}
+
+/* ── Vintage Parchment Virtue HUD (Matching Image 2 Badge Style) ──── */
+.game-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 18px;
+  background: #fefae0;
+  border-bottom: 3px solid #5c3a21;
+  box-shadow: 0 4px 15px rgba(60, 40, 25, 0.12);
+  width: 100%;
+}
+
+.game-hud-items {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.game-hud-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #3a2e2b;
+  background: #f4f1de;
+  border: 1px solid #d4a373;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.game-hud-icon {
+  font-size: 14px;
+}
+
+.game-hud-label {
+  color: #2b1e16;
+  font-weight: 700;
+}
+
+.game-hud-bar {
+  width: 44px;
+  height: 7px;
+  background: #e9edc9;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #ccd5ae;
+}
+
+.game-hud-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2a9d8f, #5fd4a9);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+  min-width: 3px;
+}
+
+.game-hud-val {
+  font-size: 11px;
+  font-weight: 800;
+  color: #2a9d8f;
+}
+
+.game-hud-level {
+  font-size: 12px;
+  color: #5c3a21;
+  font-weight: 800;
+  white-space: nowrap;
+  background: #faedcd;
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 2px solid #d4a373;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Panel Container ─────────────────────────────────────────────── */
+.game-panel-area {
+  margin-top: auto;
+  padding: 0 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 60vh;
+  overflow-y: auto;
+  align-items: center;
+}
+
+/* ── Vintage Parchment Situation Panel (Matching Image 2 Card) ───── */
+.game-situation-panel {
+  width: 100%;
+  max-width: 680px;
+  background: #fefae0;
+  border: 3px solid #5c3a21;
+  border-radius: 18px;
+  padding: 18px 22px;
+  box-shadow: 0 8px 30px rgba(60, 40, 25, 0.18), inset 0 0 15px rgba(212, 163, 115, 0.2);
+  animation: panelSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.game-situation-text {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #2b1e16;
+  font-weight: 600;
+  margin: 0;
+  text-align: center;
+}
+
+/* ── Short Choice Buttons (3 to 5 words max!) ────────────────────── */
+.game-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  width: 100%;
+  max-width: 680px;
+}
+
+.game-choice-btn {
+  background: #f4f1de;
+  border: 2px solid #5c3a21;
+  border-radius: 14px;
+  padding: 12px 20px;
+  color: #2b1e16;
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(60, 40, 25, 0.1);
+  animation: choiceSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.game-choice-btn:nth-child(1) { animation-delay: 0ms; }
+.game-choice-btn:nth-child(2) { animation-delay: 100ms; }
+.game-choice-btn:nth-child(3) { animation-delay: 200ms; }
+
+.game-choice-btn:hover {
+  background: #2a9d8f;
+  color: white;
+  border-color: #1d7065;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(42, 157, 143, 0.35);
+}
+
+.game-choice-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.game-choice-btn.selected {
+  background: #2a9d8f;
+  color: white;
+  border-color: #1d7065;
+  box-shadow: 0 6px 20px rgba(42, 157, 143, 0.4);
+}
+
+/* ── Vintage Reflection Panel ────────────────────────────────────── */
+.game-reflection-panel {
+  width: 100%;
+  max-width: 680px;
+  background: #fefae0;
+  border: 3px solid #5c3a21;
+  border-radius: 18px;
+  padding: 18px 22px;
+  box-shadow: 0 8px 30px rgba(60, 40, 25, 0.18);
+  animation: panelSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: center;
+}
+
+.game-reflection-virtue {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  background: #faedcd;
+  border: 2px solid #d4a373;
+  border-radius: 20px;
+  font-size: 12px;
+  color: #2a9d8f;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.game-reflection-text {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: #3a2e2b;
+  margin: 0 0 14px;
+  font-style: italic;
+  font-weight: 600;
+}
+
+.game-continue-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #2a9d8f, #1d7065);
+  border: 2px solid #5c3a21;
+  border-radius: 12px;
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(42, 157, 143, 0.3);
+  transition: transform 0.15s;
+}
+
+.game-continue-btn:hover {
+  transform: scale(1.02);
+}
+
+.game-continue-btn:active {
+  transform: scale(0.98);
+}
+
+/* ── Vintage Level Up Screen (Matching Image 2 Card) ─────────────── */
+.game-level-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  background: rgba(238, 245, 219, 0.92);
+  backdrop-filter: blur(16px);
+  animation: gameFadeIn 0.5s ease;
+  padding: 30px;
+}
+
+.game-level-title {
+  font-family: "Cinzel", serif;
+  font-size: 34px;
+  font-weight: 700;
+  color: #3a2e2b;
+}
+
+.game-level-subtitle {
+  font-size: 15px;
+  color: #5c4d49;
+  font-weight: 600;
+}
+
+.game-virtue-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 380px;
+  margin: 10px 0;
+}
+
+.game-virtue-card {
+  background: #fefae0;
+  border: 2px solid #5c3a21;
+  border-radius: 14px;
+  padding: 12px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.game-virtue-card-name {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #5c4d49;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.game-virtue-card-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: #2a9d8f;
+}
+
+/* ── Top Control Buttons ─────────────────────────────────────────── */
+.game-controls {
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  z-index: 20;
+  display: flex;
+  gap: 8px;
+}
+
+.game-control-btn {
+  height: 34px;
+  background: #fefae0;
+  border: 2px solid #5c3a21;
+  border-radius: 10px;
+  color: #3a2e2b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-weight: 700;
+}
+
+.game-control-btn:hover {
+  background: #faedcd;
+  transform: translateY(-1px);
+}
+
+/* ── Loading Spinner ─────────────────────────────────────────────── */
+.game-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.game-loading-orb {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #2a9d8f, transparent);
+  animation: loadingPulse 1.4s ease-in-out infinite;
+}
+
+.game-loading-text {
+  font-size: 14px;
+  color: #3a2e2b;
+  font-weight: 700;
+}
+
+/* ── Modals ──────────────────────────────────────────────────────── */
+.game-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  background: rgba(43, 30, 22, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: gameFadeIn 0.3s ease;
+}
+
+.game-modal {
+  background: #fefae0;
+  border: 3px solid #5c3a21;
+  border-radius: 18px;
+  padding: 24px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+}
+
+.game-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #3a2e2b;
+  margin-bottom: 14px;
+}
+
+.game-modal-textarea {
+  width: 100%;
+  min-height: 85px;
+  padding: 12px;
+  background: #f4f1de;
+  border: 2px solid #d4a373;
+  border-radius: 10px;
+  color: #2b1e16;
+  font-size: 12.5px;
+  font-family: monospace;
+  resize: vertical;
+  margin-bottom: 12px;
+}
+
+.game-modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.game-modal-btn {
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.game-modal-btn-primary {
+  background: #2a9d8f;
+  border: 2px solid #1d7065;
+  color: white;
+}
+
+.game-modal-btn-secondary {
+  background: transparent;
+  border: 2px solid #5c3a21;
+  color: #3a2e2b;
+}
+
+/* ── 2D Lite Mode Backgrounds ────────────────────────────────────── */
+.game-lite-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: #eef5db;
+}
+
+.game-lite-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 40px, #5c3a21 40px, #5c3a21 41px),
+    repeating-linear-gradient(90deg, transparent, transparent 40px, #5c3a21 40px, #5c3a21 41px);
+}
+
+/* ── Animations ──────────────────────────────────────────────────── */
+@keyframes gameFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes panelSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes choiceSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes splashPulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+
+@keyframes loadingPulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.3); opacity: 0.9; }
+}
+
+/* ── Responsive Rules ────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .game-splash-title { font-size: 28px; }
+  .game-situation-text { font-size: 14.5px; }
+  .game-choice-btn { font-size: 13.5px; padding: 10px 14px; width: 100%; }
+  .game-hud-items { gap: 6px; }
+  .game-hud-item { font-size: 10.5px; padding: 3px 6px; }
+  .game-hud-bar { width: 30px; }
+}
