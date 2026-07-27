@@ -18,6 +18,17 @@ function ContinuousWalkingCamera() {
     const scenarioIdx = state.currentScenarioIndex || 0;
     const isWalking = state.phase === "loading_scenario" || state.phase === "scene_intro";
 
+    // Dynamic FOV scaling for vertical Reel / mobile 9:16 aspect ratios
+    const { width, height } = rState.size;
+    const aspect = width / height;
+    if (aspect < 1.0) {
+      // Expand vertical FOV so 3D scene side environment is fully preserved in Reel aspect ratio
+      rState.camera.fov = Math.min(68, Math.max(52, 50 / aspect));
+    } else {
+      rState.camera.fov = 50;
+    }
+    rState.camera.updateProjectionMatrix();
+
     const targetZ = state.phase === "idle" ? 10 : getRoadZForScenario(scenarioIdx);
     const walkSpeed = isWalking ? 2.5 : 4.0;
     cameraZRef.current += (targetZ - cameraZRef.current) * Math.min(1, delta * walkSpeed);
@@ -47,6 +58,7 @@ export function CityScene() {
     <div className="game-canvas">
       <Canvas
         camera={{ position: [0, 2.4, 15], fov: 50 }}
+        dpr={typeof window !== "undefined" ? Math.min(2, window.devicePixelRatio) : 1}
         gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
         onCreated={({ gl }) => {
           gl.setClearColor("#38bdf8"); // Rich Vibrant Sky Blue matching Reference Image 2!

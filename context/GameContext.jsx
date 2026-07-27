@@ -2,13 +2,61 @@
 
 import React, { createContext, useContext, useReducer, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
-import { GAME_SCENARIO_URL } from "@/lib/constants";
+import { getGameScenarioUrl } from "@/lib/constants";
 
 const STORAGE_KEY = "virtue_quest_progress";
 const SCENARIOS_PER_LEVEL = 5;
 const MAX_LEVEL = 3;
 
 const DISTRICTS = ["home", "marketplace", "madrasa"];
+
+const FALLBACK_SCENARIOS = [
+  {
+    id: "fb_1",
+    situationText: "You see a lost traveler asking for directions near the marketplace.",
+    options: [
+      { text: "Guide them personally with kindness", virtue: "compassion", delta: 3, reflectionText: "Guiding others brings warmth and community spirit." },
+      { text: "Point them to the nearest shopkeeper", virtue: "generosity", delta: 2, reflectionText: "Directing others wisely is helpful and considerate." },
+      { text: "Hurry past to attend to your own tasks", virtue: "patience", delta: 1, reflectionText: "Staying focused is understandable, though small acts of help matter." }
+    ]
+  },
+  {
+    id: "fb_2",
+    situationText: "A shopkeeper accidentally gives you extra change after a purchase.",
+    options: [
+      { text: "Return the excess money immediately", virtue: "honesty", delta: 4, reflectionText: "Honesty in trade preserves trust and moral integrity." },
+      { text: "Inform the merchant of their mistake politely", virtue: "justice", delta: 3, reflectionText: "Justice and fairness build a righteous community." },
+      { text: "Place the excess into a charity box nearby", virtue: "generosity", delta: 2, reflectionText: "Charity cleanses wealth, though returning extra change is best." }
+    ]
+  },
+  {
+    id: "fb_3",
+    situationText: "Someone speaks in a heated tone due to a minor misunderstanding.",
+    options: [
+      { text: "Respond calmly and listen with patience", virtue: "patience", delta: 4, reflectionText: "Patience extinguishes anger like cool water." },
+      { text: "Forgive their harsh tone with humility", virtue: "humility", delta: 3, reflectionText: "Humility protects your heart from pride and resentment." },
+      { text: "Quietly step away to avoid conflict", virtue: "compassion", delta: 2, reflectionText: "Avoiding unnecessary conflict maintains peace." }
+    ]
+  },
+  {
+    id: "fb_4",
+    situationText: "An elderly neighbor needs help carrying heavy bags up the street.",
+    options: [
+      { text: "Offer immediate help and carry the bags", virtue: "compassion", delta: 4, reflectionText: "Helping elders earns blessings and strengthens community bonds." },
+      { text: "Walk beside them to offer support", virtue: "generosity", delta: 3, reflectionText: "Kind companionship brings joy to those in need." },
+      { text: "Politely greet them as you pass by", virtue: "humility", delta: 1, reflectionText: "A pleasant greeting is good, though active help is even better." }
+    ]
+  },
+  {
+    id: "fb_5",
+    situationText: "A dispute arises between two merchants over a shared space.",
+    options: [
+      { text: "Propose a fair and equal compromise", virtue: "justice", delta: 4, reflectionText: "Fairness and justice restore peace among neighbors." },
+      { text: "Listen carefully to both sides first", virtue: "patience", delta: 3, reflectionText: "Patient listening is the foundation of wise resolution." },
+      { text: "Encourage mutual forgiveness and generosity", virtue: "generosity", delta: 2, reflectionText: "Encouraging harmony cleanses hearts of malice." }
+    ]
+  }
+];
 
 const INITIAL_STATE = {
   phase: "idle",
@@ -30,7 +78,13 @@ function getDistrictForScenario(scenarioIndex, level) {
 function gameReducer(state, action) {
   switch (action.type) {
     case "RESTORE":
-      return { ...state, ...action.payload, phase: action.payload.phase === "loading_scenario" ? "idle" : action.payload.phase };
+      return {
+        ...state,
+        ...action.payload,
+        phase: "idle",
+        currentScenario: null,
+        selectedOption: null,
+      };
 
     case "START_GAME":
       return { ...state, phase: "loading_scenario", error: null };
@@ -45,7 +99,7 @@ function gameReducer(state, action) {
       };
 
     case "SCENARIO_ERROR":
-      return { ...state, phase: "idle", error: action.payload };
+      return { ...state, error: action.payload };
 
     case "INTRO_COMPLETE":
       return { ...state, phase: "awaiting_choice" };
@@ -134,6 +188,13 @@ function gameReducer(state, action) {
     case "IMPORT_PROGRESS":
       return { ...state, ...action.payload, phase: "idle" };
 
+    case "RESET_PROGRESS":
+      return {
+        ...INITIAL_STATE,
+        muted: state.muted,
+        liteMode: state.liteMode,
+      };
+
     default:
       return state;
   }
@@ -181,6 +242,19 @@ export function GameProvider({ children }) {
     }
   }, [state]);
 
+  // Auto-recover scenario loading if in active gameplay phase but currentScenario is null
+  useEffect(() => {
+    if (
+      state.phase !== "idle" &&
+      state.phase !== "level_up" &&
+      state.phase !== "game_complete" &&
+      state.phase !== "loading_scenario" &&
+      !state.currentScenario
+    ) {
+      dispatch({ type: "NEXT_SCENARIO" });
+    }
+  }, [state.phase, state.currentScenario]);
+
   // Fetch scenario when phase transitions to loading_scenario
   useEffect(() => {
     if (state.phase !== "loading_scenario") return;
@@ -190,18 +264,26 @@ export function GameProvider({ children }) {
 
     (async () => {
       try {
-        const res = await axios.post(GAME_SCENARIO_URL, {
+        const targetUrl = getGameScenarioUrl();
+        const res = await axios.post(targetUrl, {
           level: state.currentLevel,
           district,
           excludeIds: state.seenScenarioIds,
-        });
+        }, { timeout: 2500 });
+
         if (!cancelled) {
           const scenario = res.data?.data || res.data;
-          dispatch({ type: "SCENARIO_LOADED", payload: scenario });
+          if (scenario && scenario.situationText) {
+            dispatch({ type: "SCENARIO_LOADED", payload: scenario });
+            return;
+          }
+          throw new Error("Invalid scenario response format");
         }
       } catch (err) {
+        console.warn("Scenario API fetch failed, loading fallback scenario:", err);
         if (!cancelled) {
-          dispatch({ type: "SCENARIO_ERROR", payload: err.message || "Failed to load scenario" });
+          const fallback = FALLBACK_SCENARIOS[(state.currentScenarioIndex + state.currentLevel) % FALLBACK_SCENARIOS.length];
+          dispatch({ type: "SCENARIO_LOADED", payload: fallback });
         }
       }
     })();
@@ -217,12 +299,12 @@ export function GameProvider({ children }) {
       seenScenarioIds: state.seenScenarioIds,
     };
     return btoa(JSON.stringify(data));
-  }, [state.currentLevel, state.currentScenarioIndex, state.virtues, state.seenScenarioIds]);
+  }, [state]);
 
   const importProgress = useCallback((code) => {
     try {
       const parsed = JSON.parse(atob(code));
-      if (parsed && typeof parsed === "object" && parsed.currentLevel && parsed.virtues) {
+      if (parsed && parsed.currentLevel) {
         dispatch({ type: "IMPORT_PROGRESS", payload: parsed });
         return true;
       }
@@ -233,7 +315,16 @@ export function GameProvider({ children }) {
   }, []);
 
   return (
-    <GameContext.Provider value={{ state, dispatch, exportProgress, importProgress, SCENARIOS_PER_LEVEL, MAX_LEVEL }}>
+    <GameContext.Provider
+      value={{
+        state,
+        dispatch,
+        SCENARIOS_PER_LEVEL,
+        MAX_LEVEL,
+        exportProgress,
+        importProgress,
+      }}
+    >
       {children}
     </GameContext.Provider>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { GameProvider, useGame } from "@/context/GameContext";
 import { CityScene } from "@/components/game/CityScene";
 import { LiteScene } from "@/components/game/LiteScene";
@@ -13,7 +13,9 @@ import { LevelUpScreen } from "@/components/game/ui/LevelUpScreen";
 import { GameComplete } from "@/components/game/ui/GameComplete";
 import { MuteToggle } from "@/components/game/ui/MuteToggle";
 import { LiteModeToggle } from "@/components/game/ui/LiteModeToggle";
+import { FullscreenToggle } from "@/components/game/ui/FullscreenToggle";
 import { ProgressExport } from "@/components/game/ui/ProgressExport";
+import { MobileMenuDrawer } from "@/components/game/ui/MobileMenuDrawer";
 import { AudioEngine } from "@/components/game/audio/AudioEngine";
 import { useLocale } from "@/context/LocaleContext";
 import "@/app/game/game.css";
@@ -22,6 +24,7 @@ function GameInner() {
   const { state } = useGame();
   const { t } = useLocale();
   const [hasWebGL, setHasWebGL] = useState(true);
+  const containerRef = useRef(null);
 
   // Check WebGL capability on mount safely
   useEffect(() => {
@@ -38,22 +41,28 @@ function GameInner() {
   const use3D = hasWebGL && !state.liteMode;
 
   return (
-    <div className="game-container">
+    <div className="game-container" ref={containerRef}>
       {/* Audio Engine */}
       <AudioEngine />
 
       {/* 3D or 2D Scene Layer */}
       {use3D ? <CityScene /> : <LiteScene />}
 
-      {/* Persistent UI Controls */}
-      <div className="game-controls">
+      {/* Desktop Controls (Top Right Bar) */}
+      <div className="game-controls desktop-only-controls">
+        <FullscreenToggle containerRef={containerRef} />
         <LiteModeToggle />
         <ProgressExport />
         <MuteToggle />
       </div>
 
+      {/* Mobile Right Drawer Trigger (Mobile Only Three-Dot Menu) */}
+      <div className="mobile-only-controls">
+        <MobileMenuDrawer containerRef={containerRef} />
+      </div>
+
       {/* Idle Splash Screen */}
-      {state.phase === "idle" && <SplashScreen />}
+      {state.phase === "idle" && <SplashScreen containerRef={containerRef} />}
 
       {/* In-Game HUD & Overlay */}
       {state.phase !== "idle" && (
